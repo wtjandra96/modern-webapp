@@ -31,7 +31,7 @@ describe("Testing AuthService", () => {
         return null;
       }
     };
-    container.set("UserModel", mockUserModel);
+    container.set("userModel", mockUserModel);
   });
 
   describe("AuthService.register(username, password)", () => {
