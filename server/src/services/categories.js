@@ -29,6 +29,36 @@ class CategoriesService {
   }
 
   /**
+   * @desc    Add a Label to a Category
+   * @returns {string} payload.msg
+   * @param   {string} userId // User who owns the Categories
+   * @param   {string} categoryId // ID of this Category
+   * @param   {object} label // { name, color }
+   */
+  async addLabel (userId, categoryId, label) {
+    const { categoryModel, labelModel } = this;
+
+    const categoryRecord = await categoryModel.findOne({ _id: categoryId, owner: userId }).lean();
+    if (!categoryRecord) {
+      throw new ServiceError(404, [
+        { msg: "Category not found" }
+      ]);
+    }
+
+    const labelRecord = await labelModel.create({
+      owner: userId,
+      category: categoryId,
+      ...label
+    });
+
+    const payload = {
+      msg: `Label ${labelRecord.name} added`,
+      label: labelRecord
+    };
+    return payload;
+  }
+
+  /**
    * @desc    Get all Categories by User
    * @returns {string} payload.msg
    * @returns {object} payload.categories
@@ -66,31 +96,29 @@ class CategoriesService {
   }
 
   /**
-   * @desc    Add a Label to a Category
+   * @desc    Edit a Category
    * @returns {string} payload.msg
    * @param   {string} userId // User who owns the Categories
    * @param   {string} categoryId // ID of this Category
-   * @param   {object} label // { name, color }
+   * @param   {object} categoryUpdates // { name }
    */
-  async addLabel (userId, categoryId, label) {
-    const { categoryModel, labelModel } = this;
+  async editCategory (userId, categoryId, categoryUpdates) {
+    const { categoryModel } = this;
 
-    const categoryRecord = await categoryModel.findOne({ _id: categoryId, owner: userId }).lean();
+    const categoryRecord = await categoryModel.findOneAndUpdate({
+      _id: categoryId,
+      owner: userId
+    }, { $set: categoryUpdates }, { new: true });
+
     if (!categoryRecord) {
       throw new ServiceError(404, [
         { msg: "Category not found" }
       ]);
     }
 
-    const labelRecord = await labelModel.create({
-      owner: userId,
-      category: categoryId,
-      ...label
-    });
-
     const payload = {
-      msg: `Label ${labelRecord.name} added`,
-      label: labelRecord
+      msg: "Category updated",
+      category: categoryRecord
     };
     return payload;
   }
@@ -124,51 +152,6 @@ class CategoriesService {
   }
 
   /**
-   * @desc    Delete a Label
-   * @returns {string} payload.msg
-   * @param   {string} userId // User who owns the Categories
-   * @param   {string} labelId // ID of the Label in question
-   */
-  async deleteLabel (userId, labelId) {
-    const { labelModel } = this;
-
-    await labelModel.findOneAndDelete({ _id: labelId, owner: userId });
-
-    const payload = {
-      msg: "Label deleted"
-    };
-    return payload;
-  }
-
-  /**
-   * @desc    Edit a Category
-   * @returns {string} payload.msg
-   * @param   {string} userId // User who owns the Categories
-   * @param   {string} categoryId // ID of this Category
-   * @param   {object} categoryUpdates // { name }
-   */
-  async editCategory (userId, categoryId, categoryUpdates) {
-    const { categoryModel } = this;
-
-    const categoryRecord = await categoryModel.findOneAndUpdate({
-      _id: categoryId,
-      owner: userId
-    }, { $set: categoryUpdates }, { new: true });
-
-    if (!categoryRecord) {
-      throw new ServiceError(404, [
-        { msg: "Category not found" }
-      ]);
-    }
-
-    const payload = {
-      msg: "Category updated",
-      category: categoryRecord
-    };
-    return payload;
-  }
-
-  /**
    * @desc    Delete a Category
    * @returns {string} payload.msg
    * @param   {string} userId // User who owns the Category
@@ -181,6 +164,23 @@ class CategoriesService {
 
     const payload = {
       msg: "Category deleted"
+    };
+    return payload;
+  }
+
+  /**
+   * @desc    Delete a Label
+   * @returns {string} payload.msg
+   * @param   {string} userId // User who owns the Categories
+   * @param   {string} labelId // ID of the Label in question
+   */
+  async deleteLabel (userId, labelId) {
+    const { labelModel } = this;
+
+    await labelModel.findOneAndDelete({ _id: labelId, owner: userId });
+
+    const payload = {
+      msg: "Label deleted"
     };
     return payload;
   }
