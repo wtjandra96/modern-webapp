@@ -8,12 +8,14 @@ const LabelSchema = new Schema(
     owner: {
       type: Schema.Types.ObjectId,
       ref: "users",
+      required: true,
       unique: false,
       index: true
     },
     category: {
       type: Schema.Types.ObjectId,
       ref: "categories",
+      required: true,
       unique: false,
       index: true
     },

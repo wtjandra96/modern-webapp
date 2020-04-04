@@ -9,6 +9,7 @@ const CategorySchema = new Schema(
     owner: {
       type: Schema.Types.ObjectId,
       ref: "users",
+      required: true,
       unique: false,
       index: true
     },
