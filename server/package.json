@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node src/server",
     "dev": "./node_modules/.bin/nodemon src/server",
-    "test": "jest --collectCoverage",
+    "test": "jest --collectCoverage --runInBand",
     "lint": "./node_modules/.bin/eslint --fix ./"
   },
   "author": "William Tjandra",
@@ -16,6 +16,7 @@
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.20.1",
     "jest": "^25.1.0",
+    "mongodb-memory-server": "^6.5.1",
     "nodemon": "^2.0.2",
     "supertest": "^4.0.2"
   },
