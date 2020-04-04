@@ -17,7 +17,6 @@ class AuthService {
   async register (username, password) {
     const { userModel } = this;
 
-    // Insert new User
     await userModel.create({
       username,
       password
