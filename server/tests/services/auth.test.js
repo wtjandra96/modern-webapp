@@ -2,39 +2,37 @@ const container = require("typedi").Container;
 const AuthService = require("../../src/services/auth");
 const ServiceError = require("../../src/utils/errors/serviceError");
 const MongoError = require("../../src/utils/errors/mongoError");
+const UserModel = require("../../src/models/User");
+
+const testdb = require("../testdb");
 
 describe("Testing AuthService", () => {
   beforeAll(() => {
-    const mockUserModel = {
-      create: (user) => {
-        if (user.username === "test1") {
-          throw new MongoError(409, [
-            { msg: "Username already exists" }
-          ]);
-        }
-      },
-      findOne: (user) => {
-        if (user.username === "test1") {
-          return {
-            ...user,
-            password: "password1",
-            _id: "mock-user-id",
-            comparePassword: (password1, password2) => {
-              if (password1 === password2) {
-                return true;
-              }
-
-              return false;
-            }
-          };
-        }
-        return null;
-      }
+    testdb.connect();
+    const userModel = {
+      name: "UserModel",
+      model: UserModel
     };
-    container.set("userModel", mockUserModel);
+    container.set(userModel.name, userModel.model);
+  });
+
+  afterAll(() => {
+    testdb.disconnect();
   });
 
   describe("AuthService.register(username, password)", () => {
+    it("Should create a new User with valid credentials", async () => {
+      expect.assertions(1);
+
+      const authServiceInstance = container.get(AuthService);
+      const payload = await authServiceInstance.register(
+        "test1",
+        "password1"
+      );
+      const { msg } = payload;
+      expect(msg).toBeDefined();
+    });
+
     it("Should not allow duplicate usernames", async () => {
       expect.assertions(2);
 
@@ -45,18 +43,6 @@ describe("Testing AuthService", () => {
         expect(err).toBeInstanceOf(MongoError);
         expect(err.errors.length).toBe(1);
       }
-    });
-
-    it("Should create a new User with valid credentials", async () => {
-      expect.assertions(1);
-
-      const authServiceInstance = container.get(AuthService);
-      const payload = await authServiceInstance.register(
-        "test2",
-        "password1"
-      );
-      const { msg } = payload;
-      expect(msg).toBeDefined();
     });
   });
 
