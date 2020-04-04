@@ -16,7 +16,6 @@ class CategoriesService {
   async create (userId, name) {
     const { categoryModel } = this;
 
-    // Insert new Category
     const categoryRecord = await categoryModel.create({
       owner: userId,
       name
@@ -38,7 +37,6 @@ class CategoriesService {
   async getCategories (userId) {
     const { categoryModel } = this;
 
-    // Retrieve Categories
     const categoryRecords = await categoryModel.find({ owner: userId });
 
     const payload = {
@@ -58,7 +56,6 @@ class CategoriesService {
   async getLabels (userId, categoryId) {
     const { labelModel } = this;
 
-    // Retrieve Categories
     const labelRecords = await labelModel.find({ owner: userId, category: categoryId });
 
     const payload = {
@@ -180,7 +177,6 @@ class CategoriesService {
   async deleteCategory (userId, categoryId) {
     const { categoryModel } = this;
 
-    // Delete Category
     await categoryModel.findOneAndDelete({ _id: categoryId, owner: userId });
 
     const payload = {
