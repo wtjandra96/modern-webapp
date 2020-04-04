@@ -7,7 +7,6 @@ const LabelModel = require("../../src/models/Label");
 
 const testdb = require("../testdb");
 
-
 const testUser1 = {
   id: "5e868964c037680d183cd5a3",
   username: "testUser1",
