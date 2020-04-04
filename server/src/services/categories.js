@@ -10,7 +10,7 @@ class CategoriesService {
    * @desc    Create a new Category
    * @returns {string} payload.msg
    * @returns {object} payload.category
-   * @param   {string} userId // User who created the Category
+   * @param   {ObjectId} userId User who created the Category
    * @param   {string} name
    */
   async create (userId, name) {
@@ -31,9 +31,9 @@ class CategoriesService {
   /**
    * @desc    Add a Label to a Category
    * @returns {string} payload.msg
-   * @param   {string} userId // User who owns the Categories
-   * @param   {string} categoryId // ID of this Category
-   * @param   {object} label // { name, color }
+   * @param   {ObjectId} userId User who owns the Categories
+   * @param   {ObjectId} categoryId ID of this Category
+   * @param   {object} label { name: string, color: string }
    */
   async addLabel (userId, categoryId, label) {
     const { categoryModel, labelModel } = this;
@@ -62,7 +62,7 @@ class CategoriesService {
    * @desc    Get all Categories by User
    * @returns {string} payload.msg
    * @returns {object} payload.categories
-   * @param   {string} userId // User who owns the Categories
+   * @param   {ObjectId} userId User who owns the Categories
    */
   async getCategories (userId) {
     const { categoryModel } = this;
@@ -80,8 +80,8 @@ class CategoriesService {
    * @desc    Get all Labels of a Category
    * @returns {string} payload.msg
    * @returns {object} payload.categories
-   * @param   {string} userId // User who owns the Categories
-   * @param   {string} categoryId // The Category in question
+   * @param   {ObjectId} userId User who owns the Categories
+   * @param   {ObjectId} categoryId The Category in question
    */
   async getLabels (userId, categoryId) {
     const { labelModel } = this;
@@ -98,9 +98,9 @@ class CategoriesService {
   /**
    * @desc    Edit a Category
    * @returns {string} payload.msg
-   * @param   {string} userId // User who owns the Categories
-   * @param   {string} categoryId // ID of this Category
-   * @param   {object} categoryUpdates // { name }
+   * @param   {ObjectId} userId User who owns the Categories
+   * @param   {ObjectId} categoryId ID of this Category
+   * @param   {object} categoryUpdates { name: string }
    */
   async editCategory (userId, categoryId, categoryUpdates) {
     const { categoryModel } = this;
@@ -126,9 +126,9 @@ class CategoriesService {
   /**
    * @desc    Edit a Label
    * @returns {string} payload.msg
-   * @param   {string} userId // User who owns the Categories
-   * @param   {string} labelId // ID of the Label in question
-   * @param   {object} labelUpdates // { name, color }
+   * @param   {ObjectId} userId User who owns the Categories
+   * @param   {ObjectId} labelId ID of the Label in question
+   * @param   {object} labelUpdates { name: string, color: string }
    */
   async editLabel (userId, labelId, labelUpdates) {
     const { labelModel } = this;
@@ -154,8 +154,8 @@ class CategoriesService {
   /**
    * @desc    Delete a Category
    * @returns {string} payload.msg
-   * @param   {string} userId // User who owns the Category
-   * @param   {string} categoryId
+   * @param   {ObjectId} userId User who owns the Category
+   * @param   {ObjectId} categoryId
    */
   async deleteCategory (userId, categoryId) {
     const { categoryModel } = this;
@@ -171,8 +171,8 @@ class CategoriesService {
   /**
    * @desc    Delete a Label
    * @returns {string} payload.msg
-   * @param   {string} userId // User who owns the Categories
-   * @param   {string} labelId // ID of the Label in question
+   * @param   {ObjectId} userId User who owns the Categories
+   * @param   {ObjectId} labelId ID of the Label in question
    */
   async deleteLabel (userId, labelId) {
     const { labelModel } = this;
