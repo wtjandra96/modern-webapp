@@ -32,7 +32,7 @@ router.post("/register", async (req, res) => {
       err.errors
     );
     const { httpStatusCode, errors } = err;
-    return res.status(httpStatusCode).send(errors);
+    return res.status(httpStatusCode || 500).send(errors || err);
   }
 });
 
@@ -58,7 +58,7 @@ router.post("/login", async (req, res) => {
   } catch (err) {
     logger.error("api/auth/login", err.name, err.date, err.errors);
     const { httpStatusCode, errors } = err;
-    return res.status(httpStatusCode).send(errors);
+    return res.status(httpStatusCode || 500).send(errors || err);
   }
 });
 
