@@ -1,4 +1,12 @@
 version: 0.2
+
+env:
+    variables:
+      NODE_ENV: "development"
+    parameter-store:
+      JWT_SECRET: /CodeBuild/JWT_SECRET
+      DATABASE_URI: /CodeBuild/DATABASE_URI
+
 phases:
   install:
     runtime-versions:
