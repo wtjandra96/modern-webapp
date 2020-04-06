@@ -54,15 +54,15 @@ describe("Testing CategoriesService", () => {
       const { msg, category } = payload;
 
       expect(msg).toBeDefined();
-      expect(category.name).toBe(category1Name);
-      expect(category.owner.toString()).toBe(testUser1.id);
+      expect(category.name).toStrictEqual(category1Name);
+      expect(category.owner.toString()).toStrictEqual(testUser1.id);
 
       const labels = await LabelModel.find({ category: category.id }).lean();
-      expect(labels.length).toBe(6);
+      expect(labels.length).toStrictEqual(6);
       for (let i = 0; i < labels.length; i += 1) {
         const label = labels[i];
-        expect(label.owner.toString()).toBe(testUser1.id);
-        expect(label.category.toString()).toBe(category.id);
+        expect(label.owner.toString()).toStrictEqual(testUser1.id);
+        expect(label.category.toString()).toStrictEqual(category.id);
       }
     });
 
@@ -77,8 +77,8 @@ describe("Testing CategoriesService", () => {
       const { msg, category } = payload;
 
       expect(msg).toBeDefined();
-      expect(category.name.toString()).toBe(category2Name);
-      expect(category.owner.toString()).toBe(testUser1.id);
+      expect(category.name.toString()).toStrictEqual(category2Name);
+      expect(category.owner.toString()).toStrictEqual(testUser1.id);
     });
 
     it("Should not allow duplicate category name for the same user", async () => {
@@ -89,8 +89,8 @@ describe("Testing CategoriesService", () => {
         await CategoriesServiceInstance.create(testUser1.id, category1Name);
       } catch (err) {
         expect(err).toBeInstanceOf(MongoError);
-        expect(err.httpStatusCode).toBe(400);
-        expect(err.errors.length).toBe(1);
+        expect(err.httpStatusCode).toStrictEqual(400);
+        expect(err.errors.length).toStrictEqual(1);
       }
     });
 
@@ -105,8 +105,8 @@ describe("Testing CategoriesService", () => {
       const { msg, category } = payload;
 
       expect(msg).toBeDefined();
-      expect(category.name).toBe(category1Name);
-      expect(category.owner.toString()).toBe(testUser2.id);
+      expect(category.name).toStrictEqual(category1Name);
+      expect(category.owner.toString()).toStrictEqual(testUser2.id);
     });
   });
 
@@ -119,10 +119,10 @@ describe("Testing CategoriesService", () => {
       const { msg, categories } = payload;
 
       expect(msg).toBeDefined();
-      expect(categories.length).toBe(2);
+      expect(categories.length).toStrictEqual(2);
       for (let i = 0; i < categories.length; i += 1) {
         const category = categories[i];
-        expect(category.owner.toString()).toBe(testUser1.id);
+        expect(category.owner.toString()).toStrictEqual(testUser1.id);
       }
     });
   });
@@ -141,11 +141,11 @@ describe("Testing CategoriesService", () => {
       const { msg, labels } = payload;
 
       expect(msg).toBeDefined();
-      expect(labels.length).toBe(6);
+      expect(labels.length).toStrictEqual(6);
       for (let i = 0; i < labels.length; i += 1) {
         const label = labels[i];
-        expect(label.owner.toString()).toBe(testUser1.id);
-        expect(label.category.toString()).toBe(testCategory.id);
+        expect(label.owner.toString()).toStrictEqual(testUser1.id);
+        expect(label.category.toString()).toStrictEqual(testCategory.id);
       }
     });
 
@@ -157,7 +157,7 @@ describe("Testing CategoriesService", () => {
       const { msg, labels } = payload;
 
       expect(msg).toBeDefined();
-      expect(labels.length).toBe(0);
+      expect(labels.length).toStrictEqual(0);
     });
   });
 
@@ -180,8 +180,8 @@ describe("Testing CategoriesService", () => {
         await CategoriesServiceInstance.addLabel(testUser1.id, null, label);
       } catch (err) {
         expect(err).toBeInstanceOf(ServiceError);
-        expect(err.httpStatusCode).toBe(404);
-        expect(err.errors.length).toBe(1);
+        expect(err.httpStatusCode).toStrictEqual(404);
+        expect(err.errors.length).toStrictEqual(1);
       }
     });
 
@@ -199,13 +199,13 @@ describe("Testing CategoriesService", () => {
       const { msg, label } = payload;
 
       expect(msg).toBeDefined();
-      expect(label.name).toBe(newLabel.name);
-      expect(label.color).toBe(newLabel.color);
-      expect(label.category.toString()).toBe(testCategory.id);
-      expect(label.owner.toString()).toBe(testUser1.id);
+      expect(label.name).toStrictEqual(newLabel.name);
+      expect(label.color).toStrictEqual(newLabel.color);
+      expect(label.category.toString()).toStrictEqual(testCategory.id);
+      expect(label.owner.toString()).toStrictEqual(testUser1.id);
 
       const labels = await LabelModel.find({ category: testCategory.id }).lean();
-      expect(labels.length).toBe(7);
+      expect(labels.length).toStrictEqual(7);
     });
 
     it("Should not allow adding a label with the same name", async () => {
@@ -221,8 +221,8 @@ describe("Testing CategoriesService", () => {
         await CategoriesServiceInstance.addLabel(testUser1.id, testCategory.id, label);
       } catch (err) {
         expect(err).toBeInstanceOf(MongoError);
-        expect(err.httpStatusCode).toBe(400);
-        expect(err.errors.length).toBe(1);
+        expect(err.httpStatusCode).toStrictEqual(400);
+        expect(err.errors.length).toStrictEqual(1);
       }
     });
   });
@@ -243,8 +243,8 @@ describe("Testing CategoriesService", () => {
         await CategoriesServiceInstance.editLabel(testUser2.id, testLabel.id, {});
       } catch (err) {
         expect(err).toBeInstanceOf(ServiceError);
-        expect(err.httpStatusCode).toBe(404);
-        expect(err.errors.length).toBe(1);
+        expect(err.httpStatusCode).toStrictEqual(404);
+        expect(err.errors.length).toStrictEqual(1);
       }
     });
 
@@ -263,10 +263,10 @@ describe("Testing CategoriesService", () => {
       const { msg, label } = payload;
 
       expect(msg).toBeDefined();
-      expect(label.name).toBe(labelUpdates.name);
-      expect(label.color).toBe(labelUpdates.color);
-      expect(label.category.toString()).toBe(testCategory.id);
-      expect(label.owner.toString()).toBe(testUser1.id);
+      expect(label.name).toStrictEqual(labelUpdates.name);
+      expect(label.color).toStrictEqual(labelUpdates.color);
+      expect(label.category.toString()).toStrictEqual(testCategory.id);
+      expect(label.owner.toString()).toStrictEqual(testUser1.id);
     });
   });
 
@@ -313,8 +313,8 @@ describe("Testing CategoriesService", () => {
         await CategoriesServiceInstance.editCategory(testUser2.id, testCategory.id, {});
       } catch (err) {
         expect(err).toBeInstanceOf(ServiceError);
-        expect(err.httpStatusCode).toBe(404);
-        expect(err.errors.length).toBe(1);
+        expect(err.httpStatusCode).toStrictEqual(404);
+        expect(err.errors.length).toStrictEqual(1);
       }
     });
 
@@ -332,8 +332,8 @@ describe("Testing CategoriesService", () => {
       const { msg, category } = payload;
 
       expect(msg).toBeDefined();
-      expect(category.name).toBe(categoryUpdates.name);
-      expect(category.owner.toString()).toBe(testUser1.id);
+      expect(category.name).toStrictEqual(categoryUpdates.name);
+      expect(category.owner.toString()).toStrictEqual(testUser1.id);
     });
   });
 
