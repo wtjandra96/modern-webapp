@@ -43,7 +43,7 @@ describe("Testing CategoriesService", () => {
   });
 
   describe("CategoriesService.create(userId, name)", () => {
-    it("Should allow creation of a category with six default labels", async () => {
+    it("Should allow creation of a Category with six default Labels", async () => {
       expect.assertions(16);
 
       const CategoriesServiceInstance = container.get(CategoriesService);
@@ -66,7 +66,7 @@ describe("Testing CategoriesService", () => {
       }
     });
 
-    it("Should allow creation of a category with a different name", async () => {
+    it("Should allow creation of a Category with a different name", async () => {
       expect.assertions(3);
 
       const CategoriesServiceInstance = container.get(CategoriesService);
@@ -81,7 +81,7 @@ describe("Testing CategoriesService", () => {
       expect(category.owner.toString()).toBe(testUser1.id);
     });
 
-    it("Should not allow duplicate category name for the same user", async () => {
+    it("Should not allow duplicate Category name for the same User", async () => {
       expect.assertions(3);
 
       const CategoriesServiceInstance = container.get(CategoriesService);
@@ -94,7 +94,7 @@ describe("Testing CategoriesService", () => {
       }
     });
 
-    it("Should allow the same category name if created by a different user", async () => {
+    it("Should allow the same Category name if created by a different User", async () => {
       expect.assertions(3);
 
       const CategoriesServiceInstance = container.get(CategoriesService);
@@ -171,13 +171,13 @@ describe("Testing CategoriesService", () => {
       expect.assertions(3);
 
       const CategoriesServiceInstance = container.get(CategoriesService);
-      const label = {
+      const newLabel = {
         name: "Test",
         color: "#000"
       };
 
       try {
-        await CategoriesServiceInstance.addLabel(testUser1.id, null, label);
+        await CategoriesServiceInstance.addLabel(testUser1.id, null, newLabel);
       } catch (err) {
         expect(err).toBeInstanceOf(ServiceError);
         expect(err.httpStatusCode).toBe(404);
@@ -185,7 +185,25 @@ describe("Testing CategoriesService", () => {
       }
     });
 
-    it("Should allow adding labels", async () => {
+    it("Should not allow non authorized User to add labels", async () => {
+      expect.assertions(3);
+
+      const CategoriesServiceInstance = container.get(CategoriesService);
+      const newLabel = {
+        name: "Test",
+        color: "#000"
+      };
+
+      try {
+        await CategoriesServiceInstance.addLabel(testUser2.id, testCategory.id, newLabel);
+      } catch (err) {
+        expect(err).toBeInstanceOf(ServiceError);
+        expect(err.httpStatusCode).toBe(404);
+        expect(err.errors.length).toBe(1);
+      }
+    });
+
+    it("Should allow owner to add Labels", async () => {
       expect.assertions(6);
 
       const CategoriesServiceInstance = container.get(CategoriesService);
@@ -208,7 +226,7 @@ describe("Testing CategoriesService", () => {
       expect(labels.length).toBe(7);
     });
 
-    it("Should not allow adding a label with the same name", async () => {
+    it("Should not allow adding a Label with the same name within the same Category", async () => {
       expect.assertions(3);
 
       const CategoriesServiceInstance = container.get(CategoriesService);
@@ -248,7 +266,7 @@ describe("Testing CategoriesService", () => {
       }
     });
 
-    it("Should allow editing Label", async () => {
+    it("Should allow owner to edit Label", async () => {
       expect.assertions(5);
 
       const CategoriesServiceInstance = container.get(CategoriesService);
