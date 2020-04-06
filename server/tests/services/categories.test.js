@@ -278,9 +278,10 @@ describe("Testing CategoriesService", () => {
       const payload = await CategoriesServiceInstance.editLabel(
         testUser1.id, testLabel.id, labelUpdates
       );
-      const { msg, label } = payload;
-
+      const { msg } = payload;
       expect(msg).toBeDefined();
+
+      const label = await LabelModel.findById(testLabel.id);
       expect(label.name).toBe(labelUpdates.name);
       expect(label.color).toBe(labelUpdates.color);
       expect(label.category.toString()).toBe(testCategory.id);
@@ -347,9 +348,10 @@ describe("Testing CategoriesService", () => {
       const payload = await CategoriesServiceInstance.editCategory(
         testUser1.id, testCategory.id, categoryUpdates
       );
-      const { msg, category } = payload;
-
+      const { msg } = payload;
       expect(msg).toBeDefined();
+
+      const category = await CategoryModel.findById(testCategory.id);
       expect(category.name).toBe(categoryUpdates.name);
       expect(category.owner.toString()).toBe(testUser1.id);
     });
