@@ -8,7 +8,15 @@ class CategoriesService {
 
   /**
    * @desc    Create a new Category
-   * @returns {string} payload.msg
+   * @returns {object}
+   * {
+   *   msg: string,
+   *   category: {
+   *     owner: ObjectId,
+   *     name: string
+   *   }
+   * }
+   *
    * @returns {object} payload.category
    * @param   {ObjectId} userId User who created the Category
    * @param   {string} name
@@ -30,7 +38,18 @@ class CategoriesService {
 
   /**
    * @desc    Add a Label to a Category
-   * @returns {string} payload.msg
+   * @returns {object}
+   * {
+   *   msg: string,
+   *   label: {
+   *     owner: ObjectId,
+   *     category: ObjectId,
+   *     name: string
+   *     color: string,
+   *     checked: boolean
+   *   }
+   * }
+   *
    * @param   {ObjectId} userId User who owns the Categories
    * @param   {ObjectId} categoryId ID of this Category
    * @param   {object} label { name: string, color: string }
@@ -60,8 +79,15 @@ class CategoriesService {
 
   /**
    * @desc    Get all Categories by User
-   * @returns {string} payload.msg
-   * @returns {object} payload.categories
+   * @returns {object}
+   * {
+   *   msg: string,
+   *   categories: [{
+   *     owner: ObjectId,
+   *     name: string
+   *   }]
+   * }
+   *
    * @param   {ObjectId} userId User who owns the Categories
    */
   async getCategories (userId) {
@@ -78,8 +104,18 @@ class CategoriesService {
 
   /**
    * @desc    Get all Labels of a Category
-   * @returns {string} payload.msg
-   * @returns {object} payload.categories
+   * @returns {object}
+   * {
+   *   msg: string,
+   *   labels: [{
+   *     owner: ObjectId,
+   *     category: ObjectId,
+   *     name: string
+   *     color: string,
+   *     checked: boolean
+   *   }]
+   * }
+   *
    * @param   {ObjectId} userId User who owns the Categories
    * @param   {ObjectId} categoryId The Category in question
    */
@@ -97,7 +133,7 @@ class CategoriesService {
 
   /**
    * @desc    Edit a Category
-   * @returns {string} payload.msg
+   * @returns {object} { msg: string }
    * @param   {ObjectId} userId User who owns the Categories
    * @param   {ObjectId} categoryId ID of this Category
    * @param   {object} categoryUpdates { name: string }
@@ -108,7 +144,7 @@ class CategoriesService {
     const categoryRecord = await categoryModel.findOneAndUpdate({
       _id: categoryId,
       owner: userId
-    }, { $set: categoryUpdates }, { new: true });
+    }, { $set: categoryUpdates });
 
     if (!categoryRecord) {
       throw new ServiceError(404, [
@@ -117,15 +153,14 @@ class CategoriesService {
     }
 
     const payload = {
-      msg: "Category updated",
-      category: categoryRecord
+      msg: "Category updated"
     };
     return payload;
   }
 
   /**
    * @desc    Edit a Label
-   * @returns {string} payload.msg
+   * @returns {object} { msg: string }
    * @param   {ObjectId} userId User who owns the Categories
    * @param   {ObjectId} labelId ID of the Label in question
    * @param   {object} labelUpdates { name: string, color: string }
@@ -136,7 +171,7 @@ class CategoriesService {
     const labelRecord = await labelModel.findOneAndUpdate({
       _id: labelId,
       owner: userId
-    }, { $set: labelUpdates }, { new: true });
+    }, { $set: labelUpdates });
 
     if (!labelRecord) {
       throw new ServiceError(404, [
@@ -145,15 +180,14 @@ class CategoriesService {
     }
 
     const payload = {
-      msg: "Label updated",
-      label: labelRecord
+      msg: "Label updated"
     };
     return payload;
   }
 
   /**
    * @desc    Delete a Category
-   * @returns {string} payload.msg
+   * @returns {object} { msg: string }
    * @param   {ObjectId} userId User who owns the Category
    * @param   {ObjectId} categoryId
    */
@@ -170,7 +204,7 @@ class CategoriesService {
 
   /**
    * @desc    Delete a Label
-   * @returns {string} payload.msg
+   * @returns {object} { msg: string }
    * @param   {ObjectId} userId User who owns the Categories
    * @param   {ObjectId} labelId ID of the Label in question
    */
