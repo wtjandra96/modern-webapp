@@ -41,7 +41,7 @@ describe("Testing AuthService", () => {
         await authServiceInstance.register("test1", "password1");
       } catch (err) {
         expect(err).toBeInstanceOf(MongoError);
-        expect(err.errors.length).toBe(1);
+        expect(err.errors.length).toStrictEqual(1);
       }
     });
   });
@@ -55,7 +55,7 @@ describe("Testing AuthService", () => {
         await authServiceInstance.login("test1", "incorrect");
       } catch (err) {
         expect(err).toBeInstanceOf(ServiceError);
-        expect(err.errors.length).toBe(1);
+        expect(err.errors.length).toStrictEqual(1);
       }
     });
 
@@ -67,7 +67,7 @@ describe("Testing AuthService", () => {
         await authServiceInstance.login("test2", "incorrect");
       } catch (err) {
         expect(err).toBeInstanceOf(ServiceError);
-        expect(err.errors.length).toBe(1);
+        expect(err.errors.length).toStrictEqual(1);
       }
     });
 
