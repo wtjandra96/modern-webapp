@@ -7,7 +7,7 @@ class PostsService {
 
   /**
    * @desc    Create a new Post
-   * @returns {object} payload
+   * @returns {object}
    * {
    *   msg: string,
    *   post: {
@@ -48,7 +48,7 @@ class PostsService {
 
   /**
    * @desc    Get Posts
-   * @returns {object} payload
+   * @returns {object}
    * {
    *   msg: string,
    *   posts: [{
@@ -92,7 +92,7 @@ class PostsService {
 
   /**
    * @desc    Edit a post
-   * @returns {object} payload { msg: string }
+   * @returns {object} { msg: string }
    * @param   {ObjectId} userId User who owns the Posts
    * @param   {ObjectId} postId The ID of the Post to be edited
    * @param   {string} title
@@ -121,7 +121,7 @@ class PostsService {
 
   /**
    * @desc    Delete a post
-   * @returns {object} payload { msg: string }
+   * @returns {object} { msg: string }
    * @param   {ObjectId} userId User who owns the Posts
    * @param   {ObjectId} postId The Post in question
    */
@@ -138,7 +138,7 @@ class PostsService {
 
   /**
    * @desc    Add Label to a Post
-   * @returns {object} payload { msg: string }
+   * @returns {object} { msg: string }
    * @param   {ObjectId} userId User who owns the Posts
    * @param   {ObjectId} postId The Post in question
    * @param   {ObjectId} labelId ID of Label to be added to Post
@@ -165,7 +165,7 @@ class PostsService {
 
   /**
    * @desc    Remove Label from a Post
-   * @returns {object} payload { msg: string }
+   * @returns {object} { msg: string }
    * @param   {ObjectId} userId User who owns the Posts
    * @param   {ObjectId} postId The Post in questio
    * @param   {ObjectId} labelId ID of Label to be removed from Post
