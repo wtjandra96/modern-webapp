@@ -17,7 +17,7 @@ module.exports.connect = async () => {
       useUnifiedTopology: true
     });
   } catch (err) {
-    logger.error(err);
+    logger.error(`testdb connect(): ${err}`);
   }
 };
 
@@ -26,17 +26,17 @@ module.exports.clearDB = async (clear = true) => {
     try {
       await mongoose.connection.dropDatabase();
     } catch (err) {
-      logger.error(err);
+      logger.error(`testdb clearDB(): ${err}`);
     }
   }
 };
 
 module.exports.disconnect = async (clear = true) => {
-  this.clearDB(clear);
+  await this.clearDB(clear);
   try {
     await mongoose.connection.close();
     await mongod.stop();
   } catch (err) {
-    logger.error(err);
+    logger.error(`testdb disconnect(): ${err}`);
   }
 };
