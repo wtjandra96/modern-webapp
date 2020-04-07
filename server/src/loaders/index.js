@@ -10,7 +10,7 @@ module.exports = async (app) => {
   logger.info("Database loaded and connected");
 
   const userModel = {
-    name: "userModel",
+    name: "UserModel",
     model: UserModel
   };
 
