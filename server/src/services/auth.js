@@ -10,7 +10,7 @@ class AuthService {
   /**
    * @desc    Register a new User
    * @access  Public
-   * @returns {string} payload.msg
+   * @returns {object} { msg: string }
    * @param   {string} username
    * @param   {string} password
    */
@@ -31,8 +31,7 @@ class AuthService {
   /**
    * @desc    Login User
    * @access  Public
-   * @returns {string} payload.msg
-   * @returns {string} payload.token
+   * @returns {object} { msg: string, token: string }
    * @param   {string} username
    * @param   {string} password
    */

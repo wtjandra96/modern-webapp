@@ -9,8 +9,9 @@ const router = express.Router();
  * @route  POST api/auth/register
  * @desc   Register a new User
  * @access Public
- * @param  {string} username
- * @param  {string} password
+ * @returns {object} { msg: string }
+ * @param   {string} username
+ * @param   {string} password
  */
 router.post("/register", async (req, res) => {
   const logger = container.get("logger");
@@ -40,8 +41,9 @@ router.post("/register", async (req, res) => {
  * @route  POST api/auth/login
  * @desc   Login User
  * @access Public
- * @param  {string} username
- * @param  {string} password
+ * @returns {object} { msg: string, token: string }
+ * @param   {string} username
+ * @param   {string} password
  */
 router.post("/login", async (req, res) => {
   const logger = container.get("logger");

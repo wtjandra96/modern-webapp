@@ -10,8 +10,18 @@ const router = express.Router();
  * @route  POST api/categories/create
  * @desc   Create a new Category
  * @access Private
- * @param  {string} userId // from token
- * @param  {string} name
+ * @returns {object}
+ * {
+ *   msg: string,
+ *   category: {
+ *     owner: ObjectId,
+ *     name: string
+ *   }
+ * }
+ *
+ * @returns {object} payload.category
+ * @param   {ObjectId} userId User who created the Category (from middleware)
+ * @param   {string} name
  */
 router.post("/create", isAuth, async (req, res) => {
   const logger = container.get("logger");
@@ -37,9 +47,21 @@ router.post("/create", isAuth, async (req, res) => {
  * @route  POST api/categories/addLabel
  * @desc   Add a Label to a Category
  * @access Private
- * @param  {string} userId // from token
- * @param  {string} categoryId
- * @param  {object} label // { name, color }
+ * @returns {object}
+ * {
+ *   msg: string,
+ *   label: {
+ *     owner: ObjectId,
+ *     category: ObjectId,
+ *     name: string
+ *     color: string,
+ *     checked: boolean
+ *   }
+ * }
+*
+ * @param   {ObjectId} userId User who owns the Categories (from middleware)
+ * @param   {ObjectId} categoryId ID of this Category
+ * @param   {object} label { name: string, color: string }
  */
 router.post("/addLabel", isAuth, async (req, res) => {
   const logger = container.get("logger");
@@ -64,9 +86,18 @@ router.post("/addLabel", isAuth, async (req, res) => {
 
 /**
  * @route  GET api/categories/getCategories
- * @desc   Get Categories by User
+ * @desc   Get all Categories by User
  * @access Private
- * @param  {string} userId // from token
+ * @returns {object}
+ * {
+ *   msg: string,
+ *   categories: [{
+ *     owner: ObjectId,
+ *     name: string
+ *   }]
+ * }
+ *
+ * @param   {ObjectId} userId User who owns the Categories (from middleware)
  */
 router.get("/getCategories", isAuth, async (req, res) => {
   const logger = container.get("logger");
@@ -86,10 +117,22 @@ router.get("/getCategories", isAuth, async (req, res) => {
 
 /**
  * @route  GET api/categories/getLabels
- * @desc   Get Labels of a Category
+ * @desc   Get all Labels of a Category
  * @access Private
- * @param  {string} userId // from token
- * @param  {string} categoryId
+ * @returns {object}
+ * {
+ *   msg: string,
+ *   labels: [{
+ *     owner: ObjectId,
+ *     category: ObjectId,
+ *     name: string
+ *     color: string,
+ *     checked: boolean
+ *   }]
+ * }
+ *
+ * @param   {ObjectId} userId User who owns the Categories (from middleware)
+ * @param   {ObjectId} categoryId The Category in question
  */
 router.get("/getLabels", isAuth, async (req, res) => {
   const logger = container.get("logger");
@@ -112,9 +155,10 @@ router.get("/getLabels", isAuth, async (req, res) => {
  * @route  POST api/categories/editCategory
  * @desc   Edit a Category
  * @access Private
- * @param  {string} userId // from token
- * @param  {string} categoryId
- * @param  {object} categoryUpdates
+ * @returns {object} { msg: string }
+ * @param   {ObjectId} userId User who owns the Categories (from middleware)
+ * @param   {ObjectId} categoryId ID of this Category
+ * @param   {object} categoryUpdates { name: string }
  */
 router.post("/editCategory", isAuth, async (req, res) => {
   const logger = container.get("logger");
@@ -141,9 +185,10 @@ router.post("/editCategory", isAuth, async (req, res) => {
  * @route  POST api/categories/editLabel
  * @desc   Edit a Label
  * @access Private
- * @param  {string} userId // from token
- * @param  {string} labelId
- * @param  {object} labelUpdates // { name, color }
+ * @returns {object} { msg: string }
+ * @param   {ObjectId} userId User who owns the Categories (from middleware)
+ * @param   {ObjectId} labelId ID of the Label in question
+ * @param   {object} labelUpdates { name: string, color: string }
  */
 router.post("/editLabel", isAuth, async (req, res) => {
   const logger = container.get("logger");
@@ -170,8 +215,9 @@ router.post("/editLabel", isAuth, async (req, res) => {
  * @route  DELETE api/categories/deleteCategory
  * @desc   Delete a Category
  * @access Private
- * @param  {string} userId // from token
- * @param  {string} categoryId
+ * @returns {object} { msg: string }
+ * @param   {ObjectId} userId User who owns the Category (from middleware)
+ * @param   {ObjectId} categoryId
  */
 router.delete("/deleteCategory", isAuth, async (req, res) => {
   const logger = container.get("logger");
@@ -194,8 +240,9 @@ router.delete("/deleteCategory", isAuth, async (req, res) => {
  * @route  DELETE api/categories/deleteLabel
  * @desc   Delete a Label
  * @access Private
- * @param  {string} userId // from token
- * @param  {string} labelId
+ * @returns {object} { msg: string }
+ * @param   {ObjectId} userId User who owns the Categories (from middleware)
+ * @param   {ObjectId} labelId ID of the Label in question
  */
 router.delete("/deleteLabel", isAuth, async (req, res) => {
   const logger = container.get("logger");

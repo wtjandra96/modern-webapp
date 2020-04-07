@@ -24,7 +24,7 @@ const router = express.Router();
  *   }
  * }
  *
- * @param   {ObjectId} userId User who created the Post
+ * @param   {ObjectId} userId User who created the Post (from isAuth middleware)
  * @param   {ObjectId} categoryId Category this Post belongs to
  * @param   {string} title
  * @param   {string} url
@@ -61,7 +61,7 @@ router.post("/create", isAuth, async (req, res) => {
  * @desc    Add Label to a Post
  * @access Private
  * @returns {object} { msg: string }
- * @param   {ObjectId} userId User who owns the Posts
+ * @param   {ObjectId} userId User who owns the Posts (from isAuth middleware)
  * @param   {ObjectId} postId The Post in question
  * @param   {ObjectId} labelId ID of Label to be added to Post
  */
@@ -104,7 +104,7 @@ router.post("/addLabel", isAuth, async (req, res) => {
  *   }
  * }]
  *
- * @param   {ObjectId} userId User who owns the Posts
+ * @param   {ObjectId} userId User who owns the Posts (from isAuth middleware)
  * @param   {ObjectId} categoryId Posts of a particular Category
  * @param   {array} labelIds optional [ObjectId]
  */
@@ -130,7 +130,7 @@ router.get("/getPosts", isAuth, async (req, res) => {
  * @desc    Edit a post
  * @access Private
  * @returns {object} { msg: string }
- * @param   {ObjectId} userId User who owns the Posts
+ * @param   {ObjectId} userId User who owns the Posts (from isAuth middleware)
  * @param   {ObjectId} postId The ID of the Post to be edited
  * @param   {string} title
  * @param   {string} url
@@ -168,7 +168,7 @@ router.post("/editPost", isAuth, async (req, res) => {
  * @desc    Delete a post
  * @access Private
  * @returns {object} { msg: string }
- * @param   {ObjectId} userId User who owns the Posts
+ * @param   {ObjectId} userId User who owns the Posts (from isAuth middleware)
  * @param   {ObjectId} postId The Post in question
  */
 router.delete("/deletePost", isAuth, async (req, res) => {
@@ -193,7 +193,7 @@ router.delete("/deletePost", isAuth, async (req, res) => {
  * @desc    Remove Label from a Post
  * @access Private
  * @returns {object} { msg: string }
- * @param   {ObjectId} userId User who owns the Posts
+ * @param   {ObjectId} userId User who owns the Posts (from isAuth middleware)
  * @param   {ObjectId} postId The Post in questio
  * @param   {ObjectId} labelId ID of Label to be removed from Post
  */
