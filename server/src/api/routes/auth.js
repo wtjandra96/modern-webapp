@@ -27,10 +27,7 @@ router.post("/register", async (req, res) => {
     return res.status(201).send(payload);
   } catch (err) {
     logger.error(
-      "api/auth/register",
-      err.name,
-      err.date,
-      err.errors
+      `POST api/auth/register: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
     );
     const { httpStatusCode, errors } = err;
     return res.status(httpStatusCode || 500).send(errors || err);
@@ -58,7 +55,9 @@ router.post("/login", async (req, res) => {
     );
     return res.status(200).send(payload);
   } catch (err) {
-    logger.error("api/auth/login", err.name, err.date, err.errors);
+    logger.error(
+      `POST api/auth/login: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
+    );
     const { httpStatusCode, errors } = err;
     return res.status(httpStatusCode || 500).send(errors || err);
   }

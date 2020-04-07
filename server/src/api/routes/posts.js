@@ -50,7 +50,9 @@ router.post("/create", isAuth, async (req, res) => {
     );
     return res.status(201).send(payload);
   } catch (err) {
-    logger.error("POST api/posts/create", err.name, err.date, err.errors);
+    logger.error(
+      `POST api/posts/create: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
+    );
     const { httpStatusCode, errors } = err;
     return res.status(httpStatusCode || 500).send(errors || err);
   }
@@ -80,7 +82,9 @@ router.post("/addLabel", isAuth, async (req, res) => {
     );
     return res.status(200).send(payload);
   } catch (err) {
-    logger.error("POST api/posts/addLabel", err.name, err.date, err.errors);
+    logger.error(
+      `POST api/posts/addLabel: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
+    );
     const { httpStatusCode, errors } = err;
     return res.status(httpStatusCode || 500).send(errors || err);
   }
@@ -119,7 +123,9 @@ router.get("/getPosts", isAuth, async (req, res) => {
     const payload = await postsServiceInstance.get(userId, categoryId, labelIds);
     return res.status(200).send(payload);
   } catch (err) {
-    logger.error("GET api/posts/getPosts", err.name, err.date, err.errors);
+    logger.error(
+      `GET api/posts/getPosts: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
+    );
     const { httpStatusCode, errors } = err;
     return res.status(httpStatusCode || 500).send(errors || err);
   }
@@ -156,7 +162,9 @@ router.post("/editPost", isAuth, async (req, res) => {
     );
     return res.status(200).send(payload);
   } catch (err) {
-    logger.error("POST api/posts/editPost", err.name, err.date, err.errors);
+    logger.error(
+      `POST api/posts/editPosts: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
+    );
     const { httpStatusCode, errors } = err;
     return res.status(httpStatusCode || 500).send(errors || err);
   }
@@ -182,7 +190,9 @@ router.delete("/deletePost", isAuth, async (req, res) => {
     const payload = await postsServiceInstance.delete(userId, postId);
     return res.status(200).send(payload);
   } catch (err) {
-    logger.error("DELETE api/posts/deletePost", err.name, err.date, err.errors);
+    logger.error(
+      `DELETE api/posts/deletePost: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
+    );
     const { httpStatusCode, errors } = err;
     return res.status(httpStatusCode || 500).send(errors || err);
   }
@@ -212,7 +222,9 @@ router.post("/removeLabel", isAuth, async (req, res) => {
     );
     return res.status(200).send(payload);
   } catch (err) {
-    logger.error("POST api/posts/removeLabel", err.name, err.date, err.errors);
+    logger.error(
+      `POST api/posts/removeLabel: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
+    );
     const { httpStatusCode, errors } = err;
     return res.status(httpStatusCode || 500).send(errors || err);
   }

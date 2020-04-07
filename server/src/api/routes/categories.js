@@ -37,7 +37,9 @@ router.post("/create", isAuth, async (req, res) => {
     );
     return res.status(201).send(payload);
   } catch (err) {
-    logger.error("POST api/categories/create", err.name, err.date, err.errors);
+    logger.error(
+      `POST api/categories/create: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
+    );
     const { httpStatusCode, errors } = err;
     return res.status(httpStatusCode || 500).send(errors || err);
   }
@@ -78,7 +80,9 @@ router.post("/addLabel", isAuth, async (req, res) => {
     );
     return res.status(201).send(payload);
   } catch (err) {
-    logger.error("POST api/categories/addLabel", err.name, err.date, err.errors);
+    logger.error(
+      `POST api/categories/addLabel: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
+    );
     const { httpStatusCode, errors } = err;
     return res.status(httpStatusCode || 500).send(errors || err);
   }
@@ -109,7 +113,9 @@ router.get("/getCategories", isAuth, async (req, res) => {
     const payload = await categoriesServiceInstance.get(userId);
     return res.status(200).send(payload);
   } catch (err) {
-    logger.error("GET api/categories/getCategories", err.name, err.date, err.errors);
+    logger.error(
+      `GET api/categories/getCategories: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
+    );
     const { httpStatusCode, errors } = err;
     return res.status(httpStatusCode || 500).send(errors || err);
   }
@@ -145,7 +151,9 @@ router.get("/getLabels", isAuth, async (req, res) => {
     const payload = await categoriesServiceInstance.getLabels(userId, categoryId);
     return res.status(200).send(payload);
   } catch (err) {
-    logger.error("GET api/categories/getLabels", err.name, err.date, err.errors);
+    logger.error(
+      `GET api/categories/getLabels: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
+    );
     const { httpStatusCode, errors } = err;
     return res.status(httpStatusCode || 500).send(errors || err);
   }
@@ -175,7 +183,9 @@ router.post("/editCategory", isAuth, async (req, res) => {
     );
     return res.status(200).send(payload);
   } catch (err) {
-    logger.error("POST api/categories/editCategory", err.name, err.date, err.errors);
+    logger.error(
+      `POST api/categories/editCategory: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
+    );
     const { httpStatusCode, errors } = err;
     return res.status(httpStatusCode || 500).send(errors || err);
   }
@@ -205,7 +215,9 @@ router.post("/editLabel", isAuth, async (req, res) => {
     );
     return res.status(200).send(payload);
   } catch (err) {
-    logger.error("POST api/categories/editLabel", err.name, err.date, err.errors);
+    logger.error(
+      `POST api/categories/editLabel: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
+    );
     const { httpStatusCode, errors } = err;
     return res.status(httpStatusCode || 500).send(errors || err);
   }
@@ -230,7 +242,9 @@ router.delete("/deleteCategory", isAuth, async (req, res) => {
     const payload = await categoriesServiceInstance.deleteCategory(userId, categoryId);
     return res.status(200).send(payload);
   } catch (err) {
-    logger.error("DELETE api/categories/deleteCategory", err.name, err.date, err.errors);
+    logger.error(
+      `DELETE api/categories/deleteCategory: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
+    );
     const { httpStatusCode, errors } = err;
     return res.status(httpStatusCode || 500).send(errors || err);
   }
@@ -258,7 +272,9 @@ router.delete("/deleteLabel", isAuth, async (req, res) => {
     );
     return res.status(200).send(payload);
   } catch (err) {
-    logger.error("DELETE api/categories/deleteLabel", err.name, err.date, err.errors);
+    logger.error(
+      `DELETE api/categories/deleteLabel: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
+    );
     const { httpStatusCode, errors } = err;
     return res.status(httpStatusCode || 500).send(errors || err);
   }
