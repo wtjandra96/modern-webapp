@@ -7,8 +7,8 @@ const UserModel = require("../../src/models/User");
 const testdb = require("../testdb");
 
 describe("Testing AuthService", () => {
-  beforeAll(() => {
-    testdb.connect();
+  beforeAll(async () => {
+    await testdb.connect();
     const userModel = {
       name: "UserModel",
       model: UserModel
@@ -16,8 +16,8 @@ describe("Testing AuthService", () => {
     container.set(userModel.name, userModel.model);
   });
 
-  afterAll(() => {
-    testdb.disconnect();
+  afterAll(async () => {
+    await testdb.disconnect();
   });
 
   describe("AuthService.register(username, password)", () => {
@@ -29,8 +29,8 @@ describe("Testing AuthService", () => {
         "test1",
         "password1"
       );
-      const { msg } = payload;
-      expect(msg).toBeDefined();
+      const { errorMessage } = payload;
+      expect(errorMessage).toBeDefined();
     });
 
     it("Should not allow duplicate usernames", async () => {
@@ -79,8 +79,8 @@ describe("Testing AuthService", () => {
         "test1",
         "password1"
       );
-      const { msg, token } = payload;
-      expect(msg).toBeDefined();
+      const { errorMessage, token } = payload;
+      expect(errorMessage).toBeDefined();
       expect(token).toBeDefined();
     });
   });
