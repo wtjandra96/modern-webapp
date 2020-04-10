@@ -9,7 +9,7 @@ class PostsService {
    * @desc    Create a new Post
    * @returns {object}
    * {
-   *   msg: string,
+   *   errorMessage: string,
    *   post: {
    *     owner: ObjectId,
    *     category: ObjectId,
@@ -40,7 +40,7 @@ class PostsService {
     });
 
     const payload = {
-      msg: "Post created",
+      errorMessage: "Post created",
       post: postRecord
     };
     return payload;
@@ -50,7 +50,7 @@ class PostsService {
    * @desc    Get Posts
    * @returns {object}
    * {
-   *   msg: string,
+   *   errorMessage: string,
    *   posts: [{
    *     owner: ObjectId,
    *     category: ObjectId,
@@ -84,7 +84,7 @@ class PostsService {
     const postRecords = await postModel.find(conditions);
 
     const payload = {
-      msg: "Posts retrieved",
+      errorMessage: "Posts retrieved",
       posts: postRecords
     };
     return payload;
@@ -92,7 +92,7 @@ class PostsService {
 
   /**
    * @desc    Edit a post
-   * @returns {object} { msg: string }
+   * @returns {object} { errorMessage: string }
    * @param   {ObjectId} userId User who owns the Posts
    * @param   {ObjectId} postId The ID of the Post to be edited
    * @param   {string} title
@@ -110,18 +110,18 @@ class PostsService {
     }, { new: true });
     if (!postRecord) {
       throw new ServiceError(404, [
-        { msg: "Post not found" }
+        { errorMessage: "Post not found" }
       ]);
     }
     const payload = {
-      msg: "Post updated"
+      errorMessage: "Post updated"
     };
     return payload;
   }
 
   /**
    * @desc    Delete a post
-   * @returns {object} { msg: string }
+   * @returns {object} { errorMessage: string }
    * @param   {ObjectId} userId User who owns the Posts
    * @param   {ObjectId} postId The Post in question
    */
@@ -131,14 +131,14 @@ class PostsService {
     await postModel.findOneAndDelete({ _id: postId, owner: userId });
 
     const payload = {
-      msg: "Post deleted"
+      errorMessage: "Post deleted"
     };
     return payload;
   }
 
   /**
    * @desc    Add Label to a Post
-   * @returns {object} { msg: string }
+   * @returns {object} { errorMessage: string }
    * @param   {ObjectId} userId User who owns the Posts
    * @param   {ObjectId} postId The Post in question
    * @param   {ObjectId} labelId ID of Label to be added to Post
@@ -153,19 +153,19 @@ class PostsService {
     }, { new: true });
     if (!postRecord) {
       throw new ServiceError(404, [
-        { msg: "Post not found" }
+        { errorMessage: "Post not found" }
       ]);
     }
 
     const payload = {
-      msg: "Post updated"
+      errorMessage: "Post updated"
     };
     return payload;
   }
 
   /**
    * @desc    Remove Label from a Post
-   * @returns {object} { msg: string }
+   * @returns {object} { errorMessage: string }
    * @param   {ObjectId} userId User who owns the Posts
    * @param   {ObjectId} postId The Post in questio
    * @param   {ObjectId} labelId ID of Label to be removed from Post
@@ -180,12 +180,12 @@ class PostsService {
     }, { new: true });
     if (!postRecord) {
       throw new ServiceError(404, [
-        { msg: "Post not found" }
+        { errorMessage: "Post not found" }
       ]);
     }
 
     const payload = {
-      msg: "Post updated"
+      errorMessage: "Post updated"
     };
     return payload;
   }

@@ -10,7 +10,7 @@ class AuthService {
   /**
    * @desc    Register a new User
    * @access  Public
-   * @returns {object} { msg: string }
+   * @returns {object} { errorMessage: string }
    * @param   {string} username
    * @param   {string} password
    */
@@ -23,7 +23,7 @@ class AuthService {
     });
 
     const payload = {
-      msg: "Register success"
+      errorMessage: "Register success"
     };
     return payload;
   }
@@ -31,7 +31,7 @@ class AuthService {
   /**
    * @desc    Login User
    * @access  Public
-   * @returns {object} { msg: string, token: string }
+   * @returns {object} { errorMessage: string, token: string }
    * @param   {string} username
    * @param   {string} password
    */
@@ -42,7 +42,7 @@ class AuthService {
     const userRecord = await userModel.findOne({ username });
     if (!userRecord) {
       throw new ServiceError(400, [
-        { msg: "Invalid username/password combination" }
+        { errorMessage: "Invalid username/password combination" }
       ]);
     }
 
@@ -53,7 +53,7 @@ class AuthService {
     );
     if (!passwordMatch) {
       throw new ServiceError(400, [
-        { msg: "Invalid username/password combination" }
+        { errorMessage: "Invalid username/password combination" }
       ]);
     }
 
@@ -75,7 +75,7 @@ class AuthService {
     );
 
     const payload = {
-      msg: "Login success",
+      errorMessage: "Login success",
       token
     };
     return payload;
