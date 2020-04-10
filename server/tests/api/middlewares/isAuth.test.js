@@ -2,7 +2,7 @@ const container = require("typedi").Container;
 const logger = require("../../logger");
 const { isAuth } = require("../../../src/api/middlewares");
 
-const nextFunction = () => {};
+const nextFunction = () => { };
 const validToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZThiYzQ4ZTc1MDgzNTc2YTQ1ZmRlMTciLCJ1c2VybmFtZSI6Ind0amFuZHJhIiwiaWF0IjoxNTg2MjE4MjE2fQ.P-XZkOazGExCN1qNItz7fyBkCSFaAl9XlmarQXXo5W4";
 const invalidToken = "invalid token";
 const expiredToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI1ZThiYzQ4ZTc1MDgzNTc2YTQ1ZmRlMTciLCJ1c2VybmFtZSI6Ind0amFuZHJhIiwiaWF0IjoxNTg2MjE4MjQ0LCJleHAiOjE1ODYyMTgyNDV9.FdnyVJXIIATYTL9HgymrWUU8qsCAGJHq-JhGceZqi3k";
@@ -41,7 +41,7 @@ describe("Testing isAuth middleware", () => {
 
       expect(statusSpy).toHaveBeenCalledTimes(1);
       expect(jsonResponse.success).toStrictEqual(false);
-      expect(jsonResponse.msg).toBeDefined();
+      expect(jsonResponse.errorMessage).toBeDefined();
     });
 
     it("Should not allow missing token", () => {
@@ -72,7 +72,7 @@ describe("Testing isAuth middleware", () => {
 
       expect(statusSpy).toHaveBeenCalledTimes(1);
       expect(jsonResponse.success).toStrictEqual(false);
-      expect(jsonResponse.msg).toBeDefined();
+      expect(jsonResponse.errorMessage).toBeDefined();
     });
 
     it("Should not allow expired token", () => {
@@ -103,7 +103,7 @@ describe("Testing isAuth middleware", () => {
 
       expect(statusSpy).toHaveBeenCalledTimes(1);
       expect(jsonResponse.success).toStrictEqual(false);
-      expect(jsonResponse.msg).toBeDefined();
+      expect(jsonResponse.errorMessage).toBeDefined();
     });
 
     it("Should allow valid token", () => {
