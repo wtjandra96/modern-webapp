@@ -71,7 +71,7 @@ CategorySchema.post("save", async (doc) => {
 // Reference: https://mongoosejs.com/docs/middleware.html#error-handling-middleware
 CategorySchema.post("save", async (error, doc, next) => {
   if (error.name === "MongoError" && error.code === 11000) {
-    next(new MongoError(400, [{ msg: "Category already exists" }]));
+    next(new MongoError(400, [{ errorMessage: "Category already exists" }]));
   } else {
     next();
   }

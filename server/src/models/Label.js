@@ -42,7 +42,7 @@ LabelSchema.index({ name: 1, owner: 1, category: 1 }, { unique: true });
 // Reference: https://mongoosejs.com/docs/middleware.html#error-handling-middleware
 LabelSchema.post("save", (error, doc, next) => {
   if (error.name === "MongoError" && error.code === 11000) {
-    next(new MongoError(400, [{ msg: "Label already exists" }]));
+    next(new MongoError(400, [{ errorMessage: "Label already exists" }]));
   } else {
     next();
   }
