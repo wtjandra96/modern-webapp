@@ -12,8 +12,8 @@ const PREFIX = "api/auth";
 const REGISTER_ROUTE = "/register";
 const LOGIN_ROUTE = "/login";
 
-const FULL_REGISTER_ROUTE = `${POST} - ${PREFIX}${REGISTER_ROUTE}`;
-const FULL_LOGIN_ROUTE = `${POST} - ${PREFIX}${LOGIN_ROUTE}`;
+const FULL_REGISTER_ROUTE = `${POST} ${PREFIX}${REGISTER_ROUTE}`;
+const FULL_LOGIN_ROUTE = `${POST} ${PREFIX}${LOGIN_ROUTE}`;
 
 /**
  * @route  POST api/auth/register
@@ -100,7 +100,6 @@ router.post("/login", celebrate({
   })
 }), async (req, res, next) => {
   const { username, password } = req.body;
-
   try {
     const authServiceInstance = container.get(AuthService);
     const payload = await authServiceInstance.login(
@@ -110,7 +109,6 @@ router.post("/login", celebrate({
     return res.status(200).send(payload);
   } catch (err) {
     err.message = `${FULL_LOGIN_ROUTE}: ${err.name}`;
-    console.log(err);
     return next(err);
   }
 });
