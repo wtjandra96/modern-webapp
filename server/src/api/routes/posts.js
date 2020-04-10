@@ -1,10 +1,23 @@
 const container = require("typedi").Container;
 const express = require("express");
 
+const { celebrate, Joi } = require("celebrate");
 const PostsService = require("../../services/posts");
 const { isAuth } = require("../middlewares");
 
 const router = express.Router();
+
+const POST = "POST";
+const GET = "GET";
+const DELETE = "DELETE";
+const PREFIX = "api/posts";
+
+const CREATE_ROUTE = "/create";
+const ADD_LABEL_ROUTE = "/addLabel";
+const GET_POSTS_ROUTE = "/getPosts";
+const DELETE_POST_ROUTE = "/deletePost";
+const EDIT_POST_ROUTE = "/editPost";
+const REMOVE_LABEL_ROUTE = "/removeLabel";
 
 /**
  * @route  POST api/posts/create
@@ -12,7 +25,7 @@ const router = express.Router();
  * @access Private
  * @returns {object}
  * {
- *   msg: string,
+ *   errorMessage: string,
  *   post: {
  *     owner: ObjectId,
  *     category: ObjectId,
@@ -31,7 +44,18 @@ const router = express.Router();
  * @param   {object} postAttributes each key optional
  * { originalDate: String, imgSrc: String }
  */
-router.post("/create", isAuth, async (req, res) => {
+router.post(CREATE_ROUTE, isAuth, celebrate({
+  userId: Joi.string().required(),
+  body: Joi.object({
+    categoryId: Joi.string().required(),
+    title: Joi.string().required(),
+    url: Joi.string().required(),
+    postAttributes: Joi.object({
+      originalDate: Joi.date(),
+      imgSrc: Joi.string()
+    })
+  })
+}), async (req, res) => {
   const logger = container.get("logger");
 
   const { userId } = req;
@@ -51,7 +75,7 @@ router.post("/create", isAuth, async (req, res) => {
     return res.status(201).send(payload);
   } catch (err) {
     logger.error(
-      `POST api/posts/create: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
+      `${POST} - ${PREFIX}${CREATE_ROUTE}: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
     );
     const { httpStatusCode, errors } = err;
     return res.status(httpStatusCode || 500).send(errors || err);
@@ -62,12 +86,18 @@ router.post("/create", isAuth, async (req, res) => {
  * @route  POST api/posts/addLabel
  * @desc    Add Label to a Post
  * @access Private
- * @returns {object} { msg: string }
+ * @returns {object} { errorMessage: string }
  * @param   {ObjectId} userId User who owns the Posts (from isAuth middleware)
  * @param   {ObjectId} postId The Post in question
  * @param   {ObjectId} labelId ID of Label to be added to Post
  */
-router.post("/addLabel", isAuth, async (req, res) => {
+router.post(ADD_LABEL_ROUTE, isAuth, celebrate({
+  userId: Joi.string().required(),
+  body: Joi.object({
+    postId: Joi.string().required(),
+    labelId: Joi.string().required()
+  })
+}), async (req, res) => {
   const logger = container.get("logger");
 
   const { userId } = req;
@@ -83,7 +113,7 @@ router.post("/addLabel", isAuth, async (req, res) => {
     return res.status(200).send(payload);
   } catch (err) {
     logger.error(
-      `POST api/posts/addLabel: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
+      `${POST} - ${PREFIX}${ADD_LABEL_ROUTE}: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
     );
     const { httpStatusCode, errors } = err;
     return res.status(httpStatusCode || 500).send(errors || err);
@@ -96,7 +126,7 @@ router.post("/addLabel", isAuth, async (req, res) => {
  * @access Private
  * @returns {object}
  * {
- *   msg: string,
+ *   errorMessage: string,
  *   posts: [{
  *     owner: ObjectId,
  *     category: ObjectId,
@@ -112,11 +142,17 @@ router.post("/addLabel", isAuth, async (req, res) => {
  * @param   {ObjectId} categoryId Posts of a particular Category
  * @param   {array} labelIds optional [ObjectId]
  */
-router.get("/getPosts", isAuth, async (req, res) => {
+router.get(GET_POSTS_ROUTE, isAuth, celebrate({
+  userId: Joi.string().required(),
+  body: Joi.object({
+    categoryId: Joi.string().required(),
+    labelIds: Joi.array().items(Joi.string())
+  })
+}), async (req, res) => {
   const logger = container.get("logger");
 
   const { userId } = req;
-  const { categoryId, labelIds } = req.params;
+  const { categoryId, labelIds } = req.query;
 
   try {
     const postsServiceInstance = container.get(PostsService);
@@ -124,7 +160,7 @@ router.get("/getPosts", isAuth, async (req, res) => {
     return res.status(200).send(payload);
   } catch (err) {
     logger.error(
-      `GET api/posts/getPosts: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
+      `${GET} - ${PREFIX}${GET_POSTS_ROUTE}: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
     );
     const { httpStatusCode, errors } = err;
     return res.status(httpStatusCode || 500).send(errors || err);
@@ -135,7 +171,7 @@ router.get("/getPosts", isAuth, async (req, res) => {
  * @route  POST api/posts/editPost
  * @desc    Edit a post
  * @access Private
- * @returns {object} { msg: string }
+ * @returns {object} { errorMessage: string }
  * @param   {ObjectId} userId User who owns the Posts (from isAuth middleware)
  * @param   {ObjectId} postId The ID of the Post to be edited
  * @param   {string} title
@@ -143,7 +179,19 @@ router.get("/getPosts", isAuth, async (req, res) => {
  * @param   {object} postAttributes each key optional
  * { labels: [ObjectId], originalDate: String, imgSrc: String }
  */
-router.post("/editPost", isAuth, async (req, res) => {
+router.post(EDIT_POST_ROUTE, isAuth, celebrate({
+  userId: Joi.string().required(),
+  body: Joi.object({
+    postId: Joi.string().required(),
+    title: Joi.string().required(),
+    url: Joi.string().required(),
+    postAttributes: Joi.object({
+      labels: Joi.array().items(Joi.string()),
+      originalDate: Joi.date(),
+      imgsrc: Joi.string()
+    })
+  })
+}), async (req, res) => {
   const logger = container.get("logger");
 
   const { userId } = req;
@@ -163,7 +211,7 @@ router.post("/editPost", isAuth, async (req, res) => {
     return res.status(200).send(payload);
   } catch (err) {
     logger.error(
-      `POST api/posts/editPosts: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
+      `${POST} - ${PREFIX}${EDIT_POST_ROUTE}: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
     );
     const { httpStatusCode, errors } = err;
     return res.status(httpStatusCode || 500).send(errors || err);
@@ -175,15 +223,20 @@ router.post("/editPost", isAuth, async (req, res) => {
  * @route  DELETE api/posts/deletePost
  * @desc    Delete a post
  * @access Private
- * @returns {object} { msg: string }
+ * @returns {object} { errorMessage: string }
  * @param   {ObjectId} userId User who owns the Posts (from isAuth middleware)
  * @param   {ObjectId} postId The Post in question
  */
-router.delete("/deletePost", isAuth, async (req, res) => {
+router.delete(DELETE_POST_ROUTE, isAuth, celebrate({
+  userId: Joi.string().required(),
+  body: Joi.object({
+    postId: Joi.string().required()
+  })
+}), async (req, res) => {
   const logger = container.get("logger");
 
   const { userId } = req;
-  const { postId } = req.params;
+  const { postId } = req.query;
 
   try {
     const postsServiceInstance = container.get(PostsService);
@@ -191,7 +244,7 @@ router.delete("/deletePost", isAuth, async (req, res) => {
     return res.status(200).send(payload);
   } catch (err) {
     logger.error(
-      `DELETE api/posts/deletePost: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
+      `${DELETE} - ${PREFIX}${DELETE_POST_ROUTE}: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
     );
     const { httpStatusCode, errors } = err;
     return res.status(httpStatusCode || 500).send(errors || err);
@@ -202,16 +255,22 @@ router.delete("/deletePost", isAuth, async (req, res) => {
  * @route  POST api/posts/removeLabel
  * @desc    Remove Label from a Post
  * @access Private
- * @returns {object} { msg: string }
+ * @returns {object} { errorMessage: string }
  * @param   {ObjectId} userId User who owns the Posts (from isAuth middleware)
  * @param   {ObjectId} postId The Post in questio
  * @param   {ObjectId} labelId ID of Label to be removed from Post
  */
-router.post("/removeLabel", isAuth, async (req, res) => {
+router.post(REMOVE_LABEL_ROUTE, isAuth, celebrate({
+  userId: Joi.string().required(),
+  body: Joi.object({
+    postId: Joi.string().required(),
+    labelId: Joi.string().required()
+  })
+}), async (req, res) => {
   const logger = container.get("logger");
 
   const { userId } = req;
-  const { postId, labelId } = req.params;
+  const { postId, labelId } = req.body;
 
   try {
     const postsServiceInstance = container.get(PostsService);
@@ -223,11 +282,11 @@ router.post("/removeLabel", isAuth, async (req, res) => {
     return res.status(200).send(payload);
   } catch (err) {
     logger.error(
-      `POST api/posts/removeLabel: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
+      `${POST} - ${PREFIX}${REMOVE_LABEL_ROUTE}: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
     );
     const { httpStatusCode, errors } = err;
     return res.status(httpStatusCode || 500).send(errors || err);
   }
 });
 
-module.exports = (app) => app.use("/auth", router);
+module.exports = (app) => app.use("/posts", router);

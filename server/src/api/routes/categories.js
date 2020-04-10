@@ -1,10 +1,34 @@
 const container = require("typedi").Container;
 const express = require("express");
 
+const { celebrate, Joi } = require("celebrate");
 const CategoriesService = require("../../services/categories");
 const { isAuth } = require("../middlewares");
 
 const router = express.Router();
+
+const POST = "POST";
+const GET = "GET";
+const DELETE = "DELETE";
+const PREFIX = "api/categories";
+
+const CREATE_ROUTE = "/create";
+const ADD_LABEL_ROUTE = "/addLabel";
+const GET_LABELS_ROUTE = "/getLabels";
+const GET_CATEGORIES_ROUTE = "/getCategories";
+const DELETE_LABEL_ROUTE = "/deleteLabel";
+const DELETE_CATEGORY_ROUTE = "/deleteCategory";
+const EDIT_LABEL_ROUTE = "/editLabel";
+const EDIT_CATEGORY_ROUTE = "/editCategory";
+
+const FULL_CREATE_ROUTE = `${POST} - ${PREFIX}${CREATE_ROUTE}`;
+const FULL_ADD_LABEL_ROUTE = `${POST} - ${PREFIX}${ADD_LABEL_ROUTE}`;
+const FULL_GET_CATEGORIES_ROUTE = `${GET} - ${PREFIX}${GET_CATEGORIES_ROUTE}`;
+const FULL_GET_LABELS_ROUTE = `${GET} - ${PREFIX}${GET_LABELS_ROUTE}`;
+const FULL_EDIT_CATEGORY_ROUTE = `${POST} - ${PREFIX}${EDIT_CATEGORY_ROUTE}`;
+const FULL_EDIT_LABEL_ROUTE = `${POST} - ${PREFIX}${EDIT_LABEL_ROUTE}`;
+const FULL_DELETE_CATEGORY_ROUTE = `${DELETE} - ${PREFIX}${DELETE_CATEGORY_ROUTE}`;
+const FULL_DELETE_LABEL_ROUTE = `${DELETE} - ${PREFIX}${DELETE_LABEL_ROUTE}`;
 
 /**
  * @route  POST api/categories/create
@@ -12,7 +36,7 @@ const router = express.Router();
  * @access Private
  * @returns {object}
  * {
- *   msg: string,
+ *   errorMessage: string,
  *   category: {
  *     owner: ObjectId,
  *     name: string
@@ -23,9 +47,15 @@ const router = express.Router();
  * @param   {ObjectId} userId User who created the Category (from middleware)
  * @param   {string} name
  */
-router.post("/create", isAuth, async (req, res) => {
-  const logger = container.get("logger");
+router.post(CREATE_ROUTE, isAuth, celebrate({
+  userId: Joi.string().messages({ "string.base": `${FULL_CREATE_ROUTE}: User ID must be of type string` })
+    .required().messages({ "string.empty": `${FULL_CREATE_ROUTE}: User ID is missing` }),
 
+  body: Joi.object({
+    name: Joi.string().messages({ "string.base": `${FULL_CREATE_ROUTE}: Category name must be of type string` })
+      .required().messages({ "string.empty": `${FULL_CREATE_ROUTE}: Category name is required` })
+  })
+}), async (req, res, next) => {
   const { userId } = req;
   const { name } = req.body;
 
@@ -37,11 +67,8 @@ router.post("/create", isAuth, async (req, res) => {
     );
     return res.status(201).send(payload);
   } catch (err) {
-    logger.error(
-      `POST api/categories/create: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
-    );
-    const { httpStatusCode, errors } = err;
-    return res.status(httpStatusCode || 500).send(errors || err);
+    err.message = `${FULL_CREATE_ROUTE}: ${err.name}`;
+    return next(err);
   }
 });
 
@@ -51,7 +78,7 @@ router.post("/create", isAuth, async (req, res) => {
  * @access Private
  * @returns {object}
  * {
- *   msg: string,
+ *   errorMessage: string,
  *   label: {
  *     owner: ObjectId,
  *     category: ObjectId,
@@ -65,9 +92,24 @@ router.post("/create", isAuth, async (req, res) => {
  * @param   {ObjectId} categoryId ID of this Category
  * @param   {object} label { name: string, color: string }
  */
-router.post("/addLabel", isAuth, async (req, res) => {
-  const logger = container.get("logger");
+router.post(ADD_LABEL_ROUTE, isAuth, celebrate({
+  userId: Joi.string().messages({ "string.base": `${FULL_ADD_LABEL_ROUTE}: User ID must be of type string` })
+    .required().messages({ "string.empty": `${FULL_ADD_LABEL_ROUTE}: User ID is missing` }),
 
+  body: Joi.object({
+    categoryId: Joi.string().messages({ "string.base": `${FULL_ADD_LABEL_ROUTE}: Category ID must be of type string` })
+      .required().messages({ "string.empty": `${FULL_ADD_LABEL_ROUTE}: Category ID is missing` }),
+
+    label: Joi.object({
+      name: Joi.string().messages({ "string.base": `${FULL_ADD_LABEL_ROUTE}: Label name must be of type string` })
+        .required().messages({ "string.empty": `${FULL_ADD_LABEL_ROUTE}: Label name is required` }),
+      color: Joi.string().messages({ "string.base": `${FULL_ADD_LABEL_ROUTE}: Label color must be of type string` })
+    })
+      .messages({ "object.base": `${FULL_ADD_LABEL_ROUTE}: Label information must be an object` })
+      .required()
+      .messages({ "object.empty": `${FULL_ADD_LABEL_ROUTE}: Label information is required` })
+  })
+}), async (req, res, next) => {
   const { userId } = req;
   const { categoryId, label } = req.body;
 
@@ -80,11 +122,8 @@ router.post("/addLabel", isAuth, async (req, res) => {
     );
     return res.status(201).send(payload);
   } catch (err) {
-    logger.error(
-      `POST api/categories/addLabel: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
-    );
-    const { httpStatusCode, errors } = err;
-    return res.status(httpStatusCode || 500).send(errors || err);
+    err.message = `${FULL_ADD_LABEL_ROUTE}: ${err.name}`;
+    return next(err);
   }
 });
 
@@ -94,7 +133,7 @@ router.post("/addLabel", isAuth, async (req, res) => {
  * @access Private
  * @returns {object}
  * {
- *   msg: string,
+ *   errorMessage: string,
  *   categories: [{
  *     owner: ObjectId,
  *     name: string
@@ -103,9 +142,10 @@ router.post("/addLabel", isAuth, async (req, res) => {
  *
  * @param   {ObjectId} userId User who owns the Categories (from middleware)
  */
-router.get("/getCategories", isAuth, async (req, res) => {
-  const logger = container.get("logger");
-
+router.get(GET_CATEGORIES_ROUTE, isAuth, celebrate({
+  userId: Joi.string().messages({ "string.base": `${FULL_GET_CATEGORIES_ROUTE}: User ID must be of type string` })
+    .required().messages({ "string.empty": `${FULL_GET_CATEGORIES_ROUTE}: User ID is missing` })
+}), async (req, res, next) => {
   const { userId } = req;
 
   try {
@@ -113,11 +153,8 @@ router.get("/getCategories", isAuth, async (req, res) => {
     const payload = await categoriesServiceInstance.get(userId);
     return res.status(200).send(payload);
   } catch (err) {
-    logger.error(
-      `GET api/categories/getCategories: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
-    );
-    const { httpStatusCode, errors } = err;
-    return res.status(httpStatusCode || 500).send(errors || err);
+    err.message = `${FULL_GET_CATEGORIES_ROUTE}: ${err.name}`;
+    return next(err);
   }
 });
 
@@ -127,7 +164,7 @@ router.get("/getCategories", isAuth, async (req, res) => {
  * @access Private
  * @returns {object}
  * {
- *   msg: string,
+ *   errorMessage: string,
  *   labels: [{
  *     owner: ObjectId,
  *     category: ObjectId,
@@ -140,9 +177,15 @@ router.get("/getCategories", isAuth, async (req, res) => {
  * @param   {ObjectId} userId User who owns the Categories (from middleware)
  * @param   {ObjectId} categoryId The Category in question
  */
-router.get("/getLabels", isAuth, async (req, res) => {
-  const logger = container.get("logger");
+router.get(GET_LABELS_ROUTE, isAuth, celebrate({
+  userId: Joi.string().messages({ "string.base": `${FULL_GET_LABELS_ROUTE}: User ID must be of type string` })
+    .required().messages({ "string.empty": `${FULL_GET_LABELS_ROUTE}: User ID is missing` }),
 
+  body: Joi.object({
+    categoryId: Joi.string().messages({ "string.base": `${FULL_GET_LABELS_ROUTE}: Category ID must be of type string` })
+      .required().messages({ "string.empty": `${FULL_GET_LABELS_ROUTE}: Category ID is missing` })
+  })
+}), async (req, res, next) => {
   const { userId } = req;
   const { categoryId } = req.query;
 
@@ -151,11 +194,8 @@ router.get("/getLabels", isAuth, async (req, res) => {
     const payload = await categoriesServiceInstance.getLabels(userId, categoryId);
     return res.status(200).send(payload);
   } catch (err) {
-    logger.error(
-      `GET api/categories/getLabels: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
-    );
-    const { httpStatusCode, errors } = err;
-    return res.status(httpStatusCode || 500).send(errors || err);
+    err.message = `${FULL_GET_LABELS_ROUTE}: ${err.name}`;
+    return next(err);
   }
 });
 
@@ -163,14 +203,26 @@ router.get("/getLabels", isAuth, async (req, res) => {
  * @route  POST api/categories/editCategory
  * @desc   Edit a Category
  * @access Private
- * @returns {object} { msg: string }
+ * @returns {object} { errorMessage: string }
  * @param   {ObjectId} userId User who owns the Categories (from middleware)
  * @param   {ObjectId} categoryId ID of this Category
  * @param   {object} categoryUpdates { name: string }
  */
-router.post("/editCategory", isAuth, async (req, res) => {
-  const logger = container.get("logger");
+router.post(EDIT_CATEGORY_ROUTE, isAuth, celebrate({
+  userId: Joi.string().messages({ "string.base": `${FULL_EDIT_CATEGORY_ROUTE}: User ID must be of type string` })
+    .required().messages({ "string.empty": `${FULL_EDIT_CATEGORY_ROUTE}: User ID is missing` }),
 
+  body: Joi.object({
+    categoryId: Joi.string().messages({ "string.base": `${FULL_EDIT_CATEGORY_ROUTE}: Category ID must be of type string` })
+      .required().messages({ "string.empty": `${FULL_EDIT_CATEGORY_ROUTE}: Category ID is missing` }),
+    categoryUpdates: Joi.object({
+      name: Joi.string().messages({ "string.base": `${FULL_EDIT_CATEGORY_ROUTE}: Category name must be of type string` })
+    })
+      .messages({ "object.base": `${FULL_EDIT_CATEGORY_ROUTE}: Category updates must be an object` })
+      .required()
+      .messages({ "object.empty": `${FULL_EDIT_CATEGORY_ROUTE}: Category updates are required` })
+  })
+}), async (req, res, next) => {
   const { userId } = req;
   const { categoryId, categoryUpdates } = req.body;
 
@@ -183,11 +235,8 @@ router.post("/editCategory", isAuth, async (req, res) => {
     );
     return res.status(200).send(payload);
   } catch (err) {
-    logger.error(
-      `POST api/categories/editCategory: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
-    );
-    const { httpStatusCode, errors } = err;
-    return res.status(httpStatusCode || 500).send(errors || err);
+    err.message = `${FULL_EDIT_CATEGORY_ROUTE}: ${err.name}`;
+    return next(err);
   }
 });
 
@@ -195,14 +244,28 @@ router.post("/editCategory", isAuth, async (req, res) => {
  * @route  POST api/categories/editLabel
  * @desc   Edit a Label
  * @access Private
- * @returns {object} { msg: string }
+ * @returns {object} { errorMessage: string }
  * @param   {ObjectId} userId User who owns the Categories (from middleware)
  * @param   {ObjectId} labelId ID of the Label in question
  * @param   {object} labelUpdates { name: string, color: string }
  */
-router.post("/editLabel", isAuth, async (req, res) => {
-  const logger = container.get("logger");
+router.post(EDIT_LABEL_ROUTE, isAuth, celebrate({
+  userId: Joi.string().messages({ "string.base": `${FULL_EDIT_LABEL_ROUTE}: User ID must be of type string` })
+    .required().messages({ "string.empty": `${FULL_EDIT_LABEL_ROUTE}: User ID is missing` }),
 
+  body: Joi.object({
+    labelId: Joi.string().messages({ "string.base": `${FULL_EDIT_LABEL_ROUTE}: Label ID must be of type string` })
+      .required().messages({ "string.empty": `${FULL_EDIT_LABEL_ROUTE}: Label ID is missing` }),
+
+    labelUpdates: Joi.object({
+      name: Joi.string().messages({ "string.base": `${FULL_EDIT_LABEL_ROUTE}: Label name must be of type string` }),
+      color: Joi.string().messages({ "string.base": `${FULL_EDIT_LABEL_ROUTE}: Label color must be of type string` })
+    })
+      .messages({ "object.base": `${FULL_EDIT_LABEL_ROUTE}: Label updates must be an object` })
+      .required()
+      .messages({ "object.empty": `${FULL_EDIT_LABEL_ROUTE}: Label updates are required` })
+  })
+}), async (req, res, next) => {
   const { userId } = req;
   const { labelId, labelUpdates } = req.body;
 
@@ -215,11 +278,8 @@ router.post("/editLabel", isAuth, async (req, res) => {
     );
     return res.status(200).send(payload);
   } catch (err) {
-    logger.error(
-      `POST api/categories/editLabel: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
-    );
-    const { httpStatusCode, errors } = err;
-    return res.status(httpStatusCode || 500).send(errors || err);
+    err.message = `${FULL_EDIT_LABEL_ROUTE}: ${err.name}`;
+    return next(err);
   }
 });
 
@@ -227,26 +287,29 @@ router.post("/editLabel", isAuth, async (req, res) => {
  * @route  DELETE api/categories/deleteCategory
  * @desc   Delete a Category
  * @access Private
- * @returns {object} { msg: string }
+ * @returns {object} { errorMessage: string }
  * @param   {ObjectId} userId User who owns the Category (from middleware)
  * @param   {ObjectId} categoryId
  */
-router.delete("/deleteCategory", isAuth, async (req, res) => {
-  const logger = container.get("logger");
+router.delete(DELETE_CATEGORY_ROUTE, isAuth, celebrate({
+  userId: Joi.string().messages({ "string.base": `${FULL_DELETE_CATEGORY_ROUTE}: User ID must be of type string` })
+    .required().messages({ "string.empty": `${FULL_DELETE_CATEGORY_ROUTE}: User ID is missing` }),
 
+  body: Joi.object({
+    categoryId: Joi.string().messages({ "string.base": `${FULL_DELETE_CATEGORY_ROUTE}: Category ID must be of type string` })
+      .required().messages({ "string.empty": `${FULL_DELETE_CATEGORY_ROUTE}: Category ID is missing` })
+  })
+}), async (req, res, next) => {
   const { userId } = req;
-  const { categoryId } = req.params;
+  const { categoryId } = req.query;
 
   try {
     const categoriesServiceInstance = container.get(CategoriesService);
     const payload = await categoriesServiceInstance.deleteCategory(userId, categoryId);
     return res.status(200).send(payload);
   } catch (err) {
-    logger.error(
-      `DELETE api/categories/deleteCategory: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
-    );
-    const { httpStatusCode, errors } = err;
-    return res.status(httpStatusCode || 500).send(errors || err);
+    err.message = `${FULL_DELETE_CATEGORY_ROUTE}: ${err.name}`;
+    return next(err);
   }
 });
 
@@ -254,15 +317,21 @@ router.delete("/deleteCategory", isAuth, async (req, res) => {
  * @route  DELETE api/categories/deleteLabel
  * @desc   Delete a Label
  * @access Private
- * @returns {object} { msg: string }
+ * @returns {object} { errorMessage: string }
  * @param   {ObjectId} userId User who owns the Categories (from middleware)
  * @param   {ObjectId} labelId ID of the Label in question
  */
-router.delete("/deleteLabel", isAuth, async (req, res) => {
-  const logger = container.get("logger");
+router.delete(DELETE_LABEL_ROUTE, isAuth, celebrate({
+  userId: Joi.string().messages({ "string.base": `${FULL_DELETE_LABEL_ROUTE}: User ID must be of type string` })
+    .required().messages({ "string.empty": `${FULL_DELETE_LABEL_ROUTE}: User ID is missing` }),
 
+  body: Joi.object({
+    labelId: Joi.string().messages({ "string.base": `${FULL_DELETE_LABEL_ROUTE}: Label ID must be of type string` })
+      .required().messages({ "string.empty": `${FULL_DELETE_LABEL_ROUTE}: Label ID is missing` })
+  })
+}), async (req, res, next) => {
   const { userId } = req;
-  const { labelId } = req.params;
+  const { labelId } = req.query;
 
   try {
     const categoriesServiceInstance = container.get(CategoriesService);
@@ -272,12 +341,19 @@ router.delete("/deleteLabel", isAuth, async (req, res) => {
     );
     return res.status(200).send(payload);
   } catch (err) {
-    logger.error(
-      `DELETE api/categories/deleteLabel: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
-    );
-    const { httpStatusCode, errors } = err;
-    return res.status(httpStatusCode || 500).send(errors || err);
+    err.message = `${FULL_DELETE_LABEL_ROUTE}: ${err.name}`;
+    return next(err);
   }
 });
 
-module.exports = (app) => app.use("/auth", router);
+module.exports = (app) => app.use("/categories", router);
+module.exports = {
+  FULL_CREATE_ROUTE,
+  FULL_ADD_LABEL_ROUTE,
+  FULL_GET_CATEGORIES_ROUTE,
+  FULL_GET_LABELS_ROUTE,
+  FULL_EDIT_CATEGORY_ROUTE,
+  FULL_EDIT_LABEL_ROUTE,
+  FULL_DELETE_CATEGORY_ROUTE,
+  FULL_DELETE_LABEL_ROUTE
+};

@@ -8,10 +8,10 @@ const isAuth = (req, res, next) => {
   const token = req.header("x-auth-token"); // Grab token from header
 
   // Check if token exists
-  if (!token) {
+  if (!token || typeof token !== "string") {
     return res.status(401).json({
       success: false,
-      msg: "Token not found. Authorization denied."
+      errorMessage: "Token not found. Authorization denied."
     });
   }
 
@@ -21,7 +21,7 @@ const isAuth = (req, res, next) => {
       if (err) {
         return res
           .status(401)
-          .json({ success: false, msg: "Invalid token" });
+          .json({ success: false, errorMessage: "Invalid token" });
       }
 
       req.userId = decoded.userId;
