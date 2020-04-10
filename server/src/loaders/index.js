@@ -14,9 +14,9 @@ module.exports = async (app) => {
     model: UserModel
   };
 
-  await dependencyInjectorLoader({ models: [userModel] });
+  dependencyInjectorLoader({ models: [userModel] });
   logger.info("Dependency injector loaded");
 
-  await expressLoader(app);
+  expressLoader(app);
   logger.info("Express loaded");
 };
