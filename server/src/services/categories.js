@@ -10,7 +10,7 @@ class CategoriesService {
    * @desc    Create a new Category
    * @returns {object}
    * {
-   *   errorMessage: string,
+   *   message: string,
    *   category: {
    *     owner: ObjectId,
    *     name: string
@@ -30,7 +30,7 @@ class CategoriesService {
     });
 
     const payload = {
-      errorMessage: "Category created",
+      message: "Category created",
       category: categoryRecord
     };
     return payload;
@@ -40,7 +40,7 @@ class CategoriesService {
    * @desc    Add a Label to a Category
    * @returns {object}
    * {
-   *   errorMessage: string,
+   *   message: string,
    *   label: {
    *     owner: ObjectId,
    *     category: ObjectId,
@@ -71,7 +71,7 @@ class CategoriesService {
     });
 
     const payload = {
-      errorMessage: `Label ${labelRecord.name} added`,
+      message: `Label ${labelRecord.name} added`,
       label: labelRecord
     };
     return payload;
@@ -81,7 +81,7 @@ class CategoriesService {
    * @desc    Get all Categories by User
    * @returns {object}
    * {
-   *   errorMessage: string,
+   *   message: string,
    *   categories: [{
    *     owner: ObjectId,
    *     name: string
@@ -96,7 +96,7 @@ class CategoriesService {
     const categoryRecords = await categoryModel.find({ owner: userId });
 
     const payload = {
-      errorMessage: "Categories retrieved",
+      message: "Categories retrieved",
       categories: categoryRecords
     };
     return payload;
@@ -106,7 +106,7 @@ class CategoriesService {
    * @desc    Get all Labels of a Category
    * @returns {object}
    * {
-   *   errorMessage: string,
+   *   message: string,
    *   labels: [{
    *     owner: ObjectId,
    *     category: ObjectId,
@@ -123,9 +123,8 @@ class CategoriesService {
     const { labelModel } = this;
 
     const labelRecords = await labelModel.find({ owner: userId, category: categoryId });
-
     const payload = {
-      errorMessage: "Labels retrieved",
+      message: "Labels retrieved",
       labels: labelRecords
     };
     return payload;
@@ -133,7 +132,7 @@ class CategoriesService {
 
   /**
    * @desc    Edit a Category
-   * @returns {object} { errorMessage: string }
+   * @returns {object} { message: string }
    * @param   {ObjectId} userId User who owns the Categories
    * @param   {ObjectId} categoryId ID of this Category
    * @param   {object} categoryUpdates { name: string }
@@ -153,14 +152,14 @@ class CategoriesService {
     }
 
     const payload = {
-      errorMessage: "Category updated"
+      message: "Category updated"
     };
     return payload;
   }
 
   /**
    * @desc    Edit a Label
-   * @returns {object} { errorMessage: string }
+   * @returns {object} { message: string }
    * @param   {ObjectId} userId User who owns the Categories
    * @param   {ObjectId} labelId ID of the Label in question
    * @param   {object} labelUpdates { name: string, color: string }
@@ -180,14 +179,14 @@ class CategoriesService {
     }
 
     const payload = {
-      errorMessage: "Label updated"
+      message: "Label updated"
     };
     return payload;
   }
 
   /**
    * @desc    Delete a Category
-   * @returns {object} { errorMessage: string }
+   * @returns {object} { message: string }
    * @param   {ObjectId} userId User who owns the Category
    * @param   {ObjectId} categoryId
    */
@@ -197,14 +196,14 @@ class CategoriesService {
     await categoryModel.findOneAndDelete({ _id: categoryId, owner: userId });
 
     const payload = {
-      errorMessage: "Category deleted"
+      message: "Category deleted"
     };
     return payload;
   }
 
   /**
    * @desc    Delete a Label
-   * @returns {object} { errorMessage: string }
+   * @returns {object} { message: string }
    * @param   {ObjectId} userId User who owns the Categories
    * @param   {ObjectId} labelId ID of the Label in question
    */
@@ -214,7 +213,7 @@ class CategoriesService {
     await labelModel.findOneAndDelete({ _id: labelId, owner: userId });
 
     const payload = {
-      errorMessage: "Label deleted"
+      message: "Label deleted"
     };
     return payload;
   }

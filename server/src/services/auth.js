@@ -10,7 +10,7 @@ class AuthService {
   /**
    * @desc    Register a new User
    * @access  Public
-   * @returns {object} { errorMessage: string }
+   * @returns {object} { message: string }
    * @param   {string} username
    * @param   {string} password
    */
@@ -23,7 +23,7 @@ class AuthService {
     });
 
     const payload = {
-      errorMessage: "Register success"
+      message: "Register success"
     };
     return payload;
   }
@@ -31,7 +31,7 @@ class AuthService {
   /**
    * @desc    Login User
    * @access  Public
-   * @returns {object} { errorMessage: string, token: string }
+   * @returns {object} { message: string, token: string }
    * @param   {string} username
    * @param   {string} password
    */
@@ -75,7 +75,7 @@ class AuthService {
     );
 
     const payload = {
-      errorMessage: "Login success",
+      message: "Login success",
       token
     };
     return payload;

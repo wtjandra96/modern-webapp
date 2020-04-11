@@ -9,7 +9,7 @@ class PostsService {
    * @desc    Create a new Post
    * @returns {object}
    * {
-   *   errorMessage: string,
+   *   message: string,
    *   post: {
    *     owner: ObjectId,
    *     category: ObjectId,
@@ -40,7 +40,7 @@ class PostsService {
     });
 
     const payload = {
-      errorMessage: "Post created",
+      message: "Post created",
       post: postRecord
     };
     return payload;
@@ -50,7 +50,7 @@ class PostsService {
    * @desc    Get Posts
    * @returns {object}
    * {
-   *   errorMessage: string,
+   *   message: string,
    *   posts: [{
    *     owner: ObjectId,
    *     category: ObjectId,
@@ -84,7 +84,7 @@ class PostsService {
     const postRecords = await postModel.find(conditions);
 
     const payload = {
-      errorMessage: "Posts retrieved",
+      message: "Posts retrieved",
       posts: postRecords
     };
     return payload;
@@ -92,7 +92,7 @@ class PostsService {
 
   /**
    * @desc    Edit a post
-   * @returns {object} { errorMessage: string }
+   * @returns {object} { message: string }
    * @param   {ObjectId} userId User who owns the Posts
    * @param   {ObjectId} postId The ID of the Post to be edited
    * @param   {string} title
@@ -114,14 +114,14 @@ class PostsService {
       ]);
     }
     const payload = {
-      errorMessage: "Post updated"
+      message: "Post updated"
     };
     return payload;
   }
 
   /**
    * @desc    Delete a post
-   * @returns {object} { errorMessage: string }
+   * @returns {object} { message: string }
    * @param   {ObjectId} userId User who owns the Posts
    * @param   {ObjectId} postId The Post in question
    */
@@ -131,14 +131,14 @@ class PostsService {
     await postModel.findOneAndDelete({ _id: postId, owner: userId });
 
     const payload = {
-      errorMessage: "Post deleted"
+      message: "Post deleted"
     };
     return payload;
   }
 
   /**
    * @desc    Add Label to a Post
-   * @returns {object} { errorMessage: string }
+   * @returns {object} { message: string }
    * @param   {ObjectId} userId User who owns the Posts
    * @param   {ObjectId} postId The Post in question
    * @param   {ObjectId} labelId ID of Label to be added to Post
@@ -158,14 +158,14 @@ class PostsService {
     }
 
     const payload = {
-      errorMessage: "Post updated"
+      message: "Post updated"
     };
     return payload;
   }
 
   /**
    * @desc    Remove Label from a Post
-   * @returns {object} { errorMessage: string }
+   * @returns {object} { message: string }
    * @param   {ObjectId} userId User who owns the Posts
    * @param   {ObjectId} postId The Post in questio
    * @param   {ObjectId} labelId ID of Label to be removed from Post
@@ -185,7 +185,7 @@ class PostsService {
     }
 
     const payload = {
-      errorMessage: "Post updated"
+      message: "Post updated"
     };
     return payload;
   }
