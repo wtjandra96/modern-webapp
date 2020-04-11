@@ -18,6 +18,14 @@ module.exports = (app) => {
   // Load API routes
   app.use(config.api.prefix, routes());
 
+  // If route not found (404)
+  app.use((req, res, next) => {
+    const err = new Error("Not found");
+    err.httpStatusCode = 404;
+    err.errors = [{ errorMessage: "404 Not Found" }];
+    next(err);
+  });
+
   // Error handler
   // eslint-disable-next-line no-unused-vars
   app.use((err, req, res, next) => {
