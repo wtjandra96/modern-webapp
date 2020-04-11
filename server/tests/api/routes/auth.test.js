@@ -57,6 +57,17 @@ describe("Testing auth route", () => {
         expect(errors).toBeDefined();
         expect(errors.length).toStrictEqual(1);
       });
+
+      test("null", async () => {
+        expect.assertions(2);
+        const payload = await request(app)
+          .post(REGISTER_ROUTE)
+          .send({ username: null, password: null });
+
+        const { errors } = payload.body;
+        expect(errors).toBeDefined();
+        expect(errors.length).toStrictEqual(2);
+      });
     });
 
     it("Should return status code 400 if credentials are incorrect", async () => {
@@ -92,6 +103,17 @@ describe("Testing auth route", () => {
       test("Empty string", async () => {
         expect.assertions(2);
         const payload = await request(app).post(REGISTER_ROUTE).send({ username: "", password: "" });
+
+        const { errors } = payload.body;
+        expect(errors).toBeDefined();
+        expect(errors.length).toStrictEqual(2);
+      });
+
+      test("null", async () => {
+        expect.assertions(2);
+        const payload = await request(app)
+          .post(REGISTER_ROUTE)
+          .send({ username: null, password: null });
 
         const { errors } = payload.body;
         expect(errors).toBeDefined();
