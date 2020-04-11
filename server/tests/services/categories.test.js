@@ -51,9 +51,9 @@ describe("Testing CategoriesService", () => {
         testUser1.id,
         category1Name
       );
-      const { errorMessage, category } = payload;
+      const { message, category } = payload;
 
-      expect(errorMessage).toBeDefined();
+      expect(message).toBeDefined();
       expect(category.name).toStrictEqual(category1Name);
       expect(category.owner.toString()).toStrictEqual(testUser1.id);
 
@@ -74,9 +74,9 @@ describe("Testing CategoriesService", () => {
         testUser1.id,
         category2Name
       );
-      const { errorMessage, category } = payload;
+      const { message, category } = payload;
 
-      expect(errorMessage).toBeDefined();
+      expect(message).toBeDefined();
       expect(category.name.toString()).toStrictEqual(category2Name);
       expect(category.owner.toString()).toStrictEqual(testUser1.id);
     });
@@ -102,9 +102,9 @@ describe("Testing CategoriesService", () => {
         testUser2.id,
         category1Name
       );
-      const { errorMessage, category } = payload;
+      const { message, category } = payload;
 
-      expect(errorMessage).toBeDefined();
+      expect(message).toBeDefined();
       expect(category.name).toStrictEqual(category1Name);
       expect(category.owner.toString()).toStrictEqual(testUser2.id);
     });
@@ -116,9 +116,9 @@ describe("Testing CategoriesService", () => {
 
       const CategoriesServiceInstance = container.get(CategoriesService);
       const payload = await CategoriesServiceInstance.getCategories(testUser1.id);
-      const { errorMessage, categories } = payload;
+      const { message, categories } = payload;
 
-      expect(errorMessage).toBeDefined();
+      expect(message).toBeDefined();
       expect(categories.length).toStrictEqual(2);
       for (let i = 0; i < categories.length; i += 1) {
         const category = categories[i];
@@ -138,9 +138,9 @@ describe("Testing CategoriesService", () => {
 
       const CategoriesServiceInstance = container.get(CategoriesService);
       const payload = await CategoriesServiceInstance.getLabels(testUser1.id, testCategory.id);
-      const { errorMessage, labels } = payload;
+      const { message, labels } = payload;
 
-      expect(errorMessage).toBeDefined();
+      expect(message).toBeDefined();
       expect(labels.length).toStrictEqual(6);
       for (let i = 0; i < labels.length; i += 1) {
         const label = labels[i];
@@ -149,14 +149,14 @@ describe("Testing CategoriesService", () => {
       }
     });
 
-    it("Should not get any Label from a Category if the User does not own the Category", async () => {
+    it("Should not get any Label from a Category if the User does not own the Category (no errors thrown)", async () => {
       expect.assertions(2);
 
       const CategoriesServiceInstance = container.get(CategoriesService);
       const payload = await CategoriesServiceInstance.getLabels(testUser2.id, testCategory.id);
-      const { errorMessage, labels } = payload;
+      const { message, labels } = payload;
 
-      expect(errorMessage).toBeDefined();
+      expect(message).toBeDefined();
       expect(labels.length).toStrictEqual(0);
     });
   });
@@ -214,9 +214,9 @@ describe("Testing CategoriesService", () => {
       const payload = await CategoriesServiceInstance.addLabel(
         testUser1.id, testCategory.id, newLabel
       );
-      const { errorMessage, label } = payload;
+      const { message, label } = payload;
 
-      expect(errorMessage).toBeDefined();
+      expect(message).toBeDefined();
       expect(label.name).toStrictEqual(newLabel.name);
       expect(label.color).toStrictEqual(newLabel.color);
       expect(label.category.toString()).toStrictEqual(testCategory.id);
@@ -278,8 +278,8 @@ describe("Testing CategoriesService", () => {
       const payload = await CategoriesServiceInstance.editLabel(
         testUser1.id, testLabel.id, labelUpdates
       );
-      const { errorMessage } = payload;
-      expect(errorMessage).toBeDefined();
+      const { message } = payload;
+      expect(message).toBeDefined();
 
       const label = await LabelModel.findById(testLabel.id);
       expect(label.name).toStrictEqual(labelUpdates.name);
@@ -348,8 +348,8 @@ describe("Testing CategoriesService", () => {
       const payload = await CategoriesServiceInstance.editCategory(
         testUser1.id, testCategory.id, categoryUpdates
       );
-      const { errorMessage } = payload;
-      expect(errorMessage).toBeDefined();
+      const { message } = payload;
+      expect(message).toBeDefined();
 
       const category = await CategoryModel.findById(testCategory.id);
       expect(category.name).toStrictEqual(categoryUpdates.name);
@@ -369,9 +369,9 @@ describe("Testing CategoriesService", () => {
       const CategoriesServiceInstance = container.get(CategoriesService);
 
       const payload = await CategoriesServiceInstance.deleteCategory(testUser2.id, testCategory.id);
-      const { errorMessage } = payload;
+      const { message } = payload;
 
-      expect(errorMessage).toBeDefined();
+      expect(message).toBeDefined();
     });
 
     it("Should allow deleting Category", async () => {
@@ -380,9 +380,9 @@ describe("Testing CategoriesService", () => {
       const CategoriesServiceInstance = container.get(CategoriesService);
 
       const payload = await CategoriesServiceInstance.deleteCategory(testUser1.id, testCategory.id);
-      const { errorMessage } = payload;
+      const { message } = payload;
 
-      expect(errorMessage).toBeDefined();
+      expect(message).toBeDefined();
     });
   });
 });

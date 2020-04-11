@@ -29,8 +29,8 @@ describe("Testing AuthService", () => {
         "test1",
         "password1"
       );
-      const { errorMessage } = payload;
-      expect(errorMessage).toBeDefined();
+      const { message } = payload;
+      expect(message).toBeDefined();
     });
 
     it("Should not allow duplicate usernames", async () => {
@@ -79,8 +79,8 @@ describe("Testing AuthService", () => {
         "test1",
         "password1"
       );
-      const { errorMessage, token } = payload;
-      expect(errorMessage).toBeDefined();
+      const { message, token } = payload;
+      expect(message).toBeDefined();
       expect(token).toBeDefined();
     });
   });
