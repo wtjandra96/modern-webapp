@@ -46,7 +46,7 @@ describe("Testing auth route", () => {
 
         const { errors } = payload.body;
         expect(errors).toBeDefined();
-        expect(errors.length).toStrictEqual(1);
+        expect(errors.length).toStrictEqual(2);
       });
 
       test("Empty string", async () => {
@@ -55,7 +55,7 @@ describe("Testing auth route", () => {
 
         const { errors } = payload.body;
         expect(errors).toBeDefined();
-        expect(errors.length).toStrictEqual(1);
+        expect(errors.length).toStrictEqual(2);
       });
 
       test("null", async () => {

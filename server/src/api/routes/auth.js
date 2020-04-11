@@ -19,7 +19,7 @@ const FULL_LOGIN_ROUTE = `${POST} ${PREFIX}${LOGIN_ROUTE}`;
  * @route  POST api/auth/register
  * @desc   Register a new User
  * @access Public
- * @returns {object} { errorMessage: string }
+ * @returns {object} { message: string }
  * @param   {string} username
  * @param   {string} password
  */
@@ -77,7 +77,7 @@ router.post("/register", celebrate({
  * @route  POST api/auth/login
  * @desc   Login User
  * @access Public
- * @returns {object} { errorMessage: string, token: string }
+ * @returns {object} { message: string, token: string }
  * @param   {string} username
  * @param   {string} password
  */
@@ -98,7 +98,7 @@ router.post("/login", celebrate({
       .required()
       .messages({ "string.empty": `${FULL_LOGIN_ROUTE}: Password is required` })
   })
-}), async (req, res, next) => {
+}, { abortEarly: false }), async (req, res, next) => {
   const { username, password } = req.body;
   try {
     const authServiceInstance = container.get(AuthService);
