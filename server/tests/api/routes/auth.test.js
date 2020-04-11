@@ -61,7 +61,7 @@ describe("Testing auth route", () => {
       test("null", async () => {
         expect.assertions(2);
         const payload = await request(app)
-          .post(REGISTER_ROUTE)
+          .post(LOGIN_ROUTE)
           .send({ username: null, password: null });
 
         const { errors } = payload.body;
