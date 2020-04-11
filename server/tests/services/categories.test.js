@@ -374,8 +374,8 @@ describe("Testing CategoriesService", () => {
       expect(message).toBeDefined();
     });
 
-    it("Should allow deleting Category", async () => {
-      expect.assertions(1);
+    it("Should allow deleting Category and automatically deletes all Labels related", async () => {
+      expect.assertions(3);
 
       const CategoriesServiceInstance = container.get(CategoriesService);
 
@@ -383,6 +383,12 @@ describe("Testing CategoriesService", () => {
       const { message } = payload;
 
       expect(message).toBeDefined();
+
+      const category = await CategoryModel.findById(testCategory.id);
+      expect(category).toBeNull();
+
+      const labels = await LabelModel.find({ category: testCategory.id });
+      expect(labels.length).toStrictEqual(0);
     });
   });
 });

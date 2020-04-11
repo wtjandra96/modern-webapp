@@ -194,9 +194,9 @@ class CategoriesService {
     const { categoryModel } = this;
 
     await categoryModel.findOneAndDelete({ _id: categoryId, owner: userId });
-
+    await this.labelModel.deleteMany({ category: categoryId, owner: userId });
     const payload = {
-      message: "Category deleted"
+      message: "Category and its Labels are deleted"
     };
     return payload;
   }
