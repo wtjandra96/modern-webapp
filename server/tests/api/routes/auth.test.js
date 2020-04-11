@@ -1,17 +1,14 @@
 const container = require("typedi").Container;
 const request = require("supertest");
 
-const expressLoader = require("../../../src/loaders/express");
 const UserModel = require("../../../src/models/User");
-const logger = require("../../logger");
 
 const testdb = require("../../testdb");
+
 const { getApp } = require("../../../src/app");
+const expressLoader = require("../../../src/loaders/express");
 
-const { FULL_LOGIN_ROUTE, FULL_REGISTER_ROUTE } = require("../../../src/api/routes/auth");
-
-const REGISTER_ROUTE = `/${FULL_REGISTER_ROUTE.split(" ")[1]}`;
-const LOGIN_ROUTE = `/${FULL_LOGIN_ROUTE.split(" ")[1]}`;
+const { LOGIN_ROUTE, REGISTER_ROUTE } = require("../../../src/api/routes/auth");
 
 const app = getApp();
 
@@ -29,16 +26,15 @@ describe("Testing auth route", () => {
   beforeAll(async () => {
     await testdb.connect();
     await UserModel.create(testUser);
-    expressLoader(app);
     container.set("UserModel", UserModel);
-    container.set("logger", logger);
+    expressLoader(app);
   });
 
   afterAll(async () => {
     await testdb.disconnect();
   });
 
-  describe(`Testing ${FULL_LOGIN_ROUTE}`, () => {
+  describe(`Testing ${LOGIN_ROUTE}`, () => {
     describe("Validation layer", () => {
       test("Not string", async () => {
         expect.assertions(2);
@@ -89,7 +85,7 @@ describe("Testing auth route", () => {
     });
   });
 
-  describe(`Testing ${FULL_REGISTER_ROUTE}`, () => {
+  describe(`Testing ${REGISTER_ROUTE}`, () => {
     describe("Validation layer", () => {
       test("Not string", async () => {
         expect.assertions(2);
