@@ -11,7 +11,6 @@ sinon.stub(middlewares, "isAuth")
     next();
   });
 
-const UserModel = require("../../../src/models/User");
 const CategoryModel = require("../../../src/models/Category");
 const LabelModel = require("../../../src/models/Label");
 
@@ -31,6 +30,7 @@ const {
   DELETE_LABEL_ROUTE
 } = require("../../../src/api/routes/categories");
 
+const testUserId = "5e868964c037680d183cd5a3";
 const nonAuthorizedUserId = "5e868964c037680d183cd5a4";
 const testCategoryName = "testCategory";
 const dummyCategoryName = "dummyCategory";
@@ -38,15 +38,12 @@ const dummyCategoryName = "dummyCategory";
 const app = getApp();
 
 describe("Testing categories route", () => {
-  let testUserId = null;
   let testCategoryId = null;
   let testLabelId = null;
   beforeAll(async () => {
     container.set("CategoryModel", CategoryModel);
     container.set("LabelModel", LabelModel);
     await testdb.connect();
-    const user = await UserModel.create({ username: "testUser1", password: "123456" });
-    testUserId = user.id;
     const category = await CategoryModel.create({ owner: testUserId, name: dummyCategoryName });
     testCategoryId = category.id;
     const label = await LabelModel.create({
