@@ -9,7 +9,7 @@ module.exports = (app) => {
   const logger = container.get("logger");
 
   app.get("/status", (req, res) => {
-    res.status(200).send("Hello world!");
+    res.status(200).send("OK");
   });
 
   // Body parser that transforms raw string of req.body into JSON
