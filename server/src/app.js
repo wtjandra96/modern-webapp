@@ -2,8 +2,14 @@ const express = require("express");
 
 const loaders = require("./loaders");
 
-const app = express();
 
-loaders(app);
+const getApp = () => {
+  const app = express();
+  return app;
+};
 
-module.exports = app;
+const loadApp = async (app) => {
+  await loaders(app);
+};
+
+module.exports = { getApp, loadApp };

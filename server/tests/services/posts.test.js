@@ -1,13 +1,14 @@
 const container = require("typedi").Container;
 const PostsService = require("../../src/services/posts");
 const ServiceError = require("../../src/utils/errors/serviceError");
+const LabelModel = require("../../src/models/Label");
+const CategoryModel = require("../../src/models/Category");
 const PostModel = require("../../src/models/Post");
 
 const testdb = require("../testdb");
 
 const testUser1Id = "5e868964c037680d183cd5a3";
 const testUser2Id = "5e868964c037680d183cd5a4";
-const testCategory1Id = "5e868964c037680d183cd5a5";
 const testCategory2Id = "5e868964c037680d183cd5a6";
 const testLabel1Id = "5e868964c037680d183cd5a7";
 const testLabel2Id = "5e868964c037680d183cd5a8";
@@ -18,17 +19,21 @@ const sampleUrl = "https://www.example.com";
 const sampleImgSrc = "https://www.example.com/sampleImage.png";
 
 describe("Testing PostsService", () => {
-  beforeAll(() => {
-    testdb.connect();
-    const postModel = {
-      name: "PostModel",
-      model: PostModel
-    };
-    container.set(postModel.name, postModel.model);
+  let testCategory1Id = null;
+  beforeAll(async () => {
+    await testdb.connect();
+    container.set("LabelModel", LabelModel);
+    container.set("CategoryModel", CategoryModel);
+    container.set("PostModel", PostModel);
+    const category = await CategoryModel.create({
+      owner: testUser1Id,
+      name: "Category"
+    });
+    testCategory1Id = category.id;
   });
 
-  afterAll(() => {
-    testdb.disconnect();
+  afterAll(async () => {
+    await testdb.disconnect();
   });
 
   describe("PostsService.create(userId, categoryId, title, url, postAttributes)", () => {
@@ -44,8 +49,8 @@ describe("Testing PostsService", () => {
       const payload = await postsServiceInstance.create(
         testUser1Id, testCategory1Id, sampleTitle, sampleUrl, postAttributes
       );
-      const { msg, post } = payload;
-      expect(msg).toBeDefined();
+      const { message, post } = payload;
+      expect(message).toBeDefined();
       expect(post.owner.toString()).toStrictEqual(testUser1Id);
       expect(post.category.toString()).toStrictEqual(testCategory1Id);
       expect(post.title).toStrictEqual(sampleTitle);
@@ -61,8 +66,8 @@ describe("Testing PostsService", () => {
       const payload = await postsServiceInstance.create(
         testUser1Id, testCategory1Id, sampleTitle, sampleUrl
       );
-      const { msg, post } = payload;
-      expect(msg).toBeDefined();
+      const { message, post } = payload;
+      expect(message).toBeDefined();
       expect(post.owner.toString()).toStrictEqual(testUser1Id);
       expect(post.category.toString()).toStrictEqual(testCategory1Id);
       expect(post.title).toStrictEqual(sampleTitle);
@@ -71,6 +76,20 @@ describe("Testing PostsService", () => {
       expect(post.imgSrc).toBeNull();
       expect(new Date() - post.originalDate).toBeLessThan(10000);
     });
+
+    it("Should not allow creating a Post on a Category the User does not own", async () => {
+      const postsServiceInstance = container.get(PostsService);
+
+      try {
+        await postsServiceInstance.create(
+          testUser2Id, testCategory1Id, sampleTitle, sampleUrl
+        );
+      } catch (err) {
+        expect(err).toBeInstanceOf(ServiceError);
+        expect(err.httpStatusCode).toStrictEqual(404);
+        expect(err.errors.length).toStrictEqual(1);
+      }
+    });
   });
 
   describe("PostsService.get(userId, categoryId, labelIds)", () => {
@@ -78,8 +97,8 @@ describe("Testing PostsService", () => {
       const postsServiceInstance = container.get(PostsService);
 
       const payload = await postsServiceInstance.get(testUser1Id, testCategory1Id);
-      const { msg, posts } = payload;
-      expect(msg).toBeDefined();
+      const { message, posts } = payload;
+      expect(message).toBeDefined();
       expect(posts.length).toStrictEqual(2);
       for (let i = 0; i < posts.length; i += 1) {
         const post = posts[i];
@@ -92,8 +111,8 @@ describe("Testing PostsService", () => {
       const postsServiceInstance = container.get(PostsService);
 
       const payload = await postsServiceInstance.get(testUser1Id, testCategory2Id);
-      const { msg, posts } = payload;
-      expect(msg).toBeDefined();
+      const { message, posts } = payload;
+      expect(message).toBeDefined();
       expect(posts.length).toStrictEqual(0);
     });
 
@@ -102,8 +121,8 @@ describe("Testing PostsService", () => {
 
       const labelIds = [testLabel1Id];
       const payload = await postsServiceInstance.get(testUser1Id, testCategory1Id, labelIds);
-      const { msg, posts } = payload;
-      expect(msg).toBeDefined();
+      const { message, posts } = payload;
+      expect(message).toBeDefined();
       expect(posts.length).toStrictEqual(1);
     });
   });
@@ -157,8 +176,8 @@ describe("Testing PostsService", () => {
       const payload = await postsServiceInstance.edit(
         testUser1Id, testPost.id, newTitle, newUrl, postAttributes
       );
-      const { msg } = payload;
-      expect(msg).toBeDefined();
+      const { message } = payload;
+      expect(message).toBeDefined();
 
       const post = await PostModel.findById(testPost.id);
       expect(post.owner.toString()).toStrictEqual(testUser1Id);
@@ -181,8 +200,8 @@ describe("Testing PostsService", () => {
       const postsServiceInstance = container.get(PostsService);
 
       const payload = await postsServiceInstance.delete(testUser2Id, testPost.id);
-      const { msg } = payload;
-      expect(msg).toBeDefined();
+      const { message } = payload;
+      expect(message).toBeDefined();
 
       const post = await PostModel.findById(testPost.id);
       expect(post).toBeDefined();
@@ -192,8 +211,8 @@ describe("Testing PostsService", () => {
       const postsServiceInstance = container.get(PostsService);
 
       const payload = await postsServiceInstance.delete(testUser1Id, testPost.id);
-      const { msg } = payload;
-      expect(msg).toBeDefined();
+      const { message } = payload;
+      expect(message).toBeDefined();
 
       const post = await PostModel.findById(testPost.id);
       expect(post).toBeNull();
@@ -242,8 +261,8 @@ describe("Testing PostsService", () => {
       const postsServiceInstance = container.get(PostsService);
 
       const payload = await postsServiceInstance.addLabel(testUser1Id, testPost.id, testLabel1Id);
-      const { msg } = payload;
-      expect(msg).toBeDefined();
+      const { message } = payload;
+      expect(message).toBeDefined();
 
       const post = await PostModel.findById(testPost.id);
       expect(post.labels.length).toStrictEqual(2);
@@ -253,8 +272,8 @@ describe("Testing PostsService", () => {
       const postsServiceInstance = container.get(PostsService);
 
       const payload = await postsServiceInstance.addLabel(testUser1Id, testPost.id, testLabel3Id);
-      const { msg } = payload;
-      expect(msg).toBeDefined();
+      const { message } = payload;
+      expect(message).toBeDefined();
 
       const post = await PostModel.findById(testPost.id);
       expect(post.labels.length).toStrictEqual(3);
@@ -305,8 +324,8 @@ describe("Testing PostsService", () => {
       const payload = await postsServiceInstance.removeLabel(
         testUser1Id, testPost.id, testLabel1Id
       );
-      const { msg } = payload;
-      expect(msg).toBeDefined();
+      const { message } = payload;
+      expect(message).toBeDefined();
     });
   });
 });

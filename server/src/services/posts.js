@@ -2,6 +2,7 @@ const ServiceError = require("../utils/errors/serviceError");
 
 class PostsService {
   constructor (container) {
+    this.categoryModel = container.get("CategoryModel");
     this.postModel = container.get("PostModel");
   }
 
@@ -9,7 +10,7 @@ class PostsService {
    * @desc    Create a new Post
    * @returns {object}
    * {
-   *   msg: string,
+   *   message: string,
    *   post: {
    *     owner: ObjectId,
    *     category: ObjectId,
@@ -29,7 +30,14 @@ class PostsService {
    * { originalDate: String, imgSrc: String }
    */
   async create (userId, categoryId, title, url, postAttributes) {
-    const { postModel } = this;
+    const { categoryModel, postModel } = this;
+
+    const categoryRecord = await categoryModel.findOne({ _id: categoryId, owner: userId }).lean();
+    if (!categoryRecord) {
+      throw new ServiceError(404, [
+        { errorMessage: "Category not found" }
+      ]);
+    }
 
     const postRecord = await postModel.create({
       owner: userId,
@@ -40,7 +48,7 @@ class PostsService {
     });
 
     const payload = {
-      msg: "Post created",
+      message: "Post created",
       post: postRecord
     };
     return payload;
@@ -50,7 +58,7 @@ class PostsService {
    * @desc    Get Posts
    * @returns {object}
    * {
-   *   msg: string,
+   *   message: string,
    *   posts: [{
    *     owner: ObjectId,
    *     category: ObjectId,
@@ -84,7 +92,7 @@ class PostsService {
     const postRecords = await postModel.find(conditions);
 
     const payload = {
-      msg: "Posts retrieved",
+      message: "Posts retrieved",
       posts: postRecords
     };
     return payload;
@@ -92,7 +100,7 @@ class PostsService {
 
   /**
    * @desc    Edit a post
-   * @returns {object} { msg: string }
+   * @returns {object} { message: string }
    * @param   {ObjectId} userId User who owns the Posts
    * @param   {ObjectId} postId The ID of the Post to be edited
    * @param   {string} title
@@ -110,18 +118,18 @@ class PostsService {
     }, { new: true });
     if (!postRecord) {
       throw new ServiceError(404, [
-        { msg: "Post not found" }
+        { errorMessage: "Post not found" }
       ]);
     }
     const payload = {
-      msg: "Post updated"
+      message: "Post updated"
     };
     return payload;
   }
 
   /**
    * @desc    Delete a post
-   * @returns {object} { msg: string }
+   * @returns {object} { message: string }
    * @param   {ObjectId} userId User who owns the Posts
    * @param   {ObjectId} postId The Post in question
    */
@@ -131,14 +139,14 @@ class PostsService {
     await postModel.findOneAndDelete({ _id: postId, owner: userId });
 
     const payload = {
-      msg: "Post deleted"
+      message: "Post deleted"
     };
     return payload;
   }
 
   /**
    * @desc    Add Label to a Post
-   * @returns {object} { msg: string }
+   * @returns {object} { message: string }
    * @param   {ObjectId} userId User who owns the Posts
    * @param   {ObjectId} postId The Post in question
    * @param   {ObjectId} labelId ID of Label to be added to Post
@@ -153,19 +161,19 @@ class PostsService {
     }, { new: true });
     if (!postRecord) {
       throw new ServiceError(404, [
-        { msg: "Post not found" }
+        { errorMessage: "Post not found" }
       ]);
     }
 
     const payload = {
-      msg: "Post updated"
+      message: "Post updated"
     };
     return payload;
   }
 
   /**
    * @desc    Remove Label from a Post
-   * @returns {object} { msg: string }
+   * @returns {object} { message: string }
    * @param   {ObjectId} userId User who owns the Posts
    * @param   {ObjectId} postId The Post in questio
    * @param   {ObjectId} labelId ID of Label to be removed from Post
@@ -180,12 +188,12 @@ class PostsService {
     }, { new: true });
     if (!postRecord) {
       throw new ServiceError(404, [
-        { msg: "Post not found" }
+        { errorMessage: "Post not found" }
       ]);
     }
 
     const payload = {
-      msg: "Post updated"
+      message: "Post updated"
     };
     return payload;
   }

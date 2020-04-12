@@ -1,4 +1,4 @@
-const isAuth = require("./middlewares/isAuth");
+const isAuth = require("./_middlewares/isAuth");
 
 module.exports = {
   isAuth

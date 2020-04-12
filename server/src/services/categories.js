@@ -10,7 +10,7 @@ class CategoriesService {
    * @desc    Create a new Category
    * @returns {object}
    * {
-   *   msg: string,
+   *   message: string,
    *   category: {
    *     owner: ObjectId,
    *     name: string
@@ -30,7 +30,7 @@ class CategoriesService {
     });
 
     const payload = {
-      msg: "Category created",
+      message: "Category created",
       category: categoryRecord
     };
     return payload;
@@ -40,7 +40,7 @@ class CategoriesService {
    * @desc    Add a Label to a Category
    * @returns {object}
    * {
-   *   msg: string,
+   *   message: string,
    *   label: {
    *     owner: ObjectId,
    *     category: ObjectId,
@@ -60,7 +60,7 @@ class CategoriesService {
     const categoryRecord = await categoryModel.findOne({ _id: categoryId, owner: userId }).lean();
     if (!categoryRecord) {
       throw new ServiceError(404, [
-        { msg: "Category not found" }
+        { errorMessage: "Category not found" }
       ]);
     }
 
@@ -71,7 +71,7 @@ class CategoriesService {
     });
 
     const payload = {
-      msg: `Label ${labelRecord.name} added`,
+      message: `Label ${labelRecord.name} added`,
       label: labelRecord
     };
     return payload;
@@ -81,7 +81,7 @@ class CategoriesService {
    * @desc    Get all Categories by User
    * @returns {object}
    * {
-   *   msg: string,
+   *   message: string,
    *   categories: [{
    *     owner: ObjectId,
    *     name: string
@@ -96,7 +96,7 @@ class CategoriesService {
     const categoryRecords = await categoryModel.find({ owner: userId });
 
     const payload = {
-      msg: "Categories retrieved",
+      message: "Categories retrieved",
       categories: categoryRecords
     };
     return payload;
@@ -106,7 +106,7 @@ class CategoriesService {
    * @desc    Get all Labels of a Category
    * @returns {object}
    * {
-   *   msg: string,
+   *   message: string,
    *   labels: [{
    *     owner: ObjectId,
    *     category: ObjectId,
@@ -123,9 +123,8 @@ class CategoriesService {
     const { labelModel } = this;
 
     const labelRecords = await labelModel.find({ owner: userId, category: categoryId });
-
     const payload = {
-      msg: "Labels retrieved",
+      message: "Labels retrieved",
       labels: labelRecords
     };
     return payload;
@@ -133,7 +132,7 @@ class CategoriesService {
 
   /**
    * @desc    Edit a Category
-   * @returns {object} { msg: string }
+   * @returns {object} { message: string }
    * @param   {ObjectId} userId User who owns the Categories
    * @param   {ObjectId} categoryId ID of this Category
    * @param   {object} categoryUpdates { name: string }
@@ -148,19 +147,19 @@ class CategoriesService {
 
     if (!categoryRecord) {
       throw new ServiceError(404, [
-        { msg: "Category not found" }
+        { errorMessage: "Category not found" }
       ]);
     }
 
     const payload = {
-      msg: "Category updated"
+      message: "Category updated"
     };
     return payload;
   }
 
   /**
    * @desc    Edit a Label
-   * @returns {object} { msg: string }
+   * @returns {object} { message: string }
    * @param   {ObjectId} userId User who owns the Categories
    * @param   {ObjectId} labelId ID of the Label in question
    * @param   {object} labelUpdates { name: string, color: string }
@@ -175,19 +174,19 @@ class CategoriesService {
 
     if (!labelRecord) {
       throw new ServiceError(404, [
-        { msg: "Label not found" }
+        { errorMessage: "Label not found" }
       ]);
     }
 
     const payload = {
-      msg: "Label updated"
+      message: "Label updated"
     };
     return payload;
   }
 
   /**
    * @desc    Delete a Category
-   * @returns {object} { msg: string }
+   * @returns {object} { message: string }
    * @param   {ObjectId} userId User who owns the Category
    * @param   {ObjectId} categoryId
    */
@@ -195,16 +194,16 @@ class CategoriesService {
     const { categoryModel } = this;
 
     await categoryModel.findOneAndDelete({ _id: categoryId, owner: userId });
-
+    await this.labelModel.deleteMany({ category: categoryId, owner: userId });
     const payload = {
-      msg: "Category deleted"
+      message: "Category and its Labels are deleted"
     };
     return payload;
   }
 
   /**
    * @desc    Delete a Label
-   * @returns {object} { msg: string }
+   * @returns {object} { message: string }
    * @param   {ObjectId} userId User who owns the Categories
    * @param   {ObjectId} labelId ID of the Label in question
    */
@@ -214,7 +213,7 @@ class CategoriesService {
     await labelModel.findOneAndDelete({ _id: labelId, owner: userId });
 
     const payload = {
-      msg: "Label deleted"
+      message: "Label deleted"
     };
     return payload;
   }

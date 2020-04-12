@@ -1,21 +1,47 @@
 const container = require("typedi").Container;
 const express = require("express");
 
+const { celebrate, Joi } = require("celebrate");
+Joi.objectId = require("joi-objectid")(Joi);
 const CategoriesService = require("../../services/categories");
 const { isAuth } = require("../middlewares");
 
 const router = express.Router();
 
+const PREFIX = "/api/categories";
+
+const CREATE_ROUTE = "/create";
+const ADD_LABEL_ROUTE = "/addLabel";
+const GET_LABELS_ROUTE = "/getLabels";
+const GET_CATEGORIES_ROUTE = "/getCategories";
+const DELETE_LABEL_ROUTE = "/deleteLabel";
+const DELETE_CATEGORY_ROUTE = "/deleteCategory";
+const EDIT_LABEL_ROUTE = "/editLabel";
+const EDIT_CATEGORY_ROUTE = "/editCategory";
+
 /**
  * @route  POST api/categories/create
  * @desc   Create a new Category
  * @access Private
- * @param  {string} userId // from token
- * @param  {string} name
+ * @returns {object}
+ * {
+ *   message: string,
+ *   category: {
+ *     owner: ObjectId,
+ *     name: string
+ *   }
+ * }
+ *
+ * @returns {object} payload.category
+ * @param   {ObjectId} userId User who created the Category (from middleware)
+ * @param   {string} name
  */
-router.post("/create", isAuth, async (req, res) => {
-  const logger = container.get("logger");
-
+router.post(CREATE_ROUTE, isAuth, celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().messages({ "string.base": "Category name must be of type string" })
+      .required().messages({ "string.empty": "Category name is required" })
+  })
+}, { abortEarly: false }), async (req, res, next) => {
   const { userId } = req;
   const { name } = req.body;
 
@@ -27,9 +53,7 @@ router.post("/create", isAuth, async (req, res) => {
     );
     return res.status(201).send(payload);
   } catch (err) {
-    logger.error("POST api/categories/create", err.name, err.date, err.errors);
-    const { httpStatusCode, errors } = err;
-    return res.status(httpStatusCode || 500).send(errors || err);
+    return next(err);
   }
 });
 
@@ -37,13 +61,37 @@ router.post("/create", isAuth, async (req, res) => {
  * @route  POST api/categories/addLabel
  * @desc   Add a Label to a Category
  * @access Private
- * @param  {string} userId // from token
- * @param  {string} categoryId
- * @param  {object} label // { name, color }
+ * @returns {object}
+ * {
+ *   message: string,
+ *   label: {
+ *     owner: ObjectId,
+ *     category: ObjectId,
+ *     name: string
+ *     color: string,
+ *     checked: boolean
+ *   }
+ * }
+*
+ * @param   {ObjectId} userId User who owns the Categories (from middleware)
+ * @param   {ObjectId} categoryId ID of this Category
+ * @param   {object} label { name: string, color: string }
  */
-router.post("/addLabel", isAuth, async (req, res) => {
-  const logger = container.get("logger");
+router.post(ADD_LABEL_ROUTE, isAuth, celebrate({
+  body: Joi.object().keys({
+    categoryId: Joi.objectId().message("Category ID is invalid")
+      .required().messages({ "any.required": "Category ID is missing" }),
 
+    label: Joi.object({
+      name: Joi.string().messages({ "string.base": "Label name must be of type string" })
+        .required().messages({ "string.empty": "Label name is required" }),
+      color: Joi.string().messages({ "string.base": "Label color must be of type string" })
+    })
+      .messages({ "object.base": "Label information must be an object" })
+      .required()
+      .messages({ "object.empty": "Label information is required" })
+  })
+}, { abortEarly: false }), async (req, res, next) => {
   const { userId } = req;
   const { categoryId, label } = req.body;
 
@@ -56,55 +104,69 @@ router.post("/addLabel", isAuth, async (req, res) => {
     );
     return res.status(201).send(payload);
   } catch (err) {
-    logger.error("POST api/categories/addLabel", err.name, err.date, err.errors);
-    const { httpStatusCode, errors } = err;
-    return res.status(httpStatusCode || 500).send(errors || err);
+    return next(err);
   }
 });
 
 /**
  * @route  GET api/categories/getCategories
- * @desc   Get Categories by User
+ * @desc   Get all Categories by User
  * @access Private
- * @param  {string} userId // from token
+ * @returns {object}
+ * {
+ *   message: string,
+ *   categories: [{
+ *     owner: ObjectId,
+ *     name: string
+ *   }]
+ * }
+ *
+ * @param   {ObjectId} userId User who owns the Categories (from middleware)
  */
-router.get("/getCategories", isAuth, async (req, res) => {
-  const logger = container.get("logger");
-
+router.get(GET_CATEGORIES_ROUTE, isAuth, async (req, res, next) => {
   const { userId } = req;
-
   try {
     const categoriesServiceInstance = container.get(CategoriesService);
-    const payload = await categoriesServiceInstance.get(userId);
+    const payload = await categoriesServiceInstance.getCategories(userId);
     return res.status(200).send(payload);
   } catch (err) {
-    logger.error("GET api/categories/getCategories", err.name, err.date, err.errors);
-    const { httpStatusCode, errors } = err;
-    return res.status(httpStatusCode || 500).send(errors || err);
+    return next(err);
   }
 });
 
 /**
  * @route  GET api/categories/getLabels
- * @desc   Get Labels of a Category
+ * @desc   Get all Labels of a Category
  * @access Private
- * @param  {string} userId // from token
- * @param  {string} categoryId
+ * @returns {object}
+ * {
+ *   message: string,
+ *   labels: [{
+ *     owner: ObjectId,
+ *     category: ObjectId,
+ *     name: string
+ *     color: string,
+ *     checked: boolean
+ *   }]
+ * }
+ *
+ * @param   {ObjectId} userId User who owns the Categories (from middleware)
+ * @param   {ObjectId} categoryId The Category in question
  */
-router.get("/getLabels", isAuth, async (req, res) => {
-  const logger = container.get("logger");
-
+router.get(GET_LABELS_ROUTE, isAuth, celebrate({
+  query: {
+    categoryId: Joi.objectId().message("Category ID is invalid")
+      .required().messages({ "any.required": "Category ID is missing" })
+  }
+}, { abortEarly: false }), async (req, res, next) => {
   const { userId } = req;
   const { categoryId } = req.query;
-
   try {
     const categoriesServiceInstance = container.get(CategoriesService);
     const payload = await categoriesServiceInstance.getLabels(userId, categoryId);
     return res.status(200).send(payload);
   } catch (err) {
-    logger.error("GET api/categories/getLabels", err.name, err.date, err.errors);
-    const { httpStatusCode, errors } = err;
-    return res.status(httpStatusCode || 500).send(errors || err);
+    return next(err);
   }
 });
 
@@ -112,13 +174,23 @@ router.get("/getLabels", isAuth, async (req, res) => {
  * @route  POST api/categories/editCategory
  * @desc   Edit a Category
  * @access Private
- * @param  {string} userId // from token
- * @param  {string} categoryId
- * @param  {object} categoryUpdates
+ * @returns {object} { message: string }
+ * @param   {ObjectId} userId User who owns the Categories (from middleware)
+ * @param   {ObjectId} categoryId ID of this Category
+ * @param   {object} categoryUpdates { name: string }
  */
-router.post("/editCategory", isAuth, async (req, res) => {
-  const logger = container.get("logger");
-
+router.post(EDIT_CATEGORY_ROUTE, isAuth, celebrate({
+  body: Joi.object().keys({
+    categoryId: Joi.objectId().message("Category ID is invalid")
+      .required().messages({ "any.required": "Category ID is missing" }),
+    categoryUpdates: Joi.object({
+      name: Joi.string().messages({ "string.base": "Category name must be of type string" })
+    })
+      .messages({ "object.base": "Category updates must be an object" })
+      .required()
+      .messages({ "object.empty": "Category updates are required" })
+  })
+}, { abortEarly: false }), async (req, res, next) => {
   const { userId } = req;
   const { categoryId, categoryUpdates } = req.body;
 
@@ -131,9 +203,7 @@ router.post("/editCategory", isAuth, async (req, res) => {
     );
     return res.status(200).send(payload);
   } catch (err) {
-    logger.error("POST api/categories/editCategory", err.name, err.date, err.errors);
-    const { httpStatusCode, errors } = err;
-    return res.status(httpStatusCode || 500).send(errors || err);
+    return next(err);
   }
 });
 
@@ -141,13 +211,25 @@ router.post("/editCategory", isAuth, async (req, res) => {
  * @route  POST api/categories/editLabel
  * @desc   Edit a Label
  * @access Private
- * @param  {string} userId // from token
- * @param  {string} labelId
- * @param  {object} labelUpdates // { name, color }
+ * @returns {object} { message: string }
+ * @param   {ObjectId} userId User who owns the Categories (from middleware)
+ * @param   {ObjectId} labelId ID of the Label in question
+ * @param   {object} labelUpdates { name: string, color: string }
  */
-router.post("/editLabel", isAuth, async (req, res) => {
-  const logger = container.get("logger");
+router.post(EDIT_LABEL_ROUTE, isAuth, celebrate({
+  body: Joi.object().keys({
+    labelId: Joi.objectId().message("Label ID is invalid")
+      .required().messages({ "any.required": "Label ID is missing" }),
 
+    labelUpdates: Joi.object({
+      name: Joi.string().messages({ "string.base": "Label name must be of type string" }),
+      color: Joi.string().messages({ "string.base": "Label color must be of type string" })
+    })
+      .messages({ "object.base": "Label updates must be an object" })
+      .required()
+      .messages({ "object.empty": "Label updates are required" })
+  })
+}, { abortEarly: false }), async (req, res, next) => {
   const { userId } = req;
   const { labelId, labelUpdates } = req.body;
 
@@ -160,22 +242,23 @@ router.post("/editLabel", isAuth, async (req, res) => {
     );
     return res.status(200).send(payload);
   } catch (err) {
-    logger.error("POST api/categories/editLabel", err.name, err.date, err.errors);
-    const { httpStatusCode, errors } = err;
-    return res.status(httpStatusCode || 500).send(errors || err);
+    return next(err);
   }
 });
 
 /**
- * @route  DELETE api/categories/deleteCategory
+ * @route  DELETE api/categories/deleteCategory/:categoryId
  * @desc   Delete a Category
  * @access Private
- * @param  {string} userId // from token
- * @param  {string} categoryId
+ * @returns {object} { message: string }
+ * @param   {ObjectId} userId User who owns the Category (from middleware)
+ * @param   {ObjectId} categoryId
  */
-router.delete("/deleteCategory", isAuth, async (req, res) => {
-  const logger = container.get("logger");
-
+router.delete(`${DELETE_CATEGORY_ROUTE}/:categoryId`, isAuth, celebrate({
+  params: {
+    categoryId: Joi.objectId().message("Category ID is invalid")
+  }
+}, { abortEarly: false }), async (req, res, next) => {
   const { userId } = req;
   const { categoryId } = req.params;
 
@@ -184,9 +267,7 @@ router.delete("/deleteCategory", isAuth, async (req, res) => {
     const payload = await categoriesServiceInstance.deleteCategory(userId, categoryId);
     return res.status(200).send(payload);
   } catch (err) {
-    logger.error("DELETE api/categories/deleteCategory", err.name, err.date, err.errors);
-    const { httpStatusCode, errors } = err;
-    return res.status(httpStatusCode || 500).send(errors || err);
+    return next(err);
   }
 });
 
@@ -194,12 +275,16 @@ router.delete("/deleteCategory", isAuth, async (req, res) => {
  * @route  DELETE api/categories/deleteLabel
  * @desc   Delete a Label
  * @access Private
- * @param  {string} userId // from token
- * @param  {string} labelId
+ * @returns {object} { message: string }
+ * @param   {ObjectId} userId User who owns the Categories (from middleware)
+ * @param   {ObjectId} labelId ID of the Label in question
  */
-router.delete("/deleteLabel", isAuth, async (req, res) => {
-  const logger = container.get("logger");
-
+router.delete(`${DELETE_LABEL_ROUTE}/:labelId`, isAuth, celebrate({
+  params: Joi.object().keys({
+    labelId: Joi.objectId().message("Label ID is invalid")
+      .required().messages({ "any.required": "Label ID is missing" })
+  })
+}, { abortEarly: false }), async (req, res, next) => {
   const { userId } = req;
   const { labelId } = req.params;
 
@@ -211,10 +296,18 @@ router.delete("/deleteLabel", isAuth, async (req, res) => {
     );
     return res.status(200).send(payload);
   } catch (err) {
-    logger.error("DELETE api/categories/deleteLabel", err.name, err.date, err.errors);
-    const { httpStatusCode, errors } = err;
-    return res.status(httpStatusCode || 500).send(errors || err);
+    return next(err);
   }
 });
 
-module.exports = (app) => app.use("/auth", router);
+module.exports = (app) => app.use("/categories", router);
+
+const categoriesRoute = module.exports;
+categoriesRoute.CREATE_ROUTE = PREFIX + CREATE_ROUTE;
+categoriesRoute.ADD_LABEL_ROUTE = PREFIX + ADD_LABEL_ROUTE;
+categoriesRoute.GET_CATEGORIES_ROUTE = PREFIX + GET_CATEGORIES_ROUTE;
+categoriesRoute.GET_LABELS_ROUTE = PREFIX + GET_LABELS_ROUTE;
+categoriesRoute.EDIT_CATEGORY_ROUTE = PREFIX + EDIT_CATEGORY_ROUTE;
+categoriesRoute.EDIT_LABEL_ROUTE = PREFIX + EDIT_LABEL_ROUTE;
+categoriesRoute.DELETE_CATEGORY_ROUTE = PREFIX + DELETE_CATEGORY_ROUTE;
+categoriesRoute.DELETE_LABEL_ROUTE = PREFIX + DELETE_LABEL_ROUTE;
