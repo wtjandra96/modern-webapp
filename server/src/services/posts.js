@@ -2,6 +2,7 @@ const ServiceError = require("../utils/errors/serviceError");
 
 class PostsService {
   constructor (container) {
+    this.categoryModel = container.get("CategoryModel");
     this.postModel = container.get("PostModel");
   }
 
@@ -29,7 +30,14 @@ class PostsService {
    * { originalDate: String, imgSrc: String }
    */
   async create (userId, categoryId, title, url, postAttributes) {
-    const { postModel } = this;
+    const { categoryModel, postModel } = this;
+
+    const categoryRecord = await categoryModel.findOne({ _id: categoryId, owner: userId }).lean();
+    if (!categoryRecord) {
+      throw new ServiceError(404, [
+        { errorMessage: "Category not found" }
+      ]);
+    }
 
     const postRecord = await postModel.create({
       owner: userId,

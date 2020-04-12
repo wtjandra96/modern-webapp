@@ -1,16 +1,15 @@
 const container = require("typedi").Container;
 const express = require("express");
 
-const { celebrate, Joi } = require("celebrate");
+const { celebrate } = require("celebrate");
+const Joi = require("@hapi/joi").extend(require("@hapi/joi-date"));
+Joi.objectId = require("joi-objectid")(Joi);
 const PostsService = require("../../services/posts");
 const { isAuth } = require("../middlewares");
 
 const router = express.Router();
 
-const POST = "POST";
-const GET = "GET";
-const DELETE = "DELETE";
-const PREFIX = "api/posts";
+const PREFIX = "/api/posts";
 
 const CREATE_ROUTE = "/create";
 const ADD_LABEL_ROUTE = "/addLabel";
@@ -25,14 +24,14 @@ const REMOVE_LABEL_ROUTE = "/removeLabel";
  * @access Private
  * @returns {object}
  * {
- *   errorMessage: string,
+ *   message: string,
  *   post: {
  *     owner: ObjectId,
  *     category: ObjectId,
  *     labels: [ObjectId],
  *     title: string,
  *     url: string,
- *     originalDate: date
+ *     originalDate: date (YYYY-MM-DD HH:mm)
  *     imgSrc: string
  *   }
  * }
@@ -42,22 +41,22 @@ const REMOVE_LABEL_ROUTE = "/removeLabel";
  * @param   {string} title
  * @param   {string} url
  * @param   {object} postAttributes each key optional
- * { originalDate: String, imgSrc: String }
+ * { originalDate: date (YYYY-MM-DD HH:mm), imgSrc: string }
  */
 router.post(CREATE_ROUTE, isAuth, celebrate({
-  userId: Joi.string().required(),
-  body: Joi.object({
-    categoryId: Joi.string().required(),
-    title: Joi.string().required(),
-    url: Joi.string().required(),
+  body: Joi.object().keys({
+    categoryId: Joi.objectId().message("Category ID is invalid")
+      .required().messages({ "any.required": "Category ID is missing" }),
+    title: Joi.string().messages({ "string.base": "Post title must be of type string" })
+      .required().messages({ "string.empty": "Post title is required" }),
+    url: Joi.string().messages({ "string.base": "Post url must be of type string" })
+      .required().messages({ "string.empty": "Post url is required" }),
     postAttributes: Joi.object({
-      originalDate: Joi.date(),
-      imgSrc: Joi.string()
-    })
+      originalDate: Joi.date().messages({ "date.base": "Original date must be a date" }),
+      imgSrc: Joi.string().messages({ "string.base": "Image source must be of type string" })
+    }).messages({ "object.base": "Post attributes must be an object" })
   })
-}), async (req, res) => {
-  const logger = container.get("logger");
-
+}, { abortEarly: false }), async (req, res, next) => {
   const { userId } = req;
   const {
     categoryId, title, url, postAttributes
@@ -74,11 +73,7 @@ router.post(CREATE_ROUTE, isAuth, celebrate({
     );
     return res.status(201).send(payload);
   } catch (err) {
-    logger.error(
-      `${POST} - ${PREFIX}${CREATE_ROUTE}: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
-    );
-    const { httpStatusCode, errors } = err;
-    return res.status(httpStatusCode || 500).send(errors || err);
+    return next(err);
   }
 });
 
@@ -86,20 +81,19 @@ router.post(CREATE_ROUTE, isAuth, celebrate({
  * @route  POST api/posts/addLabel
  * @desc    Add Label to a Post
  * @access Private
- * @returns {object} { errorMessage: string }
+ * @returns {object} { message: string }
  * @param   {ObjectId} userId User who owns the Posts (from isAuth middleware)
  * @param   {ObjectId} postId The Post in question
  * @param   {ObjectId} labelId ID of Label to be added to Post
  */
 router.post(ADD_LABEL_ROUTE, isAuth, celebrate({
-  userId: Joi.string().required(),
-  body: Joi.object({
-    postId: Joi.string().required(),
-    labelId: Joi.string().required()
+  body: Joi.object().keys({
+    postId: Joi.objectId().message("Post ID is invalid")
+      .required().messages({ "any.required": "Post ID is missing" }),
+    labelId: Joi.objectId().message("Label ID is invalid")
+      .required().messages({ "any.required": "Label ID is missing" })
   })
-}), async (req, res) => {
-  const logger = container.get("logger");
-
+}, { abortEarly: false }), async (req, res, next) => {
   const { userId } = req;
   const { postId, label } = req.body;
 
@@ -112,11 +106,7 @@ router.post(ADD_LABEL_ROUTE, isAuth, celebrate({
     );
     return res.status(200).send(payload);
   } catch (err) {
-    logger.error(
-      `${POST} - ${PREFIX}${ADD_LABEL_ROUTE}: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
-    );
-    const { httpStatusCode, errors } = err;
-    return res.status(httpStatusCode || 500).send(errors || err);
+    return next(err);
   }
 });
 
@@ -126,14 +116,14 @@ router.post(ADD_LABEL_ROUTE, isAuth, celebrate({
  * @access Private
  * @returns {object}
  * {
- *   errorMessage: string,
+ *   message: string,
  *   posts: [{
  *     owner: ObjectId,
  *     category: ObjectId,
  *     labels: [ObjectId],
  *     title: string,
  *     url: string,
- *     originalDate: date
+ *     originalDate: date (YYYY-MM-DD HH:mm)
  *     imgSrc: string
  *   }
  * }]
@@ -143,14 +133,14 @@ router.post(ADD_LABEL_ROUTE, isAuth, celebrate({
  * @param   {array} labelIds optional [ObjectId]
  */
 router.get(GET_POSTS_ROUTE, isAuth, celebrate({
-  userId: Joi.string().required(),
-  body: Joi.object({
-    categoryId: Joi.string().required(),
-    labelIds: Joi.array().items(Joi.string())
+  query: Joi.object().keys({
+    categoryId: Joi.objectId().message("Category ID is invalid")
+      .required().messages({ "any.required": "Category ID is missing" }),
+    labelIds: Joi.array().items(
+      Joi.objectId().message("Label ID is invalid")
+    ).messages({ "array.base": "Label IDs must be an array" })
   })
-}), async (req, res) => {
-  const logger = container.get("logger");
-
+}, { abortEarly: false }), async (req, res, next) => {
   const { userId } = req;
   const { categoryId, labelIds } = req.query;
 
@@ -159,11 +149,7 @@ router.get(GET_POSTS_ROUTE, isAuth, celebrate({
     const payload = await postsServiceInstance.get(userId, categoryId, labelIds);
     return res.status(200).send(payload);
   } catch (err) {
-    logger.error(
-      `${GET} - ${PREFIX}${GET_POSTS_ROUTE}: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
-    );
-    const { httpStatusCode, errors } = err;
-    return res.status(httpStatusCode || 500).send(errors || err);
+    return next(err);
   }
 });
 
@@ -171,7 +157,7 @@ router.get(GET_POSTS_ROUTE, isAuth, celebrate({
  * @route  POST api/posts/editPost
  * @desc    Edit a post
  * @access Private
- * @returns {object} { errorMessage: string }
+ * @returns {object} { message: string }
  * @param   {ObjectId} userId User who owns the Posts (from isAuth middleware)
  * @param   {ObjectId} postId The ID of the Post to be edited
  * @param   {string} title
@@ -180,20 +166,19 @@ router.get(GET_POSTS_ROUTE, isAuth, celebrate({
  * { labels: [ObjectId], originalDate: String, imgSrc: String }
  */
 router.post(EDIT_POST_ROUTE, isAuth, celebrate({
-  userId: Joi.string().required(),
-  body: Joi.object({
-    postId: Joi.string().required(),
-    title: Joi.string().required(),
-    url: Joi.string().required(),
+  body: Joi.object().keys({
+    postId: Joi.objectId().message("Post ID is invalid")
+      .required().messages({ "any.required": "Post ID is missing" }),
+    title: Joi.string().messages({ "string.base": "Post title must be of type string" })
+      .required().messages({ "string.empty": "Post title is required" }),
+    url: Joi.string().messages({ "string.base": "Post url must be of type string" })
+      .required().messages({ "string.empty": "Post url is required" }),
     postAttributes: Joi.object({
-      labels: Joi.array().items(Joi.string()),
-      originalDate: Joi.date(),
-      imgsrc: Joi.string()
-    })
+      originalDate: Joi.date().messages({ "date.base": "Original date must be a date" }),
+      imgSrc: Joi.string().messages({ "string.base": "Image source must be of type string" })
+    }).messages({ "object.base": "Post attributes must be an object" })
   })
-}), async (req, res) => {
-  const logger = container.get("logger");
-
+}, { abortEarly: false }), async (req, res, next) => {
   const { userId } = req;
   const {
     postId, title, url, postAttributes
@@ -210,44 +195,34 @@ router.post(EDIT_POST_ROUTE, isAuth, celebrate({
     );
     return res.status(200).send(payload);
   } catch (err) {
-    logger.error(
-      `${POST} - ${PREFIX}${EDIT_POST_ROUTE}: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
-    );
-    const { httpStatusCode, errors } = err;
-    return res.status(httpStatusCode || 500).send(errors || err);
+    return next(err);
   }
 });
 
 
 /**
- * @route  DELETE api/posts/deletePost
+ * @route  DELETE api/posts/deletePost/:postId
  * @desc    Delete a post
  * @access Private
- * @returns {object} { errorMessage: string }
+ * @returns {object} { message: string }
  * @param   {ObjectId} userId User who owns the Posts (from isAuth middleware)
  * @param   {ObjectId} postId The Post in question
  */
-router.delete(DELETE_POST_ROUTE, isAuth, celebrate({
-  userId: Joi.string().required(),
-  body: Joi.object({
-    postId: Joi.string().required()
+router.delete(`${DELETE_POST_ROUTE}/:postId`, isAuth, celebrate({
+  params: Joi.object().keys({
+    postId: Joi.objectId().message("Post ID is invalid")
+      .required().messages({ "any.required": "Post ID is missing" })
   })
-}), async (req, res) => {
-  const logger = container.get("logger");
-
+}, { abortEarly: false }), async (req, res, next) => {
   const { userId } = req;
-  const { postId } = req.query;
+  const { postId } = req.params;
 
   try {
     const postsServiceInstance = container.get(PostsService);
     const payload = await postsServiceInstance.delete(userId, postId);
     return res.status(200).send(payload);
   } catch (err) {
-    logger.error(
-      `${DELETE} - ${PREFIX}${DELETE_POST_ROUTE}: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
-    );
-    const { httpStatusCode, errors } = err;
-    return res.status(httpStatusCode || 500).send(errors || err);
+    return next(err);
   }
 });
 
@@ -255,20 +230,19 @@ router.delete(DELETE_POST_ROUTE, isAuth, celebrate({
  * @route  POST api/posts/removeLabel
  * @desc    Remove Label from a Post
  * @access Private
- * @returns {object} { errorMessage: string }
+ * @returns {object} { message: string }
  * @param   {ObjectId} userId User who owns the Posts (from isAuth middleware)
  * @param   {ObjectId} postId The Post in questio
  * @param   {ObjectId} labelId ID of Label to be removed from Post
  */
 router.post(REMOVE_LABEL_ROUTE, isAuth, celebrate({
-  userId: Joi.string().required(),
-  body: Joi.object({
-    postId: Joi.string().required(),
-    labelId: Joi.string().required()
+  body: Joi.object().keys({
+    postId: Joi.objectId().message("Post ID is invalid")
+      .required().messages({ "any.required": "Post ID is missing" }),
+    labelId: Joi.objectId().message("Label ID is invalid")
+      .required().messages({ "any.required": "Label ID is missing" })
   })
-}), async (req, res) => {
-  const logger = container.get("logger");
-
+}, { abortEarly: false }), async (req, res, next) => {
   const { userId } = req;
   const { postId, labelId } = req.body;
 
@@ -281,12 +255,16 @@ router.post(REMOVE_LABEL_ROUTE, isAuth, celebrate({
     );
     return res.status(200).send(payload);
   } catch (err) {
-    logger.error(
-      `${POST} - ${PREFIX}${REMOVE_LABEL_ROUTE}: ${err.name} ${JSON.stringify(err.errors)}} | ${err.date}`
-    );
-    const { httpStatusCode, errors } = err;
-    return res.status(httpStatusCode || 500).send(errors || err);
+    return next(err);
   }
 });
 
 module.exports = (app) => app.use("/posts", router);
+
+const postsRoute = module.exports;
+postsRoute.CREATE_ROUTE = PREFIX + CREATE_ROUTE;
+postsRoute.ADD_LABEL_ROUTE = PREFIX + ADD_LABEL_ROUTE;
+postsRoute.GET_POSTS_ROUTE = PREFIX + GET_POSTS_ROUTE;
+postsRoute.DELETE_POST_ROUTE = PREFIX + DELETE_POST_ROUTE;
+postsRoute.EDIT_POST_ROUTE = PREFIX + EDIT_POST_ROUTE;
+postsRoute.REMOVE_LABEL_ROUTE = PREFIX + REMOVE_LABEL_ROUTE;

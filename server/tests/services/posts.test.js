@@ -1,13 +1,14 @@
 const container = require("typedi").Container;
 const PostsService = require("../../src/services/posts");
 const ServiceError = require("../../src/utils/errors/serviceError");
+const LabelModel = require("../../src/models/Label");
+const CategoryModel = require("../../src/models/Category");
 const PostModel = require("../../src/models/Post");
 
 const testdb = require("../testdb");
 
 const testUser1Id = "5e868964c037680d183cd5a3";
 const testUser2Id = "5e868964c037680d183cd5a4";
-const testCategory1Id = "5e868964c037680d183cd5a5";
 const testCategory2Id = "5e868964c037680d183cd5a6";
 const testLabel1Id = "5e868964c037680d183cd5a7";
 const testLabel2Id = "5e868964c037680d183cd5a8";
@@ -18,13 +19,17 @@ const sampleUrl = "https://www.example.com";
 const sampleImgSrc = "https://www.example.com/sampleImage.png";
 
 describe("Testing PostsService", () => {
+  let testCategory1Id = null;
   beforeAll(async () => {
     await testdb.connect();
-    const postModel = {
-      name: "PostModel",
-      model: PostModel
-    };
-    container.set(postModel.name, postModel.model);
+    container.set("LabelModel", LabelModel);
+    container.set("CategoryModel", CategoryModel);
+    container.set("PostModel", PostModel);
+    const category = await CategoryModel.create({
+      owner: testUser1Id,
+      name: "Category"
+    });
+    testCategory1Id = category.id;
   });
 
   afterAll(async () => {
@@ -70,6 +75,20 @@ describe("Testing PostsService", () => {
       expect(post.labels.length).toStrictEqual(0);
       expect(post.imgSrc).toBeNull();
       expect(new Date() - post.originalDate).toBeLessThan(10000);
+    });
+
+    it("Should not allow creating a Post on a Category the User does not own", async () => {
+      const postsServiceInstance = container.get(PostsService);
+
+      try {
+        await postsServiceInstance.create(
+          testUser2Id, testCategory1Id, sampleTitle, sampleUrl
+        );
+      } catch (err) {
+        expect(err).toBeInstanceOf(ServiceError);
+        expect(err.httpStatusCode).toStrictEqual(404);
+        expect(err.errors.length).toStrictEqual(1);
+      }
     });
   });
 
