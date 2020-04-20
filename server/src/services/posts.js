@@ -29,7 +29,7 @@ class PostsService {
    * @param   {object} postAttributes each key optional
    * { originalDate: String, imgSrc: String }
    */
-  async create (userId, categoryId, title, url, postAttributes) {
+  async createPost (userId, categoryId, title, url, postAttributes) {
     const { categoryModel, postModel } = this;
 
     const categoryRecord = await categoryModel.findOne({ _id: categoryId, owner: userId }).lean();

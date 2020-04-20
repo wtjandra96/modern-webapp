@@ -10,8 +10,8 @@ const router = express.Router();
 
 const PREFIX = "/api/categories";
 
-const CREATE_ROUTE = "/create";
-const ADD_LABEL_ROUTE = "/addLabel";
+const CREATE_CATEGORY_ROUTE = "/createCategory";
+const CREATE_LABEL_ROUTE = "/createLabel";
 const GET_LABELS_ROUTE = "/getLabels";
 const GET_CATEGORIES_ROUTE = "/getCategories";
 const DELETE_LABEL_ROUTE = "/deleteLabel";
@@ -20,13 +20,14 @@ const EDIT_LABEL_ROUTE = "/editLabel";
 const EDIT_CATEGORY_ROUTE = "/editCategory";
 
 /**
- * @route  POST api/categories/create
+ * @route  POST api/categories/createCategory
  * @desc   Create a new Category
  * @access Private
  * @returns {object}
  * {
  *   message: string,
  *   category: {
+ *     id: ObjectId,
  *     owner: ObjectId,
  *     name: string
  *   }
@@ -36,7 +37,7 @@ const EDIT_CATEGORY_ROUTE = "/editCategory";
  * @param   {ObjectId} userId User who created the Category (from middleware)
  * @param   {string} name
  */
-router.post(CREATE_ROUTE, isAuth, celebrate({
+router.post(CREATE_CATEGORY_ROUTE, isAuth, celebrate({
   body: Joi.object().keys({
     name: Joi.string().messages({ "string.base": "Category name must be of type string" })
       .required().messages({ "string.empty": "Category name is required" })
@@ -47,7 +48,7 @@ router.post(CREATE_ROUTE, isAuth, celebrate({
 
   try {
     const categoriesServiceInstance = container.get(CategoriesService);
-    const payload = await categoriesServiceInstance.create(
+    const payload = await categoriesServiceInstance.createCategory(
       userId,
       name
     );
@@ -58,13 +59,14 @@ router.post(CREATE_ROUTE, isAuth, celebrate({
 });
 
 /**
- * @route  POST api/categories/addLabel
+ * @route  POST api/categories/createLabel
  * @desc   Add a Label to a Category
  * @access Private
  * @returns {object}
  * {
  *   message: string,
  *   label: {
+ *     id: ObjectId,
  *     owner: ObjectId,
  *     category: ObjectId,
  *     name: string
@@ -77,7 +79,7 @@ router.post(CREATE_ROUTE, isAuth, celebrate({
  * @param   {ObjectId} categoryId ID of this Category
  * @param   {object} label { name: string, color: string }
  */
-router.post(ADD_LABEL_ROUTE, isAuth, celebrate({
+router.post(CREATE_LABEL_ROUTE, isAuth, celebrate({
   body: Joi.object().keys({
     categoryId: Joi.objectId().message("Category ID is invalid")
       .required().messages({ "any.required": "Category ID is missing" }),
@@ -97,7 +99,7 @@ router.post(ADD_LABEL_ROUTE, isAuth, celebrate({
 
   try {
     const categoriesServiceInstance = container.get(CategoriesService);
-    const payload = await categoriesServiceInstance.addLabel(
+    const payload = await categoriesServiceInstance.createLabel(
       userId,
       categoryId,
       label
@@ -303,8 +305,8 @@ router.delete(`${DELETE_LABEL_ROUTE}/:labelId`, isAuth, celebrate({
 module.exports = (app) => app.use("/categories", router);
 
 const categoriesRoute = module.exports;
-categoriesRoute.CREATE_ROUTE = PREFIX + CREATE_ROUTE;
-categoriesRoute.ADD_LABEL_ROUTE = PREFIX + ADD_LABEL_ROUTE;
+categoriesRoute.CREATE_CATEGORY_ROUTE = PREFIX + CREATE_CATEGORY_ROUTE;
+categoriesRoute.CREATE_LABEL_ROUTE = PREFIX + CREATE_LABEL_ROUTE;
 categoriesRoute.GET_CATEGORIES_ROUTE = PREFIX + GET_CATEGORIES_ROUTE;
 categoriesRoute.GET_LABELS_ROUTE = PREFIX + GET_LABELS_ROUTE;
 categoriesRoute.EDIT_CATEGORY_ROUTE = PREFIX + EDIT_CATEGORY_ROUTE;

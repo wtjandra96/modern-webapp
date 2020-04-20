@@ -21,7 +21,7 @@ class CategoriesService {
    * @param   {ObjectId} userId User who created the Category
    * @param   {string} name
    */
-  async create (userId, name) {
+  async createCategory (userId, name) {
     const { categoryModel } = this;
 
     const categoryRecord = await categoryModel.create({
@@ -37,7 +37,7 @@ class CategoriesService {
   }
 
   /**
-   * @desc    Add a Label to a Category
+   * @desc    Create a Category Label
    * @returns {object}
    * {
    *   message: string,
@@ -54,7 +54,7 @@ class CategoriesService {
    * @param   {ObjectId} categoryId ID of this Category
    * @param   {object} label { name: string, color: string }
    */
-  async addLabel (userId, categoryId, label) {
+  async createLabel (userId, categoryId, label) {
     const { categoryModel, labelModel } = this;
 
     const categoryRecord = await categoryModel.findOne({ _id: categoryId, owner: userId }).lean();

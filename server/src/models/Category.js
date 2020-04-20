@@ -19,10 +19,18 @@ const CategorySchema = new Schema(
       unique: false
     }
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    versionKey: false
+  }
 );
 
 CategorySchema.index({ name: 1, owner: 1 }, { unique: true });
+CategorySchema.method("toJSON", function toJSON () {
+  const { _id, ...object } = this.toObject();
+  object.id = _id;
+  return object;
+});
 
 // Create default labels after Category is created
 CategorySchema.post("save", async (doc) => {

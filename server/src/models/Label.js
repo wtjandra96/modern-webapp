@@ -33,10 +33,18 @@ const LabelSchema = new Schema(
       default: false
     }
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    versionKey: false
+  }
 );
 
 LabelSchema.index({ name: 1, owner: 1, category: 1 }, { unique: true });
+LabelSchema.method("toJSON", function toJSON () {
+  const { _id, ...object } = this.toObject();
+  object.id = _id;
+  return object;
+});
 
 // Mongoose error handling middleware
 // Reference: https://mongoosejs.com/docs/middleware.html#error-handling-middleware

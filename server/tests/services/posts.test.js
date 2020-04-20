@@ -36,7 +36,7 @@ describe("Testing PostsService", () => {
     await testdb.disconnect();
   });
 
-  describe("PostsService.create(userId, categoryId, title, url, postAttributes)", () => {
+  describe("PostsService.createPost(userId, categoryId, title, url, postAttributes)", () => {
     it("Should allow creation of a post", async () => {
       const postsServiceInstance = container.get(PostsService);
 
@@ -46,7 +46,7 @@ describe("Testing PostsService", () => {
         imgSrc: sampleImgSrc
       };
 
-      const payload = await postsServiceInstance.create(
+      const payload = await postsServiceInstance.createPost(
         testUser1Id, testCategory1Id, sampleTitle, sampleUrl, postAttributes
       );
       const { message, post } = payload;
@@ -63,7 +63,7 @@ describe("Testing PostsService", () => {
     it("Should allow creation of a post with default values for postAttributes", async () => {
       const postsServiceInstance = container.get(PostsService);
 
-      const payload = await postsServiceInstance.create(
+      const payload = await postsServiceInstance.createPost(
         testUser1Id, testCategory1Id, sampleTitle, sampleUrl
       );
       const { message, post } = payload;
@@ -81,7 +81,7 @@ describe("Testing PostsService", () => {
       const postsServiceInstance = container.get(PostsService);
 
       try {
-        await postsServiceInstance.create(
+        await postsServiceInstance.createPost(
           testUser2Id, testCategory1Id, sampleTitle, sampleUrl
         );
       } catch (err) {

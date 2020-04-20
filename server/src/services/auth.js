@@ -31,7 +31,7 @@ class AuthService {
   /**
    * @desc    Login User
    * @access  Public
-   * @returns {object} { message: string, token: string }
+   * @returns {object} { message: string, token: string, user: object }
    * @param   {string} username
    * @param   {string} password
    */
@@ -60,8 +60,7 @@ class AuthService {
     // Generate authentication token
     const jwtPayload = {
       userId: userRecord.id,
-      role: userRecord.role,
-      username: userRecord.username
+      role: userRecord.role
     };
 
     const jwtOptions = {
@@ -76,7 +75,10 @@ class AuthService {
 
     const payload = {
       message: "Login success",
-      token
+      token,
+      user: {
+        username: userRecord.username
+      }
     };
     return payload;
   }

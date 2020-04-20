@@ -35,10 +35,18 @@ const PostSchema = new Schema(
       default: null
     }
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    versionKey: false
+  }
 );
 
 PostSchema.index({ owner: 1, category: 1, labels: 1 });
+PostSchema.method("toJSON", function toJSON () {
+  const { _id, ...object } = this.toObject();
+  object.id = _id;
+  return object;
+});
 
 const Post = mongoose.model("post", PostSchema);
 

@@ -15,8 +15,17 @@ const UserSchema = new mongoose.Schema(
       required: true
     }
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    versionKey: false
+  }
 );
+
+UserSchema.method("toJSON", function toJSON () {
+  const { _id, ...object } = this.toObject();
+  object.id = _id;
+  return object;
+});
 
 UserSchema.pre("save", async function hashPassword (next) {
   const user = this;

@@ -42,12 +42,12 @@ describe("Testing CategoriesService", () => {
     await testdb.disconnect();
   });
 
-  describe("CategoriesService.create(userId, name)", () => {
+  describe("CategoriesService.createCategory(userId, name)", () => {
     it("Should allow creation of a Category with six default Labels", async () => {
       expect.assertions(16);
 
       const CategoriesServiceInstance = container.get(CategoriesService);
-      const payload = await CategoriesServiceInstance.create(
+      const payload = await CategoriesServiceInstance.createCategory(
         testUser1.id,
         category1Name
       );
@@ -70,7 +70,7 @@ describe("Testing CategoriesService", () => {
       expect.assertions(3);
 
       const CategoriesServiceInstance = container.get(CategoriesService);
-      const payload = await CategoriesServiceInstance.create(
+      const payload = await CategoriesServiceInstance.createCategory(
         testUser1.id,
         category2Name
       );
@@ -86,7 +86,7 @@ describe("Testing CategoriesService", () => {
 
       const CategoriesServiceInstance = container.get(CategoriesService);
       try {
-        await CategoriesServiceInstance.create(testUser1.id, category1Name);
+        await CategoriesServiceInstance.createCategory(testUser1.id, category1Name);
       } catch (err) {
         expect(err).toBeInstanceOf(MongoError);
         expect(err.httpStatusCode).toStrictEqual(400);
@@ -98,7 +98,7 @@ describe("Testing CategoriesService", () => {
       expect.assertions(3);
 
       const CategoriesServiceInstance = container.get(CategoriesService);
-      const payload = await CategoriesServiceInstance.create(
+      const payload = await CategoriesServiceInstance.createCategory(
         testUser2.id,
         category1Name
       );
@@ -161,7 +161,7 @@ describe("Testing CategoriesService", () => {
     });
   });
 
-  describe("CategoriesService.addLabel(userId, name)", () => {
+  describe("CategoriesService.createLabel(userId, name)", () => {
     let testCategory = null;
     beforeAll(async () => {
       testCategory = await CategoryModel.findOne({ owner: testUser1.id });
@@ -177,7 +177,7 @@ describe("Testing CategoriesService", () => {
       };
 
       try {
-        await CategoriesServiceInstance.addLabel(testUser1.id, null, newLabel);
+        await CategoriesServiceInstance.createLabel(testUser1.id, null, newLabel);
       } catch (err) {
         expect(err).toBeInstanceOf(ServiceError);
         expect(err.httpStatusCode).toBe(404);
@@ -195,7 +195,7 @@ describe("Testing CategoriesService", () => {
       };
 
       try {
-        await CategoriesServiceInstance.addLabel(testUser2.id, testCategory.id, newLabel);
+        await CategoriesServiceInstance.createLabel(testUser2.id, testCategory.id, newLabel);
       } catch (err) {
         expect(err).toBeInstanceOf(ServiceError);
         expect(err.httpStatusCode).toStrictEqual(404);
@@ -211,7 +211,7 @@ describe("Testing CategoriesService", () => {
         name: "Test",
         color: "#000"
       };
-      const payload = await CategoriesServiceInstance.addLabel(
+      const payload = await CategoriesServiceInstance.createLabel(
         testUser1.id, testCategory.id, newLabel
       );
       const { message, label } = payload;
@@ -236,7 +236,7 @@ describe("Testing CategoriesService", () => {
           name: "Test",
           color: "#000"
         };
-        await CategoriesServiceInstance.addLabel(testUser1.id, testCategory.id, label);
+        await CategoriesServiceInstance.createLabel(testUser1.id, testCategory.id, label);
       } catch (err) {
         expect(err).toBeInstanceOf(MongoError);
         expect(err.httpStatusCode).toStrictEqual(400);

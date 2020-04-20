@@ -21,7 +21,7 @@ const { getApp } = require("../../../src/app");
 const expressLoader = require("../../../src/loaders/express");
 
 const {
-  CREATE_ROUTE,
+  CREATE_POST_ROUTE,
   ADD_LABEL_ROUTE,
   GET_POSTS_ROUTE,
   DELETE_POST_ROUTE,
@@ -77,7 +77,7 @@ describe("Testing posts route", () => {
     await testdb.disconnect();
   });
 
-  describe(`Testing ${CREATE_ROUTE}`, () => {
+  describe(`Testing ${CREATE_POST_ROUTE}`, () => {
     describe("Validation layer", () => {
       test("Incorrect param types", async () => {
         expect.assertions(1);
@@ -91,7 +91,7 @@ describe("Testing posts route", () => {
             imgSrc: {}
           }
         };
-        const payload = await request(app).post(CREATE_ROUTE)
+        const payload = await request(app).post(CREATE_POST_ROUTE)
           .set("x-auth-token", testUserId)
           .send(requestBody);
 
@@ -105,7 +105,7 @@ describe("Testing posts route", () => {
         const requestBody = {
 
         };
-        const payload = await request(app).post(CREATE_ROUTE)
+        const payload = await request(app).post(CREATE_POST_ROUTE)
           .set("x-auth-token", testUserId)
           .send(requestBody);
 
@@ -125,7 +125,7 @@ describe("Testing posts route", () => {
             imgSrc: ""
           }
         };
-        const payload = await request(app).post(CREATE_ROUTE)
+        const payload = await request(app).post(CREATE_POST_ROUTE)
           .set("x-auth-token", testUserId)
           .send(requestBody);
 
@@ -142,7 +142,7 @@ describe("Testing posts route", () => {
           url: "",
           postAttributes: "12345"
         };
-        const payload = await request(app).post(CREATE_ROUTE)
+        const payload = await request(app).post(CREATE_POST_ROUTE)
           .set("x-auth-token", testUserId)
           .send(requestBody);
 
@@ -158,7 +158,7 @@ describe("Testing posts route", () => {
           title: "123",
           url: "123"
         };
-        const payload = await request(app).post(CREATE_ROUTE)
+        const payload = await request(app).post(CREATE_POST_ROUTE)
           .set("x-auth-token", testUserId)
           .send(requestBody);
 
@@ -176,7 +176,7 @@ describe("Testing posts route", () => {
         url: "123"
       };
       const payload = await request(app)
-        .post(CREATE_ROUTE)
+        .post(CREATE_POST_ROUTE)
         .set("x-auth-token", testUserId)
         .send(requestBody);
 
@@ -193,7 +193,7 @@ describe("Testing posts route", () => {
         url: "123"
       };
       const payload = await request(app)
-        .post(CREATE_ROUTE)
+        .post(CREATE_POST_ROUTE)
         .set("x-auth-token", testUserId)
         .send(requestBody);
 
@@ -210,7 +210,7 @@ describe("Testing posts route", () => {
         url: "123"
       };
       const payload = await request(app)
-        .post(CREATE_ROUTE)
+        .post(CREATE_POST_ROUTE)
         .set("x-auth-token", testCategoryId)
         .send(requestBody);
 

@@ -11,7 +11,7 @@ const router = express.Router();
 
 const PREFIX = "/api/posts";
 
-const CREATE_ROUTE = "/create";
+const CREATE_POST_ROUTE = "/createPost";
 const ADD_LABEL_ROUTE = "/addLabel";
 const GET_POSTS_ROUTE = "/getPosts";
 const DELETE_POST_ROUTE = "/deletePost";
@@ -19,7 +19,7 @@ const EDIT_POST_ROUTE = "/editPost";
 const REMOVE_LABEL_ROUTE = "/removeLabel";
 
 /**
- * @route  POST api/posts/create
+ * @route  POST api/posts/createPost
  * @desc    Create a new Post
  * @access Private
  * @returns {object}
@@ -43,7 +43,7 @@ const REMOVE_LABEL_ROUTE = "/removeLabel";
  * @param   {object} postAttributes each key optional
  * { originalDate: date (YYYY-MM-DD HH:mm), imgSrc: string }
  */
-router.post(CREATE_ROUTE, isAuth, celebrate({
+router.post(CREATE_POST_ROUTE, isAuth, celebrate({
   body: Joi.object().keys({
     categoryId: Joi.objectId().message("Category ID is invalid")
       .required().messages({ "any.required": "Category ID is missing" }),
@@ -64,7 +64,7 @@ router.post(CREATE_ROUTE, isAuth, celebrate({
 
   try {
     const postsServiceInstance = container.get(PostsService);
-    const payload = await postsServiceInstance.create(
+    const payload = await postsServiceInstance.createPost(
       userId,
       categoryId,
       title,
@@ -262,7 +262,7 @@ router.post(REMOVE_LABEL_ROUTE, isAuth, celebrate({
 module.exports = (app) => app.use("/posts", router);
 
 const postsRoute = module.exports;
-postsRoute.CREATE_ROUTE = PREFIX + CREATE_ROUTE;
+postsRoute.CREATE_POST_ROUTE = PREFIX + CREATE_POST_ROUTE;
 postsRoute.ADD_LABEL_ROUTE = PREFIX + ADD_LABEL_ROUTE;
 postsRoute.GET_POSTS_ROUTE = PREFIX + GET_POSTS_ROUTE;
 postsRoute.DELETE_POST_ROUTE = PREFIX + DELETE_POST_ROUTE;
