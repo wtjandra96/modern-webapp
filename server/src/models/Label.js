@@ -27,10 +27,6 @@ const LabelSchema = new Schema(
     color: {
       type: String,
       default: "#d6d6d6"
-    },
-    checked: {
-      type: Boolean,
-      default: false
     }
   },
   {

@@ -70,8 +70,7 @@ router.post(CREATE_CATEGORY_ROUTE, isAuth, celebrate({
  *     owner: ObjectId,
  *     category: ObjectId,
  *     name: string
- *     color: string,
- *     checked: boolean
+ *     color: string
  *   }
  * }
 *
@@ -147,8 +146,7 @@ router.get(GET_CATEGORIES_ROUTE, isAuth, async (req, res, next) => {
  *     owner: ObjectId,
  *     category: ObjectId,
  *     name: string
- *     color: string,
- *     checked: boolean
+ *     color: string
  *   }]
  * }
  *

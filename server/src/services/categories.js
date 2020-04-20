@@ -45,8 +45,7 @@ class CategoriesService {
    *     owner: ObjectId,
    *     category: ObjectId,
    *     name: string
-   *     color: string,
-   *     checked: boolean
+   *     color: string
    *   }
    * }
    *
@@ -111,8 +110,7 @@ class CategoriesService {
    *     owner: ObjectId,
    *     category: ObjectId,
    *     name: string
-   *     color: string,
-   *     checked: boolean
+   *     color: string
    *   }]
    * }
    *
