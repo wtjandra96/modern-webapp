@@ -113,7 +113,7 @@ router.post(ADD_LABEL_ROUTE, isAuth, celebrate({
 
 /**
  * @route  GET api/posts/getPosts
- * @desc    Get Posts
+ * @desc   Get Posts
  * @access Private
  * @returns {object}
  * {
@@ -131,13 +131,12 @@ router.post(ADD_LABEL_ROUTE, isAuth, celebrate({
  * }]
  *
  * @param   {ObjectId} userId User who owns the Posts (from isAuth middleware)
- * @param   {ObjectId} categoryId Posts of a particular Category
- * @param   {array} labelIds optional [ObjectId]
+ * @param   {ObjectId} categoryId optional - Posts of a particular Category
+ * @param   {array} labelIds optional - [ObjectId]
  */
 router.get(GET_POSTS_ROUTE, isAuth, celebrate({
   query: Joi.object().keys({
-    categoryId: Joi.objectId().message("Category ID is invalid")
-      .required().messages({ "any.required": "Category ID is missing" }),
+    categoryId: Joi.objectId().message("Category ID is invalid"),
     labelIds: Joi.array().items(
       Joi.objectId().message("Label ID is invalid")
     ).messages({ "array.base": "Label IDs must be an array" })
@@ -148,7 +147,7 @@ router.get(GET_POSTS_ROUTE, isAuth, celebrate({
 
   try {
     const postsServiceInstance = container.get(PostsService);
-    const payload = await postsServiceInstance.get(userId, categoryId, labelIds);
+    const payload = await postsServiceInstance.getPosts(userId, categoryId, labelIds);
     return res.status(200).send(payload);
   } catch (err) {
     return next(err);
@@ -188,7 +187,7 @@ router.post(EDIT_POST_ROUTE, isAuth, celebrate({
 
   try {
     const postsServiceInstance = container.get(PostsService);
-    const payload = await postsServiceInstance.edit(
+    const payload = await postsServiceInstance.editPost(
       userId,
       postId,
       title,
@@ -221,7 +220,7 @@ router.delete(`${DELETE_POST_ROUTE}/:postId`, isAuth, celebrate({
 
   try {
     const postsServiceInstance = container.get(PostsService);
-    const payload = await postsServiceInstance.delete(userId, postId);
+    const payload = await postsServiceInstance.deletePost(userId, postId);
     return res.status(200).send(payload);
   } catch (err) {
     return next(err);

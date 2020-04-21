@@ -304,7 +304,7 @@ describe("Testing posts route", () => {
         expect.assertions(1);
 
         const requestQuery = {
-          categoryId: {},
+          categoryId: "a",
           labelIds: [{ a: "b" }]
         };
         const payload = await request(app).get(GET_POSTS_ROUTE)

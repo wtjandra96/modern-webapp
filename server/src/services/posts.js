@@ -73,17 +73,21 @@ class PostsService {
    * }]
    *
    * @param   {ObjectId} userId User who owns the Posts
-   * @param   {ObjectId} categoryId Posts of a particular Category
-   * @param   {array} labelIds optional [ObjectId]
+   * @param   {ObjectId} categoryId optional - Posts of a particular Category
+   * @param   {array} labelIds optional - [ObjectId]
    */
-  async get (userId, categoryId, labelIds = null) {
+  async getPosts (userId, categoryId, labelIds) {
     const { postModel } = this;
 
     const conditions = {
-      owner: userId,
-      category: categoryId
+      owner: userId
     };
-    if (labelIds !== null) {
+
+    if (categoryId) {
+      conditions.category = categoryId;
+    }
+
+    if (labelIds) {
       conditions.labels = {
         $elemMatch: {
           $in: labelIds
@@ -110,7 +114,7 @@ class PostsService {
    * @param   {object} postAttributes each key optional
    * { labels: [ObjectId], originalDate: String, imgSrc: String }
    */
-  async edit (userId, postId, title, url, postAttributes) {
+  async editPost (userId, postId, title, url, postAttributes) {
     const { postModel } = this;
 
     const postRecord = await postModel.findOneAndUpdate({ _id: postId, owner: userId }, {
@@ -135,7 +139,7 @@ class PostsService {
    * @param   {ObjectId} userId User who owns the Posts
    * @param   {ObjectId} postId The Post in question
    */
-  async delete (userId, postId) {
+  async deletePost (userId, postId) {
     const { postModel } = this;
 
     await postModel.findOneAndDelete({ _id: postId, owner: userId });
