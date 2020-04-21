@@ -72,16 +72,18 @@ describe("Testing AuthService", () => {
     });
 
     it("Should login User with valid credentials", async () => {
-      expect.assertions(2);
+      expect.assertions(4);
 
       const authServiceInstance = container.get(AuthService);
       const payload = await authServiceInstance.login(
         "test1",
         "password1"
       );
-      const { message, token } = payload;
+      const { message, token, user } = payload;
       expect(message).toBeDefined();
       expect(token).toBeDefined();
+      expect(user).toBeDefined();
+      expect(user.username).toStrictEqual("test1");
     });
   });
 });

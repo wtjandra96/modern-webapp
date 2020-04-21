@@ -72,7 +72,14 @@ router.post("/register", celebrate({
  * @route  POST api/auth/login
  * @desc   Login User
  * @access Public
- * @returns {object} { message: string, token: string, username: string }
+   * @returns {object}
+   * {
+   *   message: string,
+   *   token: string,
+   *   user: {
+   *     username: string
+   *   }
+   * }
  * @param   {string} username
  * @param   {string} password
  */

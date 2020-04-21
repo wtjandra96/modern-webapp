@@ -31,7 +31,14 @@ class AuthService {
   /**
    * @desc    Login User
    * @access  Public
-   * @returns {object} { message: string, token: string, user: object }
+   * @returns {object}
+   * {
+   *   message: string,
+   *   token: string,
+   *   user: {
+   *     username: string
+   *   }
+   * }
    * @param   {string} username
    * @param   {string} password
    */
