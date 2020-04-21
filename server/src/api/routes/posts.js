@@ -26,6 +26,7 @@ const REMOVE_LABEL_ROUTE = "/removeLabel";
  * {
  *   message: string,
  *   post: {
+ *     id: ObjectId,
  *     owner: ObjectId,
  *     category: ObjectId,
  *     labels: [ObjectId],
@@ -118,6 +119,7 @@ router.post(ADD_LABEL_ROUTE, isAuth, celebrate({
  * {
  *   message: string,
  *   posts: [{
+ *     id: ObjectId,
  *     owner: ObjectId,
  *     category: ObjectId,
  *     labels: [ObjectId],

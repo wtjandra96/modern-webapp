@@ -32,8 +32,6 @@ const EDIT_CATEGORY_ROUTE = "/editCategory";
  *     name: string
  *   }
  * }
- *
- * @returns {object} payload.category
  * @param   {ObjectId} userId User who created the Category (from middleware)
  * @param   {string} name
  */
@@ -117,6 +115,7 @@ router.post(CREATE_LABEL_ROUTE, isAuth, celebrate({
  * {
  *   message: string,
  *   categories: [{
+ *     id: ObjectId,
  *     owner: ObjectId,
  *     name: string
  *   }]
@@ -143,6 +142,7 @@ router.get(GET_CATEGORIES_ROUTE, isAuth, async (req, res, next) => {
  * {
  *   message: string,
  *   labels: [{
+ *     id: ObjectId,
  *     owner: ObjectId,
  *     category: ObjectId,
  *     name: string

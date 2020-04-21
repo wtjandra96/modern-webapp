@@ -12,12 +12,12 @@ class CategoriesService {
    * {
    *   message: string,
    *   category: {
+   *     id: ObjectId,
    *     owner: ObjectId,
    *     name: string
    *   }
    * }
    *
-   * @returns {object} payload.category
    * @param   {ObjectId} userId User who created the Category
    * @param   {string} name
    */
@@ -42,6 +42,7 @@ class CategoriesService {
    * {
    *   message: string,
    *   label: {
+   *     id: ObjectId,
    *     owner: ObjectId,
    *     category: ObjectId,
    *     name: string
@@ -82,6 +83,7 @@ class CategoriesService {
    * {
    *   message: string,
    *   categories: [{
+   *     id: ObjectId,
    *     owner: ObjectId,
    *     name: string
    *   }]
@@ -107,6 +109,7 @@ class CategoriesService {
    * {
    *   message: string,
    *   labels: [{
+   *     id: ObjectId,
    *     owner: ObjectId,
    *     category: ObjectId,
    *     name: string

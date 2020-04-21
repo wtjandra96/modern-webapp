@@ -12,6 +12,7 @@ class PostsService {
    * {
    *   message: string,
    *   post: {
+   *     id: ObjectId,
    *     owner: ObjectId,
    *     category: ObjectId,
    *     labels: [ObjectId],
@@ -60,6 +61,7 @@ class PostsService {
    * {
    *   message: string,
    *   posts: [{
+   *     id: ObjectId,
    *     owner: ObjectId,
    *     category: ObjectId,
    *     labels: [ObjectId],
