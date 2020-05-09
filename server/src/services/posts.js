@@ -149,60 +149,6 @@ class PostsService {
     };
     return payload;
   }
-
-  /**
-   * @desc    Add Label to a Post
-   * @returns {object} { message: string }
-   * @param   {ObjectId} userId User who owns the Posts
-   * @param   {ObjectId} postId The Post in question
-   * @param   {ObjectId} labelId ID of Label to be added to Post
-   */
-  async addLabel (userId, postId, labelId) {
-    const { postModel } = this;
-
-    const postRecord = await postModel.findOneAndUpdate({ _id: postId, owner: userId }, {
-      $addToSet: {
-        labels: labelId
-      }
-    }, { new: true });
-    if (!postRecord) {
-      throw new ServiceError(404, [
-        { errorMessage: "Post not found" }
-      ]);
-    }
-
-    const payload = {
-      message: "Post updated"
-    };
-    return payload;
-  }
-
-  /**
-   * @desc    Remove Label from a Post
-   * @returns {object} { message: string }
-   * @param   {ObjectId} userId User who owns the Posts
-   * @param   {ObjectId} postId The Post in questio
-   * @param   {ObjectId} labelId ID of Label to be removed from Post
-   */
-  async removeLabel (userId, postId, labelId) {
-    const { postModel } = this;
-
-    const postRecord = await postModel.findOneAndUpdate({ _id: postId, owner: userId }, {
-      $pull: {
-        labels: labelId
-      }
-    }, { new: true });
-    if (!postRecord) {
-      throw new ServiceError(404, [
-        { errorMessage: "Post not found" }
-      ]);
-    }
-
-    const payload = {
-      message: "Post updated"
-    };
-    return payload;
-  }
 }
 
 module.exports = PostsService;

@@ -13,6 +13,7 @@ const PREFIX = "/api/categories";
 const CREATE_CATEGORY_ROUTE = "/createCategory";
 const CREATE_LABEL_ROUTE = "/createLabel";
 const GET_LABELS_ROUTE = "/getLabels";
+const GET_CATEGORY_ROUTE = "/getCategory";
 const GET_CATEGORIES_ROUTE = "/getCategories";
 const DELETE_LABEL_ROUTE = "/deleteLabel";
 const DELETE_CATEGORY_ROUTE = "/deleteCategory";
@@ -128,6 +129,40 @@ router.get(GET_CATEGORIES_ROUTE, isAuth, async (req, res, next) => {
   try {
     const categoriesServiceInstance = container.get(CategoriesService);
     const payload = await categoriesServiceInstance.getCategories(userId);
+    return res.status(200).send(payload);
+  } catch (err) {
+    return next(err);
+  }
+});
+
+/**
+ * @route  GET api/categories/getCategory
+ * @desc   Get Category information
+ * @access Private
+ * @returns {object}
+ * {
+ *   message: string,
+ *   category: {
+ *     id: ObjectId,
+ *     owner: ObjectId,
+ *     categoryName: string
+ *   }
+ * }
+ * @param   {ObjectId} userId User who created the Category (from middleware)
+ * @param   {string} categoryName
+ */
+router.get(GET_CATEGORY_ROUTE, isAuth, celebrate({
+  query: {
+    categoryName: Joi.string().messages({ "string.base": "Category name must be of type string" })
+  }
+}, { abortEarly: false }), async (req, res, next) => {
+  const { userId } = req;
+  const { categoryName } = req.query;
+
+  try {
+    const categoriesServiceInstance = container.get(CategoriesService);
+    const payload = await categoriesServiceInstance.getCategory(userId, categoryName);
+    console.log(payload);
     return res.status(200).send(payload);
   } catch (err) {
     return next(err);

@@ -12,7 +12,6 @@ const testUser2Id = "5e868964c037680d183cd5a4";
 const testCategory2Id = "5e868964c037680d183cd5a6";
 const testLabel1Id = "5e868964c037680d183cd5a7";
 const testLabel2Id = "5e868964c037680d183cd5a8";
-const testLabel3Id = "5e868964c037680d183cd5a9";
 const testDateString = "2020-01-01";
 const sampleTitle = "Sample Title";
 const sampleUrl = "https://www.example.com";
@@ -230,116 +229,6 @@ describe("Testing PostsService", () => {
 
       const post = await PostModel.findById(testPost.id);
       expect(post).toBeNull();
-    });
-  });
-
-  describe("PostsService.addLabel(userId, postId, labelId)", () => {
-    let testPost = null;
-    beforeAll(async () => {
-      testPost = await PostModel.findOne({
-        owner: testUser1Id,
-        category: testCategory1Id,
-        labels: {
-          $elemMatch: {
-            $in: [testLabel1Id]
-          }
-        }
-      });
-    });
-
-    it("Should throw an error if Post is not found", async () => {
-      const postsServiceInstance = container.get(PostsService);
-
-      try {
-        await postsServiceInstance.addLabel(testUser1Id, null, testLabel1Id);
-      } catch (err) {
-        expect(err).toBeInstanceOf(ServiceError);
-        expect(err.httpStatusCode).toStrictEqual(404);
-        expect(err.errors.length).toStrictEqual(1);
-      }
-    });
-
-    it("Should not allow non authorized User to add Label to Post", async () => {
-      const postsServiceInstance = container.get(PostsService);
-
-      try {
-        await postsServiceInstance.addLabel(testUser2Id, testPost.id, testLabel1Id);
-      } catch (err) {
-        expect(err).toBeInstanceOf(ServiceError);
-        expect(err.httpStatusCode).toStrictEqual(404);
-        expect(err.errors.length).toStrictEqual(1);
-      }
-    });
-
-    it("Should not allow Post to have duplicate Labels", async () => {
-      const postsServiceInstance = container.get(PostsService);
-
-      const payload = await postsServiceInstance.addLabel(testUser1Id, testPost.id, testLabel1Id);
-      const { message } = payload;
-      expect(message).toBeDefined();
-
-      const post = await PostModel.findById(testPost.id);
-      expect(post.labels.length).toStrictEqual(2);
-    });
-
-    it("Should allow owner to add Label to Post", async () => {
-      const postsServiceInstance = container.get(PostsService);
-
-      const payload = await postsServiceInstance.addLabel(testUser1Id, testPost.id, testLabel3Id);
-      const { message } = payload;
-      expect(message).toBeDefined();
-
-      const post = await PostModel.findById(testPost.id);
-      expect(post.labels.length).toStrictEqual(3);
-    });
-  });
-
-  describe("PostsService.removeLabel(userId, postId, labelId)", () => {
-    let testPost = null;
-    beforeAll(async () => {
-      testPost = await PostModel.findOne({
-        owner: testUser1Id,
-        category: testCategory1Id,
-        labels: {
-          $elemMatch: {
-            $in: [testLabel1Id]
-          }
-        }
-      });
-    });
-
-    it("Should throw an error if Post is not found", async () => {
-      const postsServiceInstance = container.get(PostsService);
-
-      try {
-        await postsServiceInstance.removeLabel(testUser1Id, null, testLabel1Id);
-      } catch (err) {
-        expect(err).toBeInstanceOf(ServiceError);
-        expect(err.httpStatusCode).toStrictEqual(404);
-        expect(err.errors.length).toStrictEqual(1);
-      }
-    });
-
-    it("Should not allow non authorized User to remove Label from Post", async () => {
-      const postsServiceInstance = container.get(PostsService);
-
-      try {
-        await postsServiceInstance.removeLabel(testUser2Id, testPost.id, testLabel1Id);
-      } catch (err) {
-        expect(err).toBeInstanceOf(ServiceError);
-        expect(err.httpStatusCode).toStrictEqual(404);
-        expect(err.errors.length).toStrictEqual(1);
-      }
-    });
-
-    it("Should allow owner to remove Label from Post", async () => {
-      const postsServiceInstance = container.get(PostsService);
-
-      const payload = await postsServiceInstance.removeLabel(
-        testUser1Id, testPost.id, testLabel1Id
-      );
-      const { message } = payload;
-      expect(message).toBeDefined();
     });
   });
 });

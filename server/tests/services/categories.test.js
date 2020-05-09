@@ -127,6 +127,20 @@ describe("Testing CategoriesService", () => {
     });
   });
 
+  describe("CategoriesService.getCategory(userId, categoryName)", () => {
+    it("Should get User's Category by Name", async () => {
+      expect.assertions(3);
+
+      const CategoriesServiceInstance = container.get(CategoriesService);
+      const payload = await CategoriesServiceInstance.getCategory(testUser1.id, category1Name);
+      const { message, category } = payload;
+
+      expect(message).toBeDefined();
+      expect(category.name).toStrictEqual(category1Name);
+      expect(category.owner.toString()).toStrictEqual(testUser1.id);
+    });
+  });
+
   describe("CategoriesService.getLabel(userId, categoryId)", () => {
     let testCategory = null;
     beforeAll(async () => {

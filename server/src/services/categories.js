@@ -104,6 +104,36 @@ class CategoriesService {
   }
 
   /**
+   * @desc    Get Category information
+   * @returns {object}
+   * {
+   *   message: string,
+   *   category: {
+   *     id: ObjectId,
+   *     owner: ObjectId,
+   *     name: string
+   *   }
+   * }
+   *
+   * @param   {ObjectId} userId User who created the Category
+   * @param   {string} categoryName
+   */
+  async getCategory (userId, categoryName) {
+    const { categoryModel } = this;
+
+    const categoryRecord = await categoryModel.findOne({
+      owner: userId,
+      name: categoryName
+    });
+
+    const payload = {
+      message: "Category retrieved",
+      category: categoryRecord
+    };
+    return payload;
+  }
+
+  /**
    * @desc    Get all Labels of a Category
    * @returns {object}
    * {
