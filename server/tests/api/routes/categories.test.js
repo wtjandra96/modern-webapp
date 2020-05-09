@@ -20,8 +20,8 @@ const { getApp } = require("../../../src/app");
 const expressLoader = require("../../../src/loaders/express");
 
 const {
-  CREATE_ROUTE,
-  ADD_LABEL_ROUTE,
+  CREATE_CATEGORY_ROUTE,
+  CREATE_LABEL_ROUTE,
   GET_CATEGORIES_ROUTE,
   GET_LABELS_ROUTE,
   EDIT_CATEGORY_ROUTE,
@@ -57,12 +57,12 @@ describe("Testing categories route", () => {
     await testdb.disconnect();
   });
 
-  describe(`Testing ${CREATE_ROUTE}`, () => {
+  describe(`Testing ${CREATE_CATEGORY_ROUTE}`, () => {
     describe("Validation layer", () => {
       test("Not string", async () => {
         expect.assertions(2);
         const payload = await request(app)
-          .post(CREATE_ROUTE)
+          .post(CREATE_CATEGORY_ROUTE)
           .set("x-auth-token", testUserId)
           .send({ name: 1 });
 
@@ -74,7 +74,7 @@ describe("Testing categories route", () => {
       test("Empty string", async () => {
         expect.assertions(2);
         const payload = await request(app)
-          .post(CREATE_ROUTE)
+          .post(CREATE_CATEGORY_ROUTE)
           .set("x-auth-token", testUserId)
           .send({ name: "" });
 
@@ -86,7 +86,7 @@ describe("Testing categories route", () => {
       test("null", async () => {
         expect.assertions(2);
         const payload = await request(app)
-          .post(CREATE_ROUTE)
+          .post(CREATE_CATEGORY_ROUTE)
           .set("x-auth-token", testUserId)
           .send({ name: null });
 
@@ -99,7 +99,7 @@ describe("Testing categories route", () => {
     it("Should return status code 201 given valid Category name", async () => {
       expect.assertions(1);
       const payload = await request(app)
-        .post(CREATE_ROUTE)
+        .post(CREATE_CATEGORY_ROUTE)
         .set("x-auth-token", testUserId)
         .send({ name: testCategoryName });
 
@@ -110,7 +110,7 @@ describe("Testing categories route", () => {
     it("Should return status code 400 if a Category with the same name exists", async () => {
       expect.assertions(1);
       const payload = await request(app)
-        .post(CREATE_ROUTE)
+        .post(CREATE_CATEGORY_ROUTE)
         .set("x-auth-token", testUserId)
         .send({ name: testCategoryName });
 
@@ -119,7 +119,7 @@ describe("Testing categories route", () => {
     });
   });
 
-  describe(`Testing ${ADD_LABEL_ROUTE}`, () => {
+  describe(`Testing ${CREATE_LABEL_ROUTE}`, () => {
     describe("Validation layer", () => {
       test("Not string", async () => {
         expect.assertions(2);
@@ -133,7 +133,7 @@ describe("Testing categories route", () => {
         };
 
         const payload = await request(app)
-          .post(ADD_LABEL_ROUTE)
+          .post(CREATE_LABEL_ROUTE)
           .set("x-auth-token", testUserId)
           .send(requestBody);
 
@@ -154,7 +154,7 @@ describe("Testing categories route", () => {
         };
 
         const payload = await request(app)
-          .post(ADD_LABEL_ROUTE)
+          .post(CREATE_LABEL_ROUTE)
           .set("x-auth-token", testUserId)
           .send(requestBody);
 
@@ -175,7 +175,7 @@ describe("Testing categories route", () => {
         };
 
         const payload = await request(app)
-          .post(ADD_LABEL_ROUTE)
+          .post(CREATE_LABEL_ROUTE)
           .set("x-auth-token", testUserId)
           .send(requestBody);
 
@@ -196,7 +196,7 @@ describe("Testing categories route", () => {
         };
 
         const payload = await request(app)
-          .post(ADD_LABEL_ROUTE)
+          .post(CREATE_LABEL_ROUTE)
           .set("x-auth-token", testUserId)
           .send(requestBody);
 
@@ -214,7 +214,7 @@ describe("Testing categories route", () => {
         };
 
         const payload = await request(app)
-          .post(ADD_LABEL_ROUTE)
+          .post(CREATE_LABEL_ROUTE)
           .set("x-auth-token", testUserId)
           .send(requestBody);
 
@@ -232,7 +232,7 @@ describe("Testing categories route", () => {
         };
 
         const payload = await request(app)
-          .post(ADD_LABEL_ROUTE)
+          .post(CREATE_LABEL_ROUTE)
           .set("x-auth-token", testUserId)
           .send(requestBody);
 
@@ -252,7 +252,7 @@ describe("Testing categories route", () => {
       };
 
       const payload = await request(app)
-        .post(ADD_LABEL_ROUTE)
+        .post(CREATE_LABEL_ROUTE)
         .set("x-auth-token", nonAuthorizedUserId)
         .send(responseBody);
 
@@ -270,7 +270,7 @@ describe("Testing categories route", () => {
       };
 
       const payload = await request(app)
-        .post(ADD_LABEL_ROUTE)
+        .post(CREATE_LABEL_ROUTE)
         .set("x-auth-token", testUserId)
         .send(responseBody);
 

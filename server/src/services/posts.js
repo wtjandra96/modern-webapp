@@ -12,6 +12,7 @@ class PostsService {
    * {
    *   message: string,
    *   post: {
+   *     id: ObjectId,
    *     owner: ObjectId,
    *     category: ObjectId,
    *     labels: [ObjectId],
@@ -29,7 +30,7 @@ class PostsService {
    * @param   {object} postAttributes each key optional
    * { originalDate: String, imgSrc: String }
    */
-  async create (userId, categoryId, title, url, postAttributes) {
+  async createPost (userId, categoryId, title, url, postAttributes) {
     const { categoryModel, postModel } = this;
 
     const categoryRecord = await categoryModel.findOne({ _id: categoryId, owner: userId }).lean();
@@ -60,6 +61,7 @@ class PostsService {
    * {
    *   message: string,
    *   posts: [{
+   *     id: ObjectId,
    *     owner: ObjectId,
    *     category: ObjectId,
    *     labels: [ObjectId],
@@ -71,17 +73,21 @@ class PostsService {
    * }]
    *
    * @param   {ObjectId} userId User who owns the Posts
-   * @param   {ObjectId} categoryId Posts of a particular Category
-   * @param   {array} labelIds optional [ObjectId]
+   * @param   {ObjectId} categoryId optional - Posts of a particular Category
+   * @param   {array} labelIds optional - [ObjectId]
    */
-  async get (userId, categoryId, labelIds = null) {
+  async getPosts (userId, categoryId, labelIds) {
     const { postModel } = this;
 
     const conditions = {
-      owner: userId,
-      category: categoryId
+      owner: userId
     };
-    if (labelIds !== null) {
+
+    if (categoryId) {
+      conditions.category = categoryId;
+    }
+
+    if (labelIds) {
       conditions.labels = {
         $elemMatch: {
           $in: labelIds
@@ -108,7 +114,7 @@ class PostsService {
    * @param   {object} postAttributes each key optional
    * { labels: [ObjectId], originalDate: String, imgSrc: String }
    */
-  async edit (userId, postId, title, url, postAttributes) {
+  async editPost (userId, postId, title, url, postAttributes) {
     const { postModel } = this;
 
     const postRecord = await postModel.findOneAndUpdate({ _id: postId, owner: userId }, {
@@ -133,67 +139,13 @@ class PostsService {
    * @param   {ObjectId} userId User who owns the Posts
    * @param   {ObjectId} postId The Post in question
    */
-  async delete (userId, postId) {
+  async deletePost (userId, postId) {
     const { postModel } = this;
 
     await postModel.findOneAndDelete({ _id: postId, owner: userId });
 
     const payload = {
       message: "Post deleted"
-    };
-    return payload;
-  }
-
-  /**
-   * @desc    Add Label to a Post
-   * @returns {object} { message: string }
-   * @param   {ObjectId} userId User who owns the Posts
-   * @param   {ObjectId} postId The Post in question
-   * @param   {ObjectId} labelId ID of Label to be added to Post
-   */
-  async addLabel (userId, postId, labelId) {
-    const { postModel } = this;
-
-    const postRecord = await postModel.findOneAndUpdate({ _id: postId, owner: userId }, {
-      $addToSet: {
-        labels: labelId
-      }
-    }, { new: true });
-    if (!postRecord) {
-      throw new ServiceError(404, [
-        { errorMessage: "Post not found" }
-      ]);
-    }
-
-    const payload = {
-      message: "Post updated"
-    };
-    return payload;
-  }
-
-  /**
-   * @desc    Remove Label from a Post
-   * @returns {object} { message: string }
-   * @param   {ObjectId} userId User who owns the Posts
-   * @param   {ObjectId} postId The Post in questio
-   * @param   {ObjectId} labelId ID of Label to be removed from Post
-   */
-  async removeLabel (userId, postId, labelId) {
-    const { postModel } = this;
-
-    const postRecord = await postModel.findOneAndUpdate({ _id: postId, owner: userId }, {
-      $pull: {
-        labels: labelId
-      }
-    }, { new: true });
-    if (!postRecord) {
-      throw new ServiceError(404, [
-        { errorMessage: "Post not found" }
-      ]);
-    }
-
-    const payload = {
-      message: "Post updated"
     };
     return payload;
   }

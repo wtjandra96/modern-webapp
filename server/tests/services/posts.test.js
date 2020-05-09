@@ -12,7 +12,6 @@ const testUser2Id = "5e868964c037680d183cd5a4";
 const testCategory2Id = "5e868964c037680d183cd5a6";
 const testLabel1Id = "5e868964c037680d183cd5a7";
 const testLabel2Id = "5e868964c037680d183cd5a8";
-const testLabel3Id = "5e868964c037680d183cd5a9";
 const testDateString = "2020-01-01";
 const sampleTitle = "Sample Title";
 const sampleUrl = "https://www.example.com";
@@ -36,7 +35,7 @@ describe("Testing PostsService", () => {
     await testdb.disconnect();
   });
 
-  describe("PostsService.create(userId, categoryId, title, url, postAttributes)", () => {
+  describe("PostsService.createPost(userId, categoryId, title, url, postAttributes)", () => {
     it("Should allow creation of a post", async () => {
       const postsServiceInstance = container.get(PostsService);
 
@@ -46,7 +45,7 @@ describe("Testing PostsService", () => {
         imgSrc: sampleImgSrc
       };
 
-      const payload = await postsServiceInstance.create(
+      const payload = await postsServiceInstance.createPost(
         testUser1Id, testCategory1Id, sampleTitle, sampleUrl, postAttributes
       );
       const { message, post } = payload;
@@ -63,7 +62,7 @@ describe("Testing PostsService", () => {
     it("Should allow creation of a post with default values for postAttributes", async () => {
       const postsServiceInstance = container.get(PostsService);
 
-      const payload = await postsServiceInstance.create(
+      const payload = await postsServiceInstance.createPost(
         testUser1Id, testCategory1Id, sampleTitle, sampleUrl
       );
       const { message, post } = payload;
@@ -81,7 +80,7 @@ describe("Testing PostsService", () => {
       const postsServiceInstance = container.get(PostsService);
 
       try {
-        await postsServiceInstance.create(
+        await postsServiceInstance.createPost(
           testUser2Id, testCategory1Id, sampleTitle, sampleUrl
         );
       } catch (err) {
@@ -92,14 +91,28 @@ describe("Testing PostsService", () => {
     });
   });
 
-  describe("PostsService.get(userId, categoryId, labelIds)", () => {
-    it("Should only get Posts that the User owns within the requested Category", async () => {
+  describe("PostsService.getPosts(userId, categoryId, labelIds)", () => {
+    it("Should get all of User's Posts if categoryId is not provided", async () => {
       const postsServiceInstance = container.get(PostsService);
 
-      const payload = await postsServiceInstance.get(testUser1Id, testCategory1Id);
+      const payload = await postsServiceInstance.getPosts(testUser1Id);
       const { message, posts } = payload;
       expect(message).toBeDefined();
       expect(posts.length).toStrictEqual(2);
+      for (let i = 0; i < posts.length; i += 1) {
+        const post = posts[i];
+        expect(post.owner.toString()).toStrictEqual(testUser1Id);
+      }
+    });
+
+    it("Should only get Posts that the User owns within the requested Category", async () => {
+      const postsServiceInstance = container.get(PostsService);
+
+      const payload = await postsServiceInstance.getPosts(testUser1Id, testCategory1Id);
+      const { message, posts } = payload;
+      expect(message).toBeDefined();
+      expect(posts.length).toStrictEqual(2);
+
       for (let i = 0; i < posts.length; i += 1) {
         const post = posts[i];
         expect(post.owner.toString()).toStrictEqual(testUser1Id);
@@ -110,7 +123,7 @@ describe("Testing PostsService", () => {
     it("Should not return Posts that are not within the requested Category", async () => {
       const postsServiceInstance = container.get(PostsService);
 
-      const payload = await postsServiceInstance.get(testUser1Id, testCategory2Id);
+      const payload = await postsServiceInstance.getPosts(testUser1Id, testCategory2Id);
       const { message, posts } = payload;
       expect(message).toBeDefined();
       expect(posts.length).toStrictEqual(0);
@@ -120,14 +133,14 @@ describe("Testing PostsService", () => {
       const postsServiceInstance = container.get(PostsService);
 
       const labelIds = [testLabel1Id];
-      const payload = await postsServiceInstance.get(testUser1Id, testCategory1Id, labelIds);
+      const payload = await postsServiceInstance.getPosts(testUser1Id, testCategory1Id, labelIds);
       const { message, posts } = payload;
       expect(message).toBeDefined();
       expect(posts.length).toStrictEqual(1);
     });
   });
 
-  describe("PostsService.edit(userId, postId, title, url, postAttributes)", () => {
+  describe("PostsService.editPost(userId, postId, title, url, postAttributes)", () => {
     let testPost = null;
     beforeAll(async () => {
       testPost = await PostModel.findOne({ owner: testUser1Id, category: testCategory1Id });
@@ -137,7 +150,7 @@ describe("Testing PostsService", () => {
       const postsServiceInstance = container.get(PostsService);
 
       try {
-        await postsServiceInstance.edit(testUser1Id, null, sampleTitle, sampleUrl, null);
+        await postsServiceInstance.editPost(testUser1Id, null, sampleTitle, sampleUrl, null);
       } catch (err) {
         expect(err).toBeInstanceOf(ServiceError);
         expect(err.httpStatusCode).toStrictEqual(404);
@@ -154,7 +167,7 @@ describe("Testing PostsService", () => {
         imgSrc: sampleImgSrc
       };
       try {
-        await postsServiceInstance.edit(
+        await postsServiceInstance.editPost(
           testUser2Id, testPost.id, sampleTitle, sampleUrl, postAttributes
         );
       } catch (err) {
@@ -173,7 +186,7 @@ describe("Testing PostsService", () => {
         originalDate: new Date("2020-12-31"),
         imgSrc: sampleImgSrc
       };
-      const payload = await postsServiceInstance.edit(
+      const payload = await postsServiceInstance.editPost(
         testUser1Id, testPost.id, newTitle, newUrl, postAttributes
       );
       const { message } = payload;
@@ -190,7 +203,7 @@ describe("Testing PostsService", () => {
     });
   });
 
-  describe("PostsService.delete(userId, postId)", () => {
+  describe("PostsService.deletePost(userId, postId)", () => {
     let testPost = null;
     beforeAll(async () => {
       testPost = await PostModel.findOne({ owner: testUser1Id, category: testCategory1Id });
@@ -199,7 +212,7 @@ describe("Testing PostsService", () => {
     it("Should not allow non authorized User to delete Post", async () => {
       const postsServiceInstance = container.get(PostsService);
 
-      const payload = await postsServiceInstance.delete(testUser2Id, testPost.id);
+      const payload = await postsServiceInstance.deletePost(testUser2Id, testPost.id);
       const { message } = payload;
       expect(message).toBeDefined();
 
@@ -210,122 +223,12 @@ describe("Testing PostsService", () => {
     it("Should allow owner to delete the Post", async () => {
       const postsServiceInstance = container.get(PostsService);
 
-      const payload = await postsServiceInstance.delete(testUser1Id, testPost.id);
+      const payload = await postsServiceInstance.deletePost(testUser1Id, testPost.id);
       const { message } = payload;
       expect(message).toBeDefined();
 
       const post = await PostModel.findById(testPost.id);
       expect(post).toBeNull();
-    });
-  });
-
-  describe("PostsService.addLabel(userId, postId, labelId)", () => {
-    let testPost = null;
-    beforeAll(async () => {
-      testPost = await PostModel.findOne({
-        owner: testUser1Id,
-        category: testCategory1Id,
-        labels: {
-          $elemMatch: {
-            $in: [testLabel1Id]
-          }
-        }
-      });
-    });
-
-    it("Should throw an error if Post is not found", async () => {
-      const postsServiceInstance = container.get(PostsService);
-
-      try {
-        await postsServiceInstance.addLabel(testUser1Id, null, testLabel1Id);
-      } catch (err) {
-        expect(err).toBeInstanceOf(ServiceError);
-        expect(err.httpStatusCode).toStrictEqual(404);
-        expect(err.errors.length).toStrictEqual(1);
-      }
-    });
-
-    it("Should not allow non authorized User to add Label to Post", async () => {
-      const postsServiceInstance = container.get(PostsService);
-
-      try {
-        await postsServiceInstance.addLabel(testUser2Id, testPost.id, testLabel1Id);
-      } catch (err) {
-        expect(err).toBeInstanceOf(ServiceError);
-        expect(err.httpStatusCode).toStrictEqual(404);
-        expect(err.errors.length).toStrictEqual(1);
-      }
-    });
-
-    it("Should not allow Post to have duplicate Labels", async () => {
-      const postsServiceInstance = container.get(PostsService);
-
-      const payload = await postsServiceInstance.addLabel(testUser1Id, testPost.id, testLabel1Id);
-      const { message } = payload;
-      expect(message).toBeDefined();
-
-      const post = await PostModel.findById(testPost.id);
-      expect(post.labels.length).toStrictEqual(2);
-    });
-
-    it("Should allow owner to add Label to Post", async () => {
-      const postsServiceInstance = container.get(PostsService);
-
-      const payload = await postsServiceInstance.addLabel(testUser1Id, testPost.id, testLabel3Id);
-      const { message } = payload;
-      expect(message).toBeDefined();
-
-      const post = await PostModel.findById(testPost.id);
-      expect(post.labels.length).toStrictEqual(3);
-    });
-  });
-
-  describe("PostsService.removeLabel(userId, postId, labelId)", () => {
-    let testPost = null;
-    beforeAll(async () => {
-      testPost = await PostModel.findOne({
-        owner: testUser1Id,
-        category: testCategory1Id,
-        labels: {
-          $elemMatch: {
-            $in: [testLabel1Id]
-          }
-        }
-      });
-    });
-
-    it("Should throw an error if Post is not found", async () => {
-      const postsServiceInstance = container.get(PostsService);
-
-      try {
-        await postsServiceInstance.removeLabel(testUser1Id, null, testLabel1Id);
-      } catch (err) {
-        expect(err).toBeInstanceOf(ServiceError);
-        expect(err.httpStatusCode).toStrictEqual(404);
-        expect(err.errors.length).toStrictEqual(1);
-      }
-    });
-
-    it("Should not allow non authorized User to remove Label from Post", async () => {
-      const postsServiceInstance = container.get(PostsService);
-
-      try {
-        await postsServiceInstance.removeLabel(testUser2Id, testPost.id, testLabel1Id);
-      } catch (err) {
-        expect(err).toBeInstanceOf(ServiceError);
-        expect(err.httpStatusCode).toStrictEqual(404);
-        expect(err.errors.length).toStrictEqual(1);
-      }
-    });
-
-    it("Should allow owner to remove Label from Post", async () => {
-      const postsServiceInstance = container.get(PostsService);
-
-      const payload = await postsServiceInstance.removeLabel(
-        testUser1Id, testPost.id, testLabel1Id
-      );
-      const { message } = payload;
-      expect(message).toBeDefined();
     });
   });
 });

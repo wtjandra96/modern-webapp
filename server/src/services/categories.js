@@ -12,16 +12,16 @@ class CategoriesService {
    * {
    *   message: string,
    *   category: {
+   *     id: ObjectId,
    *     owner: ObjectId,
    *     name: string
    *   }
    * }
    *
-   * @returns {object} payload.category
    * @param   {ObjectId} userId User who created the Category
    * @param   {string} name
    */
-  async create (userId, name) {
+  async createCategory (userId, name) {
     const { categoryModel } = this;
 
     const categoryRecord = await categoryModel.create({
@@ -37,16 +37,16 @@ class CategoriesService {
   }
 
   /**
-   * @desc    Add a Label to a Category
+   * @desc    Create a Category Label
    * @returns {object}
    * {
    *   message: string,
    *   label: {
+   *     id: ObjectId,
    *     owner: ObjectId,
    *     category: ObjectId,
    *     name: string
-   *     color: string,
-   *     checked: boolean
+   *     color: string
    *   }
    * }
    *
@@ -54,7 +54,7 @@ class CategoriesService {
    * @param   {ObjectId} categoryId ID of this Category
    * @param   {object} label { name: string, color: string }
    */
-  async addLabel (userId, categoryId, label) {
+  async createLabel (userId, categoryId, label) {
     const { categoryModel, labelModel } = this;
 
     const categoryRecord = await categoryModel.findOne({ _id: categoryId, owner: userId }).lean();
@@ -83,6 +83,7 @@ class CategoriesService {
    * {
    *   message: string,
    *   categories: [{
+   *     id: ObjectId,
    *     owner: ObjectId,
    *     name: string
    *   }]
@@ -103,16 +104,46 @@ class CategoriesService {
   }
 
   /**
+   * @desc    Get Category information
+   * @returns {object}
+   * {
+   *   message: string,
+   *   category: {
+   *     id: ObjectId,
+   *     owner: ObjectId,
+   *     name: string
+   *   }
+   * }
+   *
+   * @param   {ObjectId} userId User who created the Category
+   * @param   {string} categoryName
+   */
+  async getCategory (userId, categoryName) {
+    const { categoryModel } = this;
+
+    const categoryRecord = await categoryModel.findOne({
+      owner: userId,
+      name: categoryName
+    });
+
+    const payload = {
+      message: "Category retrieved",
+      category: categoryRecord
+    };
+    return payload;
+  }
+
+  /**
    * @desc    Get all Labels of a Category
    * @returns {object}
    * {
    *   message: string,
    *   labels: [{
+   *     id: ObjectId,
    *     owner: ObjectId,
    *     category: ObjectId,
    *     name: string
-   *     color: string,
-   *     checked: boolean
+   *     color: string
    *   }]
    * }
    *

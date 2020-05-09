@@ -21,12 +21,10 @@ const { getApp } = require("../../../src/app");
 const expressLoader = require("../../../src/loaders/express");
 
 const {
-  CREATE_ROUTE,
-  ADD_LABEL_ROUTE,
+  CREATE_POST_ROUTE,
   GET_POSTS_ROUTE,
   DELETE_POST_ROUTE,
-  EDIT_POST_ROUTE,
-  REMOVE_LABEL_ROUTE
+  EDIT_POST_ROUTE
 } = require("../../../src/api/routes/posts");
 
 const testUserId = "5e868964c037680d183dd5a3";
@@ -37,7 +35,6 @@ const app = getApp();
 
 describe("Testing posts route", () => {
   let testPostId = null;
-  let testPost2Id = null;
   let testCategoryId = null;
   beforeAll(async () => {
     container.set("LabelModel", LabelModel);
@@ -59,17 +56,6 @@ describe("Testing posts route", () => {
     post.labels.push(testLabelId);
     await post.save();
     testPostId = post.id;
-
-    const post2 = await PostModel.create({
-      owner: testUserId,
-      category: testCategoryId,
-      title: "Title",
-      url: "url"
-    });
-
-    post2.labels.push(testLabelId);
-    await post.save();
-    testPost2Id = post2.id;
     expressLoader(app);
   });
 
@@ -77,7 +63,7 @@ describe("Testing posts route", () => {
     await testdb.disconnect();
   });
 
-  describe(`Testing ${CREATE_ROUTE}`, () => {
+  describe(`Testing ${CREATE_POST_ROUTE}`, () => {
     describe("Validation layer", () => {
       test("Incorrect param types", async () => {
         expect.assertions(1);
@@ -91,7 +77,7 @@ describe("Testing posts route", () => {
             imgSrc: {}
           }
         };
-        const payload = await request(app).post(CREATE_ROUTE)
+        const payload = await request(app).post(CREATE_POST_ROUTE)
           .set("x-auth-token", testUserId)
           .send(requestBody);
 
@@ -105,7 +91,7 @@ describe("Testing posts route", () => {
         const requestBody = {
 
         };
-        const payload = await request(app).post(CREATE_ROUTE)
+        const payload = await request(app).post(CREATE_POST_ROUTE)
           .set("x-auth-token", testUserId)
           .send(requestBody);
 
@@ -125,7 +111,7 @@ describe("Testing posts route", () => {
             imgSrc: ""
           }
         };
-        const payload = await request(app).post(CREATE_ROUTE)
+        const payload = await request(app).post(CREATE_POST_ROUTE)
           .set("x-auth-token", testUserId)
           .send(requestBody);
 
@@ -142,7 +128,7 @@ describe("Testing posts route", () => {
           url: "",
           postAttributes: "12345"
         };
-        const payload = await request(app).post(CREATE_ROUTE)
+        const payload = await request(app).post(CREATE_POST_ROUTE)
           .set("x-auth-token", testUserId)
           .send(requestBody);
 
@@ -158,7 +144,7 @@ describe("Testing posts route", () => {
           title: "123",
           url: "123"
         };
-        const payload = await request(app).post(CREATE_ROUTE)
+        const payload = await request(app).post(CREATE_POST_ROUTE)
           .set("x-auth-token", testUserId)
           .send(requestBody);
 
@@ -176,7 +162,7 @@ describe("Testing posts route", () => {
         url: "123"
       };
       const payload = await request(app)
-        .post(CREATE_ROUTE)
+        .post(CREATE_POST_ROUTE)
         .set("x-auth-token", testUserId)
         .send(requestBody);
 
@@ -193,7 +179,7 @@ describe("Testing posts route", () => {
         url: "123"
       };
       const payload = await request(app)
-        .post(CREATE_ROUTE)
+        .post(CREATE_POST_ROUTE)
         .set("x-auth-token", testUserId)
         .send(requestBody);
 
@@ -210,87 +196,8 @@ describe("Testing posts route", () => {
         url: "123"
       };
       const payload = await request(app)
-        .post(CREATE_ROUTE)
+        .post(CREATE_POST_ROUTE)
         .set("x-auth-token", testCategoryId)
-        .send(requestBody);
-
-      const { status } = payload;
-      expect(status).toStrictEqual(404);
-    });
-  });
-
-  describe(`Testing ${ADD_LABEL_ROUTE}`, () => {
-    describe("Validation layer", () => {
-      test("Incorrect param types", async () => {
-        expect.assertions(1);
-
-        const requestBody = {
-          postId: {},
-          labelId: {}
-        };
-        const payload = await request(app).post(ADD_LABEL_ROUTE)
-          .set("x-auth-token", testUserId)
-          .send(requestBody);
-
-        const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(2);
-      });
-
-      test("Not objectId", async () => {
-        expect.assertions(1);
-
-        const requestBody = {
-          postId: "12345",
-          labelId: "12345"
-        };
-        const payload = await request(app).post(ADD_LABEL_ROUTE)
-          .set("x-auth-token", testUserId)
-          .send(requestBody);
-
-        const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(2);
-      });
-    });
-
-    it("Should return status code 404 if an authorized User makes a request", async () => {
-      expect.assertions(1);
-
-      const requestBody = {
-        postId: testPostId,
-        labelId: testLabelId
-      };
-      const payload = await request(app).post(ADD_LABEL_ROUTE)
-        .set("x-auth-token", nonAuthorizedUserId)
-        .send(requestBody);
-
-      const { status } = payload;
-      expect(status).toStrictEqual(404);
-    });
-
-    it("Should return status code 200 if given valid input from an authorize User", async () => {
-      expect.assertions(1);
-
-      const requestBody = {
-        postId: testPostId,
-        labelId: testLabelId
-      };
-      const payload = await request(app).post(ADD_LABEL_ROUTE)
-        .set("x-auth-token", testUserId)
-        .send(requestBody);
-
-      const { status } = payload;
-      expect(status).toStrictEqual(200);
-    });
-
-    it("Should return staus code 404 if the Post does not exist", async () => {
-      expect.assertions(1);
-
-      const requestBody = {
-        postId: testCategoryId,
-        labelId: testLabelId
-      };
-      const payload = await request(app).post(ADD_LABEL_ROUTE)
-        .set("x-auth-token", testUserId)
         .send(requestBody);
 
       const { status } = payload;
@@ -304,7 +211,7 @@ describe("Testing posts route", () => {
         expect.assertions(1);
 
         const requestQuery = {
-          categoryId: {},
+          categoryId: "a",
           labelIds: [{ a: "b" }]
         };
         const payload = await request(app).get(GET_POSTS_ROUTE)
@@ -619,85 +526,6 @@ describe("Testing posts route", () => {
       const payload = await request(app)
         .delete(`${DELETE_POST_ROUTE}/${requestParam.postId}`)
         .set("x-auth-token", testUserId);
-
-      const { status } = payload;
-      expect(status).toStrictEqual(200);
-    });
-  });
-
-  describe(`Testing ${REMOVE_LABEL_ROUTE}`, () => {
-    describe("Validation layer", () => {
-      test("Incorrect param types", async () => {
-        expect.assertions(1);
-
-        const requestBody = {
-          postId: {},
-          labelId: {}
-        };
-        const payload = await request(app).post(REMOVE_LABEL_ROUTE)
-          .set("x-auth-token", testUserId)
-          .send(requestBody);
-
-        const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(2);
-      });
-
-      test("Not objectId", async () => {
-        expect.assertions(1);
-
-        const requestBody = {
-          postId: "12345",
-          labelId: "12345"
-        };
-        const payload = await request(app).post(REMOVE_LABEL_ROUTE)
-          .set("x-auth-token", testUserId)
-          .send(requestBody);
-
-        const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(2);
-      });
-    });
-
-    it("Should return status code 404 if Post does not exist", async () => {
-      expect.assertions(1);
-
-      const requestBody = {
-        postId: testUserId,
-        labelId: testLabelId
-      };
-      const payload = await request(app).post(REMOVE_LABEL_ROUTE)
-        .set("x-auth-token", testUserId)
-        .send(requestBody);
-
-      const { status } = payload;
-      expect(status).toStrictEqual(404);
-    });
-
-    it("Should return status code 404 if an unauthorized User tries to add Label to the Post", async () => {
-      expect.assertions(1);
-
-      const requestBody = {
-        postId: testPostId,
-        labelId: testLabelId
-      };
-      const payload = await request(app).post(REMOVE_LABEL_ROUTE)
-        .set("x-auth-token", nonAuthorizedUserId)
-        .send(requestBody);
-
-      const { status } = payload;
-      expect(status).toStrictEqual(404);
-    });
-
-    it("Should return status code 200 give valid input from an authorized User", async () => {
-      expect.assertions(1);
-
-      const requestBody = {
-        postId: testPost2Id,
-        labelId: testLabelId
-      };
-      const payload = await request(app).post(REMOVE_LABEL_ROUTE)
-        .set("x-auth-token", testUserId)
-        .send(requestBody);
 
       const { status } = payload;
       expect(status).toStrictEqual(200);
