@@ -95,7 +95,7 @@ class PostsService {
       };
     }
 
-    const postRecords = await postModel.find(conditions);
+    const postRecords = await postModel.find(conditions).populate("category");
 
     const payload = {
       message: "Posts retrieved",
@@ -128,7 +128,8 @@ class PostsService {
       ]);
     }
     const payload = {
-      message: "Post updated"
+      message: "Post updated",
+      post: postRecord
     };
     return payload;
   }

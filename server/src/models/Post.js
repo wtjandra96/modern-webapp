@@ -30,7 +30,7 @@ const PostSchema = new Schema(
     category: {
       type: Schema.Types.ObjectId,
       required: true,
-      ref: "categories"
+      ref: "category"
     },
     labels: {
       type: [Schema.Types.ObjectID],
@@ -72,6 +72,13 @@ PostSchema.pre("save", function addSource (next) {
   const post = this;
   const { url } = post;
   post.source = extractHostname(url);
+  console.log("source is ", post.source, " from ", url);
+  return next();
+});
+PostSchema.pre("findOneAndUpdate", function addSource (next) {
+  const post = this;
+  const { _update } = post;
+  _update.source = extractHostname(_update.url);
   return next();
 });
 PostSchema.method("toJSON", function toJSON () {
