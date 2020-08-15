@@ -72,7 +72,6 @@ PostSchema.pre("save", function addSource (next) {
   const post = this;
   const { url } = post;
   post.source = extractHostname(url);
-  console.log("source is ", post.source, " from ", url);
   return next();
 });
 PostSchema.pre("findOneAndUpdate", function addSource (next) {
