@@ -31,7 +31,8 @@ const EDIT_POST_ROUTE = "/editPost";
  *     title: string,
  *     url: string,
  *     originalDate: date (YYYY-MM-DD HH:mm)
- *     imgSrc: string
+ *     imgSrc: string,
+ *     source: string
  *   }
  * }
  *
@@ -93,10 +94,11 @@ router.post(CREATE_POST_ROUTE, isAuth, celebrate({
  *     labels: [ObjectId],
  *     title: string,
  *     url: string,
- *     originalDate: date (YYYY-MM-DD HH:mm)
- *     imgSrc: string
- *   }
- * }]
+ *     originalDate: date (YYYY-MM-DD HH:mm),
+ *     imgSrc: string,
+ *     source: string
+ *   }]
+ * }
  *
  * @param   {ObjectId} userId User who owns the Posts (from isAuth middleware)
  * @param   {ObjectId} categoryId optional - Posts of a particular Category
@@ -126,7 +128,21 @@ router.get(GET_POSTS_ROUTE, isAuth, celebrate({
  * @route  POST api/posts/editPost
  * @desc    Edit a post
  * @access Private
- * @returns {object} { message: string }
+ * @returns {object}
+ * {
+ *   message: string,
+ *   post: {
+ *     id: ObjectId,
+ *     owner: ObjectId,
+ *     category: ObjectId,
+ *     labels: [ObjectId],
+ *     title: string,
+ *     url: string,
+ *     originalDate: date (YYYY-MM-DD HH:mm),
+ *     imgSrc: string,
+ *     source: string
+ *   }
+ * }
  * @param   {ObjectId} userId User who owns the Posts (from isAuth middleware)
  * @param   {ObjectId} postId The ID of the Post to be edited
  * @param   {string} title
@@ -146,7 +162,6 @@ router.post(EDIT_POST_ROUTE, isAuth, celebrate({
       labels: Joi.array().items(
         Joi.objectId().message("Label ID is invalid")
       ).messages({ "array.base": "Labels must be an array" }),
-      originalDate: Joi.date().messages({ "date.base": "Original date must be a date" }),
       imgSrc: Joi.string().messages({ "string.base": "Image source must be of type string" })
     }).messages({ "object.base": "Post attributes must be an object" })
   })

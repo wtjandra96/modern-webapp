@@ -40,6 +40,8 @@ router.post(CREATE_CATEGORY_ROUTE, isAuth, celebrate({
   body: Joi.object().keys({
     name: Joi.string().messages({ "string.base": "Category name must be of type string" })
       .required().messages({ "string.empty": "Category name is required" })
+      .pattern(/^[a-zA-Z0-9]*$/)
+      .message("Category name can only contain alphanumeric characters")
   })
 }, { abortEarly: false }), async (req, res, next) => {
   const { userId } = req;
@@ -49,7 +51,7 @@ router.post(CREATE_CATEGORY_ROUTE, isAuth, celebrate({
     const categoriesServiceInstance = container.get(CategoriesService);
     const payload = await categoriesServiceInstance.createCategory(
       userId,
-      name
+      name.toLowerCase()
     );
     return res.status(201).send(payload);
   } catch (err) {
@@ -220,6 +222,10 @@ router.post(EDIT_CATEGORY_ROUTE, isAuth, celebrate({
       .required().messages({ "any.required": "Category ID is missing" }),
     categoryUpdates: Joi.object({
       name: Joi.string().messages({ "string.base": "Category name must be of type string" })
+        .required()
+        .messages({ "object.empty": "Category name is required" })
+        .pattern(/^[a-zA-Z0-9]*$/)
+        .message("Category name can only contain alphanumeric characters")
     })
       .messages({ "object.base": "Category updates must be an object" })
       .required()

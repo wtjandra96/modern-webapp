@@ -13,6 +13,7 @@ sinon.stub(middlewares, "isAuth")
 
 const CategoryModel = require("../../../src/models/Category");
 const LabelModel = require("../../../src/models/Label");
+const PostModel = require("../../../src/models/Post");
 
 const testdb = require("../../testdb");
 
@@ -43,6 +44,7 @@ describe("Testing categories route", () => {
   beforeAll(async () => {
     container.set("CategoryModel", CategoryModel);
     container.set("LabelModel", LabelModel);
+    container.set("PostModel", PostModel);
     await testdb.connect();
     const category = await CategoryModel.create({ owner: testUserId, name: dummyCategoryName });
     testCategoryId = category.id;

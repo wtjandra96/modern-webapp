@@ -4,6 +4,7 @@ const ServiceError = require("../../src/utils/errors/serviceError");
 const MongoError = require("../../src/utils/errors/mongoError");
 const CategoryModel = require("../../src/models/Category");
 const LabelModel = require("../../src/models/Label");
+const PostModel = require("../../src/models/Post");
 
 const testdb = require("../testdb");
 
@@ -36,6 +37,12 @@ describe("Testing CategoriesService", () => {
       model: LabelModel
     };
     container.set(labelModel.name, labelModel.model);
+
+    const postModel = {
+      name: "PostModel",
+      model: PostModel
+    };
+    container.set(postModel.name, postModel.model);
   });
 
   afterAll(async () => {
@@ -332,7 +339,7 @@ describe("Testing CategoriesService", () => {
     });
   });
 
-  describe("CategoriesService.edit(userId, name)", () => {
+  describe("CategoriesService.editCategory(userId, name)", () => {
     let testCategory = null;
     beforeAll(async () => {
       testCategory = await CategoryModel.findOne({ owner: testUser1.id });
@@ -371,10 +378,16 @@ describe("Testing CategoriesService", () => {
     });
   });
 
-  describe("CategoriesService.delete(userId, name)", () => {
+  describe("CategoriesService.deleteCategory(userId, name)", () => {
     let testCategory = null;
     beforeAll(async () => {
       testCategory = await CategoryModel.findOne({ owner: testUser1.id });
+      await PostModel.create({
+        owner: testUser1.id,
+        category: testCategory.id,
+        title: "title",
+        url: "https://google.com"
+      });
     });
 
     it("Should not allow non authorized User to delete Category", async () => {
@@ -388,8 +401,8 @@ describe("Testing CategoriesService", () => {
       expect(message).toBeDefined();
     });
 
-    it("Should allow deleting Category and automatically deletes all Labels related", async () => {
-      expect.assertions(3);
+    it("Should allow deleting Category and automatically deletes all related Posts and Labels", async () => {
+      expect.assertions(4);
 
       const CategoriesServiceInstance = container.get(CategoriesService);
 
@@ -403,6 +416,9 @@ describe("Testing CategoriesService", () => {
 
       const labels = await LabelModel.find({ category: testCategory.id });
       expect(labels.length).toStrictEqual(0);
+
+      const posts = await PostModel.find({ category: testCategory.id });
+      expect(posts.length).toStrictEqual(0);
     });
   });
 });
