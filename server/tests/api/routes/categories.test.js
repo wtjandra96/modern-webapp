@@ -1,5 +1,6 @@
 const container = require("typedi").Container;
 const request = require("supertest");
+const express = require("express");
 
 // Mock middlewares
 const sinon = require("sinon");
@@ -17,7 +18,6 @@ const PostModel = require("../../../src/models/Post");
 
 const testdb = require("../../testdb");
 
-const { getApp } = require("../../../src/app");
 const expressLoader = require("../../../src/loaders/express");
 
 const {
@@ -36,7 +36,7 @@ const nonAuthorizedUserId = "5e868964c037680d183cd5a4";
 const testCategoryName = "testCategory";
 const dummyCategoryName = "dummyCategory";
 
-const app = getApp();
+const app = express();
 
 describe("Testing categories route", () => {
   let testCategoryId = null;

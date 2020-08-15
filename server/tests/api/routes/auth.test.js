@@ -1,16 +1,16 @@
 const container = require("typedi").Container;
 const request = require("supertest");
+const express = require("express");
 
 const UserModel = require("../../../src/models/User");
 
 const testdb = require("../../testdb");
 
-const { getApp } = require("../../../src/app");
 const expressLoader = require("../../../src/loaders/express");
 
 const { LOGIN_ROUTE, REGISTER_ROUTE } = require("../../../src/api/routes/auth");
 
-const app = getApp();
+const app = express();
 
 const testUser = {
   username: "testUser",
