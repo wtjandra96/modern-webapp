@@ -4,6 +4,7 @@ class CategoriesService {
   constructor (container) {
     this.categoryModel = container.get("CategoryModel");
     this.labelModel = container.get("LabelModel");
+    this.postModel = container.get("PostModel");
   }
 
   /**
@@ -222,12 +223,14 @@ class CategoriesService {
    * @param   {ObjectId} categoryId
    */
   async deleteCategory (userId, categoryId) {
-    const { categoryModel } = this;
+    const { categoryModel, labelModel, postModel } = this;
 
     await categoryModel.findOneAndDelete({ _id: categoryId, owner: userId });
-    await this.labelModel.deleteMany({ category: categoryId, owner: userId });
+    await labelModel.deleteMany({ category: categoryId, owner: userId });
+    await postModel.deleteMany({ category: categoryId, owner: userId });
+
     const payload = {
-      message: "Category and its Labels are deleted"
+      message: "The Category and its Posts and Labels are deleted"
     };
     return payload;
   }
