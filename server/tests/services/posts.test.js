@@ -21,8 +21,8 @@ describe("Testing PostsService", () => {
   let testCategory1Id = null;
   beforeAll(async () => {
     await testdb.connect();
-    container.set("LabelModel", LabelModel);
     container.set("CategoryModel", CategoryModel);
+    container.set("LabelModel", LabelModel);
     container.set("PostModel", PostModel);
     const category = await CategoryModel.create({
       owner: testUser1Id,
@@ -116,7 +116,7 @@ describe("Testing PostsService", () => {
       for (let i = 0; i < posts.length; i += 1) {
         const post = posts[i];
         expect(post.owner.toString()).toStrictEqual(testUser1Id);
-        expect(post.category.toString()).toStrictEqual(testCategory1Id);
+        expect(post.category.id.toString()).toStrictEqual(testCategory1Id);
       }
     });
 
@@ -200,6 +200,7 @@ describe("Testing PostsService", () => {
       expect(post.url).toStrictEqual(newUrl);
       expect(post.originalDate).toStrictEqual(postAttributes.originalDate);
       expect(post.imgSrc).toStrictEqual(postAttributes.imgSrc);
+      expect(post.source).not.toEqual(postAttributes.source);
     });
   });
 
