@@ -40,9 +40,15 @@ module.exports = (app) => {
       for (let i = 0; i < errDetails.length; i += 1) {
         errors.push({ errorMessage: errDetails[i].message });
       }
+
+      const reqBody = req.body;
+      if (req.body.password) {
+        delete req.body.password;
+      }
+
       const errBody = {
         status: 400,
-        body: req.body,
+        body: reqBody,
         query: req.query,
         params: req.params,
         errors
