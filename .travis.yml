@@ -8,11 +8,11 @@ services:
   - docker
 
 env:
-  - JWT_SECRET=$JWT_SECRET
+  - JWT_SECRET=test
 
 before_install:
   - docker build -t wtjandra96/node-server-test -f ./server/Dockerfile.dev ./server
-  - docker build -t wtjandra96/react-client-test -f ./client/Dockerfile.dev ./client
+  # - docker build -t wtjandra96/react-client-test -f ./client/Dockerfile.dev ./client
 
 script:
   # Start server tests
@@ -29,7 +29,7 @@ script:
   
 
   # Start client tests
-  - docker run -e CI=true wtjandra96/react-client-test npm test
+  # - docker run -e CI=true wtjandra96/react-client-test npm test
   
   # Cleanup
   - docker stop wtjandra96/react-client-test
