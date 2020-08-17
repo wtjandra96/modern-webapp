@@ -15,17 +15,18 @@ script:
   - docker run --name mongo --network=testing-net -d mongo # Need to connect to mongo service for testing
   - docker run --network=testing-net -e JWT_SECRET=$JWT_SECRET wtjandra96/node-server-test npm run test
 
+  # Start client tests
+  - docker run -e CI=true wtjandra96/react-client-test npm test
+
+  # Lint check
+  - docker exec wtjandra96/node-server-test npm run lint
+  - docker exec wtjandra96/react-client-test npm run lint
+  
   # Cleanup
   - docker stop mongo
   - docker rm mongo
   - docker stop wtjandra96/node-server-test
   - docker rm wtjandra96/node-server-test
-  - docker network rm testing-net
-  
-
-  # Start client tests
-  - docker run -e CI=true wtjandra96/react-client-test npm test
-  
-  # Cleanup
   - docker stop wtjandra96/react-client-test
   - docker rm wtjandra96/react-client-test
+  - docker network rm testing-net
