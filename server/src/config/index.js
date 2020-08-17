@@ -10,6 +10,7 @@ if (process.env.NODE_ENV === "development") {
   }
 }
 
+console.log("process.env", process.env);
 module.exports = {
   port: parseInt(process.env.PORT || "5000", 10),
   databaseURL: process.env.DATABASE_URI,
