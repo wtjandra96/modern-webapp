@@ -1,11 +1,11 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "description": "",
+  "description": "node.js backend for modern-webapp using express.js",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server --runInBand",
-    "dev": "./node_modules/.bin/nodemon src/server",
+    "dev": "./node_modules/.bin/nodemon -L src/server",
     "test": "jest --runInBand",
     "test-coverage": "jest --collectCoverage --runInBand",
     "lint": "./node_modules/.bin/eslint --fix ./"
