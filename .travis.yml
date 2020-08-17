@@ -1,0 +1,19 @@
+sudo: required
+services:
+	- docker
+
+before_install:
+	- docker build -t wtjandra96/node-server-test -f ./server/Dockerfile.dev ./server
+	- docker build -t wtjandra96/react-client-test -f ./client/Dockerfile.dev ./client
+
+script:
+	# Start server tests
+	- docker run --name mongo -d mongo # Need mongo service for testing
+	- docker run wtjandra96/node-server-test npm run test-coverage
+
+	# MongoDB service cleanup
+	- docker stop mongo
+	- docker rm mongo
+
+	# Start client tests
+	- docker run -e CI=true wtjandra96/react-client-test npm test
