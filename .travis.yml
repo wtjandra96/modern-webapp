@@ -14,7 +14,7 @@ before_install:
 script:
   # Start server tests
   - docker run --name mongo -d mongo # Need mongo service for testing
-  - docker run wtjandra96/node-server-test npm run test-coverage
+  - docker run wtjandra96/node-server-test --link mongo:mongo npm run test-coverage
 
   # MongoDB service cleanup
   - docker stop mongo
