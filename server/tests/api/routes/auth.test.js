@@ -27,6 +27,7 @@ describe("Testing auth route", () => {
     await testdb.connect();
     await UserModel.create(testUser);
     container.set("UserModel", UserModel);
+    await UserModel.ensureIndexes();
     expressLoader(app);
   });
 

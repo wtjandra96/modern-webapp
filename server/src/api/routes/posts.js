@@ -185,7 +185,6 @@ router.post(EDIT_POST_ROUTE, isAuth, celebrate({
   }
 });
 
-
 /**
  * @route  DELETE api/posts/deletePost/:postId
  * @desc    Delete a post

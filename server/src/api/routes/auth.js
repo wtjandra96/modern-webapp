@@ -114,7 +114,6 @@ router.post("/login", celebrate({
   }
 });
 
-
 module.exports = (app) => app.use("/auth", router);
 
 const authRoute = module.exports;

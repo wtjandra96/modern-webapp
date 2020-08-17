@@ -43,6 +43,8 @@ describe("Testing CategoriesService", () => {
       model: PostModel
     };
     container.set(postModel.name, postModel.model);
+
+    await CategoryModel.ensureIndexes();
   });
 
   afterAll(async () => {
