@@ -1,6 +1,25 @@
 version: '3'
 services:
+  nginx-proxy:
+    # Waits for react-client and node-server to finish
+    depends_on:
+      - react-client
+      - node-server
+    # Restarts on exit
+    restart: always
+    build:
+      # Specifices which Dockerfile to use
+      dockerfile: Dockerfile.dev
+      # Where it resides
+      context: ./nginx
+    # Enables hot-reload for windows
+    environment:
+      - CHOKIDAR_USEPOLLING=true
+    ports:
+      - "80:80"
   react-client:
+    # Restarts on exit
+    restart: always
     build:
       # Specifices which Dockerfile to use
       dockerfile: Dockerfile.dev
@@ -11,12 +30,14 @@ services:
       - /app/node_modules
       # Share files for local development
       - ./client:/app
+    # Enables hot-reload for windows
     environment:
       - CHOKIDAR_USEPOLLING=true
-    ports:
-      - "3000:3000"
+    # Fix app exit(0) issue on container
     stdin_open: true
   node-server:
+    # Restarts on exit
+    restart: always
     build:
       # Specifies which Dockerfile to use
       dockerfile: Dockerfile.dev
@@ -27,5 +48,3 @@ services:
       - /app/node_modules
       # Share files for local development
       - ./server:/app
-    ports:
-      - "5000:5000"
