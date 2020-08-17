@@ -10,6 +10,10 @@ before_install:
   - docker build -t wtjandra96/react-client-test -f ./client/Dockerfile.dev ./client
 
 script:
+  # Lint check
+  - docker run wtjandra96/node-server-test npm run lint
+  - docker run wtjandra96/react-client-test npm run lint
+
   # Start server tests
   - docker network create testing-net
   - docker run --name mongo --network=testing-net -d mongo # Need to connect to mongo service for testing
@@ -17,16 +21,3 @@ script:
 
   # Start client tests
   - docker run -e CI=true wtjandra96/react-client-test npm test
-
-  # Lint check
-  - docker exec wtjandra96/node-server-test npm run lint
-  - docker exec wtjandra96/react-client-test npm run lint
-  
-  # Cleanup
-  - docker stop mongo
-  - docker rm mongo
-  - docker stop wtjandra96/node-server-test
-  - docker rm wtjandra96/node-server-test
-  - docker stop wtjandra96/react-client-test
-  - docker rm wtjandra96/react-client-test
-  - docker network rm testing-net
