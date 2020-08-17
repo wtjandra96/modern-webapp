@@ -1,5 +1,8 @@
 version: '3'
 services:
+  # MongoDB container is only used for testing
+  mongo:
+    image: mongo
   nginx-proxy:
     # Waits for react-client and node-server to finish
     depends_on:
@@ -11,7 +14,7 @@ services:
       # Specifices which Dockerfile to use
       dockerfile: Dockerfile.dev
       # Where it resides
-      context: ./nginx
+      context: ./proxy
     # Enables hot-reload for windows
     environment:
       - CHOKIDAR_USEPOLLING=true
@@ -38,6 +41,9 @@ services:
   node-server:
     # Restarts on exit
     restart: always
+    # Waits for mongo to finish
+    depends_on:
+      - mongo
     build:
       # Specifies which Dockerfile to use
       dockerfile: Dockerfile.dev
