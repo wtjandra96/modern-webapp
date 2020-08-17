@@ -13,12 +13,9 @@ before_install:
 
 script:
   # Start server tests
-  - docker run --name mongo -d mongo # Need mongo service for testing
-  - docker start wtjandra96/node-server-test
   - docker network create testing-net
-  - docker network connect testing-net mongo
-  - docker network connect testing-net wtjandra96/node-server-test
-  - docker exec -it wtjandra96/node-server-test npm run test
+  - docker run --name mongo --network=testing-net -d mongo # Need to connect to mongo service for testing
+  - docker run --network=testing-net wtjandra96/node-server-test npm run test
 
   # Cleanup
   - docker stop mongo
