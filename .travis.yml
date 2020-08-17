@@ -7,9 +7,6 @@ branches:
 services:
   - docker
 
-env:
-  - JWT_SECRET=test
-
 before_install:
   - docker build -t wtjandra96/node-server-test -f ./server/Dockerfile.dev ./server
   # - docker build -t wtjandra96/react-client-test -f ./client/Dockerfile.dev ./client
@@ -18,7 +15,7 @@ script:
   # Start server tests
   - docker network create testing-net
   - docker run --name mongo --network=testing-net -d mongo # Need to connect to mongo service for testing
-  - docker run --network=testing-net wtjandra96/node-server-test npm run test
+  - docker run --network=testing-net -e JWT_SECRET=$JWT_SECRET wtjandra96/node-server-test npm run test
 
   # Cleanup
   - docker stop mongo
