@@ -33,7 +33,6 @@ module.exports.disconnect = async (clear = true) => {
   await this.clearDB(clear);
   try {
     await mongoose.connection.close();
-    await mongod.stop();
   } catch (err) {
     logger.error(`testdb disconnect(): ${err}`);
   }
