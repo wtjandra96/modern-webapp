@@ -1,16 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import logo from './logo.svg';
-import axios from "axios";
 import './App.css';
 
 const App = () => {
-  useEffect(() => {
-    axios.get("/status").then((res) => {
-      console.log("axios", res);
-    }).catch(err => {
-      console.log("axios error", err);
-    })
-  }, [])
   return (
     <div className="App">
       <header className="App-header">
