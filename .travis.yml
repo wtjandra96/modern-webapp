@@ -5,10 +5,10 @@ branches:
     - master
     
 services:
-	- docker
+  - docker
 
 env:
-	- JWT_SECRET=$JWT_SECRET
+  - JWT_SECRET=$JWT_SECRET
 
 before_install:
   - docker build -t wtjandra96/node-server-test -f ./server/Dockerfile.dev ./server
