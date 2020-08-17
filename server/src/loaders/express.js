@@ -8,7 +8,7 @@ const routes = require("../api");
 module.exports = (app) => {
   const logger = container.get("logger");
 
-  app.get("/status", (req, res) => {
+  app.get("/api/status", (req, res) => {
     res.status(200).send("OK");
   });
 
