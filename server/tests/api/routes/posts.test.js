@@ -82,7 +82,7 @@ describe("Testing posts route", () => {
           .send(requestBody);
 
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(5);
+        expect(Object.keys(errors).length).toStrictEqual(4);
       });
 
       test("Missing params", async () => {
@@ -96,7 +96,7 @@ describe("Testing posts route", () => {
           .send(requestBody);
 
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(3);
+        expect(Object.keys(errors).length).toStrictEqual(3);
       });
 
       test("Empty string", async () => {
@@ -116,7 +116,7 @@ describe("Testing posts route", () => {
           .send(requestBody);
 
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(5);
+        expect(Object.keys(errors).length).toStrictEqual(4);
       });
 
       test("postAttributes not an object", async () => {
@@ -133,7 +133,7 @@ describe("Testing posts route", () => {
           .send(requestBody);
 
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(4);
+        expect(Object.keys(errors).length).toStrictEqual(4);
       });
 
       test("categoryId not an ObjectId", async () => {
@@ -149,7 +149,7 @@ describe("Testing posts route", () => {
           .send(requestBody);
 
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(1);
+        expect(Object.keys(errors).length).toStrictEqual(1);
       });
     });
 
@@ -219,7 +219,7 @@ describe("Testing posts route", () => {
           .query(requestQuery);
 
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(2);
+        expect(Object.keys(errors).length).toStrictEqual(2);
       });
 
       test("Not objectId", async () => {
@@ -234,7 +234,7 @@ describe("Testing posts route", () => {
           .query(requestQuery);
 
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(2);
+        expect(Object.keys(errors).length).toStrictEqual(2);
       });
 
       test("labelIds not array", async () => {
@@ -249,7 +249,7 @@ describe("Testing posts route", () => {
           .query(requestQuery);
 
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(2);
+        expect(Object.keys(errors).length).toStrictEqual(2);
       });
     });
 
@@ -318,7 +318,7 @@ describe("Testing posts route", () => {
           .send(requestBody);
 
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(5);
+        expect(Object.keys(errors).length).toStrictEqual(4);
       });
 
       test("Missing params", async () => {
@@ -332,7 +332,7 @@ describe("Testing posts route", () => {
           .send(requestBody);
 
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(3);
+        expect(Object.keys(errors).length).toStrictEqual(3);
       });
 
       test("Empty string", async () => {
@@ -352,7 +352,7 @@ describe("Testing posts route", () => {
           .send(requestBody);
 
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(5);
+        expect(Object.keys(errors).length).toStrictEqual(4);
       });
 
       test("postAttributes not an object", async () => {
@@ -369,7 +369,7 @@ describe("Testing posts route", () => {
           .send(requestBody);
 
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(4);
+        expect(Object.keys(errors).length).toStrictEqual(4);
       });
 
       test("postId not an ObjectId", async () => {
@@ -385,7 +385,7 @@ describe("Testing posts route", () => {
           .send(requestBody);
 
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(1);
+        expect(Object.keys(errors).length).toStrictEqual(1);
       });
     });
 
@@ -457,7 +457,7 @@ describe("Testing posts route", () => {
         expect(status).toStrictEqual(404);
 
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(1);
+        expect(Object.keys(errors).length).toStrictEqual(1);
       });
 
       test("null", async () => {
@@ -471,7 +471,7 @@ describe("Testing posts route", () => {
           .set("x-auth-token", testUserId);
 
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(1);
+        expect(Object.keys(errors).length).toStrictEqual(1);
       });
 
       test("postId not ObjectId", async () => {
@@ -485,7 +485,7 @@ describe("Testing posts route", () => {
           .set("x-auth-token", testUserId);
 
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(1);
+        expect(Object.keys(errors).length).toStrictEqual(1);
       });
     });
 
