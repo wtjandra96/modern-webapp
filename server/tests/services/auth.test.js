@@ -14,6 +14,7 @@ describe("Testing AuthService", () => {
       model: UserModel
     };
     container.set(userModel.name, userModel.model);
+    await UserModel.ensureIndexes();
   });
 
   afterAll(async () => {

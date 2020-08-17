@@ -46,6 +46,7 @@ describe("Testing categories route", () => {
     container.set("LabelModel", LabelModel);
     container.set("PostModel", PostModel);
     await testdb.connect();
+    await CategoryModel.ensureIndexes();
     const category = await CategoryModel.create({ owner: testUserId, name: dummyCategoryName });
     testCategoryId = category.id;
     const label = await LabelModel.create({
