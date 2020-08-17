@@ -1,14 +1,12 @@
 const mongoose = require("mongoose");
 const container = require("typedi").Container;
-const { MongoMemoryServer } = require("mongodb-memory-server");
 const logger = require("./logger");
 
-const mongod = new MongoMemoryServer();
 container.set("logger", logger);
 
 module.exports.connect = async () => {
   try {
-    const uri = await mongod.getConnectionString();
+    const uri = "mongodb://mongo:27017";
 
     await mongoose.connect(uri, {
       useNewUrlParser: true,
