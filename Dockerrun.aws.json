@@ -5,15 +5,15 @@
       "name": "react-client",
       "image": "wtjandra96/modern-react-client",
       "hostname": "react-client",
-      "essential": true,
+      "essential": false,
       "memory": 128
     },
     {
       "name": "node-server",
       "image": "wtjandra96/modern-node-server",
       "hostname": "node-server",
-      "essential": true,
-      "memory": 128
+      "essential": false,
+      "memory": 1024
     },
     {
       "name": "nginx-proxy",
