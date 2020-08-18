@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 
 function extractHostname (url) {
   let hostname;
-
   // http prefix
   if (url.indexOf("//") > -1) {
     hostname = url.split("/")[2];
@@ -56,6 +55,10 @@ const PostSchema = new Schema(
     imgSrc: {
       type: String,
       default: null
+    },
+    isBookmarked: {
+      type: Boolean,
+      default: false
     }
   },
   {
@@ -77,7 +80,9 @@ PostSchema.pre("save", function addSource (next) {
 PostSchema.pre("findOneAndUpdate", function addSource (next) {
   const post = this;
   const { _update } = post;
-  _update.source = extractHostname(_update.url);
+  if (_update.url) {
+    _update.source = extractHostname(_update.url);
+  }
   return next();
 });
 PostSchema.method("toJSON", function toJSON () {

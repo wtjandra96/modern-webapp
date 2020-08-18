@@ -13,13 +13,15 @@ const PREFIX = "/api/posts";
 
 const CREATE_POST_ROUTE = "/createPost";
 const GET_POSTS_ROUTE = "/getPosts";
+const GET_BOOKMARKED_POSTS_ROUTE = "/getBookmarkedPosts";
 const DELETE_POST_ROUTE = "/deletePost";
 const EDIT_POST_ROUTE = "/editPost";
+const BOOKMARK_POST_ROUTE = "/bookmarkPost";
 
 /**
- * @route  POST api/posts/createPost
+ * @route   POST api/posts/createPost
  * @desc    Create a new Post
- * @access Private
+ * @access  Private
  * @returns {object}
  * {
  *   message: string,
@@ -30,9 +32,10 @@ const EDIT_POST_ROUTE = "/editPost";
  *     labels: [ObjectId],
  *     title: string,
  *     url: string,
- *     originalDate: date (YYYY-MM-DD HH:mm)
+ *     originalDate: date (YYYY-MM-DD HH:mm),
  *     imgSrc: string,
- *     source: string
+ *     source: string,
+ *     isBookmarked: boolean
  *   }
  * }
  *
@@ -81,9 +84,9 @@ router.post(CREATE_POST_ROUTE, isAuth, celebrate({
 });
 
 /**
- * @route  GET api/posts/getPosts
- * @desc   Get Posts
- * @access Private
+ * @route   GET api/posts/getPosts
+ * @desc    Get Posts
+ * @access  Private
  * @returns {object}
  * {
  *   message: string,
@@ -96,8 +99,10 @@ router.post(CREATE_POST_ROUTE, isAuth, celebrate({
  *     url: string,
  *     originalDate: date (YYYY-MM-DD HH:mm),
  *     imgSrc: string,
- *     source: string
+ *     source: string,
+ *     isBookmarked: boolean
  *   }]
+ * }
  * }
  *
  * @param   {ObjectId} userId User who owns the Posts (from isAuth middleware)
@@ -125,9 +130,46 @@ router.get(GET_POSTS_ROUTE, isAuth, celebrate({
 });
 
 /**
- * @route  POST api/posts/editPost
+ * @route   GET api/posts/getBookmarkedPosts
+ * @desc    Get Posts
+ * @access  Private
+ * @returns {object}
+ * {
+ *   message: string,
+ *   posts: [{
+ *     id: ObjectId,
+ *     owner: ObjectId,
+ *     category: ObjectId,
+ *     labels: [ObjectId],
+ *     title: string,
+ *     url: string,
+ *     originalDate: date (YYYY-MM-DD HH:mm),
+ *     imgSrc: string,
+ *     source: string,
+ *     isBookmarked: boolean
+ *   }]
+ * }
+ *
+ * @param   {ObjectId} userId User who owns the Posts (from isAuth middleware)
+ * @param   {ObjectId} categoryId optional - Posts of a particular Category
+ * @param   {array} labelIds optional - [ObjectId]
+ */
+router.get(GET_BOOKMARKED_POSTS_ROUTE, isAuth, async (req, res, next) => {
+  const { userId } = req;
+
+  try {
+    const postsServiceInstance = container.get(PostsService);
+    const payload = await postsServiceInstance.getBookmarkedPosts(userId);
+    return res.status(200).send(payload);
+  } catch (err) {
+    return next(err);
+  }
+});
+
+/**
+ * @route   POST api/posts/bookmarkPost
  * @desc    Edit a post
- * @access Private
+ * @access  Private
  * @returns {object}
  * {
  *   message: string,
@@ -140,7 +182,55 @@ router.get(GET_POSTS_ROUTE, isAuth, celebrate({
  *     url: string,
  *     originalDate: date (YYYY-MM-DD HH:mm),
  *     imgSrc: string,
- *     source: string
+ *     source: string,
+ *     isBookmarked: boolean
+ *   }
+ * }
+ * @param   {ObjectId} userId User who owns the Posts (from isAuth middleware)
+ * @param   {ObjectId} postId The ID of the Post to be edited
+ * @param   {boolean}  isNowBookmarked Whether the Post is now bookmarked or not
+ */
+router.post(BOOKMARK_POST_ROUTE, isAuth, celebrate({
+  body: Joi.object().keys({
+    postId: Joi.objectId().message("Post ID is invalid")
+      .required().messages({ "any.required": "Post ID is missing" }),
+    isNowBookmarked: Joi.boolean().messages({ "boolean.base": "Bookmarked value is must be of type boolean" })
+      .required().messages({ "boolean.empty": "Bookmarked value is required" })
+  })
+}, { abortEarly: false }), async (req, res, next) => {
+  const { userId } = req;
+  const { postId, isNowBookmarked } = req.body;
+  try {
+    const postsServiceInstance = container.get(PostsService);
+    const payload = await postsServiceInstance.bookmarkPost(
+      userId,
+      postId,
+      isNowBookmarked
+    );
+    return res.status(200).send(payload);
+  } catch (err) {
+    return next(err);
+  }
+});
+
+/**
+ * @route   POST api/posts/editPost
+ * @desc    Edit a post
+ * @access  Private
+ * @returns {object}
+ * {
+ *   message: string,
+ *   post: {
+ *     id: ObjectId,
+ *     owner: ObjectId,
+ *     category: ObjectId,
+ *     labels: [ObjectId],
+ *     title: string,
+ *     url: string,
+ *     originalDate: date (YYYY-MM-DD HH:mm),
+ *     imgSrc: string,
+ *     source: string,
+ *     isBookmarked: boolean
  *   }
  * }
  * @param   {ObjectId} userId User who owns the Posts (from isAuth middleware)
@@ -186,9 +276,9 @@ router.post(EDIT_POST_ROUTE, isAuth, celebrate({
 });
 
 /**
- * @route  DELETE api/posts/deletePost/:postId
+ * @route   DELETE api/posts/deletePost/:postId
  * @desc    Delete a post
- * @access Private
+ * @access  Private
  * @returns {object} { message: string }
  * @param   {ObjectId} userId User who owns the Posts (from isAuth middleware)
  * @param   {ObjectId} postId The Post in question
