@@ -1,26 +1,74 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
+import { connect } from "react-redux";
 
-const App = () => {
+import styled from "styled-components"
+
+import Landing from "./pages/Landing";
+import Routes from "./routing/Routes";
+import { userOperations } from './state/redux/user';
+import { categoryOperations } from './state/redux/category';
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  max-width: 922px;
+  margin: 0 auto;
+`
+
+const App = props => {
+  // dispatch
+  const { loadUser, getCategories, guestLogin } = props;
+  // redux state
+  const { isAuthenticated, token, showingOverlay, isGuest } = props;
+  if (showingOverlay) {
+    document.body.style.overflow = 'hidden';
+  } else {
+    document.body.style.overflow = 'auto';
+  }
+
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (isGuest) {
+      guestLogin();
+      getCategories(isGuest);
+    } else if (!isAuthenticated && token) {
+      loadUser(token);
+      return;
+    } else if (isAuthenticated) {
+      getCategories();
+      setLoading(false);
+    }
+    setLoading(false);
+  }, [isAuthenticated, token, loadUser, getCategories, isGuest, guestLogin])
+
+  if (loading) return <div></div>
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Container showingOverlay={showingOverlay}>
+      <Router>
+        <Switch>
+          <Route exact path="/" component={Landing} />
+          <Route component={Routes} />
+        </Switch>
+      </Router>
+    </Container>
   );
 }
 
-export default App;
+const mapStateToProps = state => ({
+  isAuthenticated: state.user.isAuthenticated,
+  isGuest: state.user.isGuest,
+  token: state.user.token,
+  showingOverlay: state.modal.showingOverlay
+})
+
+const mapDispatchToProps = {
+  loadUser: userOperations.loadUser,
+  guestLogin: userOperations.guestLogin,
+  getCategories: categoryOperations.getCategories,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);
