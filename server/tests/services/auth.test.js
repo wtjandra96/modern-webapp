@@ -56,7 +56,8 @@ describe("Testing AuthService", () => {
         await authServiceInstance.login("test1", "incorrect");
       } catch (err) {
         expect(err).toBeInstanceOf(ServiceError);
-        expect(err.errors.length).toStrictEqual(1);
+        const { errors } = err;
+        expect(Object.keys(errors).length).toStrictEqual(1);
       }
     });
 
@@ -68,7 +69,8 @@ describe("Testing AuthService", () => {
         await authServiceInstance.login("test2", "incorrect");
       } catch (err) {
         expect(err).toBeInstanceOf(ServiceError);
-        expect(err.errors.length).toStrictEqual(1);
+        const { errors } = err;
+        expect(Object.keys(errors).length).toStrictEqual(1);
       }
     });
 

@@ -55,7 +55,7 @@ router.post(CREATE_CATEGORY_ROUTE, isAuth, celebrate({
     const payload = await categoriesServiceInstance.createCategory(
       userId,
       name.toLowerCase(),
-      color.toLowerCase()
+      color
     );
     return res.status(201).send(payload);
   } catch (err) {
