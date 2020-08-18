@@ -9,6 +9,7 @@ const Wrapper = styled.div`
   font-weight: ${({ fontWeight }) => fontWeight};
   color: ${({ color }) => color};
 	${({ cursor }) => cursor && `cursor: ${cursor};`}
+	${({ centerText }) => centerText && "justify-content: center;"}
 
 	&:focus {
 		outline: 0;
@@ -22,7 +23,7 @@ const Wrapper = styled.div`
 
 const Text = props => {
 	const { children } = props;
-	const { fontSize, fontWeight, color, cursor, onClick } = props;
+	const { fontSize, fontWeight, color, cursor, onClick, centerText } = props;
 	return (
 		<Wrapper
 			fontSize={fontSize}
@@ -31,6 +32,7 @@ const Text = props => {
 			cursor={cursor}
 			tabIndex={onClick && "0"}
 			onClick={onClick}
+			centerText={centerText}
 		>
 			{children}
 		</Wrapper>
