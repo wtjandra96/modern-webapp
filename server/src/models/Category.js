@@ -30,7 +30,7 @@ const CategorySchema = new Schema(
 );
 
 CategorySchema.index({ name: 1, owner: 1 }, { unique: true });
-CategorySchema.method("toJSON", function toJSON() {
+CategorySchema.method("toJSON", function toJSON () {
   const { _id, ...object } = this.toObject();
   object.id = _id;
   return object;
