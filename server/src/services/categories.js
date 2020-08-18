@@ -15,19 +15,21 @@ class CategoriesService {
    *   category: {
    *     id: ObjectId,
    *     owner: ObjectId,
-   *     name: string
+   *     name: string,
+   *     color: string
    *   }
    * }
    *
    * @param   {ObjectId} userId User who created the Category
    * @param   {string} name
    */
-  async createCategory (userId, name) {
+  async createCategory (userId, name, color) {
     const { categoryModel } = this;
 
     const categoryRecord = await categoryModel.create({
       owner: userId,
-      name
+      name,
+      color
     });
 
     const payload = {
@@ -86,7 +88,8 @@ class CategoriesService {
    *   categories: [{
    *     id: ObjectId,
    *     owner: ObjectId,
-   *     name: string
+   *     name: string,
+   *     color: string
    *   }]
    * }
    *
@@ -112,7 +115,8 @@ class CategoriesService {
    *   category: {
    *     id: ObjectId,
    *     owner: ObjectId,
-   *     name: string
+   *     name: string,
+   *     color: string
    *   }
    * }
    *
@@ -167,7 +171,7 @@ class CategoriesService {
    * @returns {object} { message: string }
    * @param   {ObjectId} userId User who owns the Categories
    * @param   {ObjectId} categoryId ID of this Category
-   * @param   {object} categoryUpdates { name: string }
+   * @param   {object} categoryUpdates { name: string, color: string }
    */
   async editCategory (userId, categoryId, categoryUpdates) {
     const { categoryModel } = this;
@@ -184,7 +188,8 @@ class CategoriesService {
     }
 
     const payload = {
-      message: "Category updated"
+      message: "Category updated",
+      category: categoryRecord
     };
     return payload;
   }
