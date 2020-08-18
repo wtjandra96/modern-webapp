@@ -54,7 +54,7 @@ module.exports = (app) => {
         body: reqBody,
         query: req.query,
         params: req.params,
-        errors: errors
+        errors
       };
       const errMsg = `${req.method} ${req.url}: ValidationError`;
       logger.error(`${errMsg} %o\n`, errBody);
