@@ -42,5 +42,7 @@ deploy:
   env: ModernWebapp-env
   bucket_name: elasticbeanstalk-us-west-1-818456680316
   bucket_path: modern-webapp
+  on:
+    branch: master
   access_key_id: "$AWS_ACCESS_KEY"
   secret_access_key: "$AWS_SECRET_ACCESS_KEY"

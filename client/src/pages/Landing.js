@@ -6,11 +6,14 @@ import styled from "styled-components";
 
 import Button from "../components/basic/Button";
 import DividerH from "../components/basic/DividerH";
+import Icon from '../components/basic/Icon';
 import Input from '../components/basic/Input';
 import Space from "../components/basic/Space";
 import Text from "../components/basic/Text";
 
 import { userOperations, userActions } from "../state/redux/user"
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGithubSquare } from '@fortawesome/free-brands-svg-icons';
 
 const Wrapper = styled.div`
   display: flex;
@@ -192,6 +195,20 @@ const Landing = props => {
             {isRegister ? "Login" : "Sign Up"}
           </Text>
         </AuthSwitch>
+        <Space height="12" />
+        <Text
+          cursor="pointer"
+          fontSize="18"
+          centerText={true}
+          onClick={() => {
+            window.open("https://github.com/wtjandra96/modern-webapp", "_blank")
+          }}
+          color="#424242"
+        >
+          <Icon fontSize="24" button={false}><FontAwesomeIcon icon={faGithubSquare} /></Icon>
+          <Space width="4" />
+          GitHub
+        </Text>
       </AuthBox>
     </Wrapper>
   )
