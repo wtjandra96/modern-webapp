@@ -27,8 +27,7 @@
         }
       ],
       "links": [
-        "react-client",
-        "node-server"
+        "react-client"
       ],
       "memory": 128
     }

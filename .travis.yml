@@ -1,7 +1,9 @@
 branches:
   only:
     - master
-    
+
+sudo: required
+language: generic
 services:
   - docker
 
