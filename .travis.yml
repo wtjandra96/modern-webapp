@@ -20,3 +20,27 @@ script:
 
   # Start client tests
   - docker run -e CI=true wtjandra96/react-client-test npm test
+
+after_success:
+  # Build images
+  - docker build -t wtjandra96/modern-react-client ./client
+  - docker build -t wtjandra96/modern-node-server ./server
+  - docker build -t wtjandra96/modern-nginx-proxy ./proxy
+
+  # Log in to the docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+  # Push images to Docker Hub
+  - docker push wtjandra96/modern-react-client
+  - docker push wtjandra96/modern-node-server
+  - docker push wtjandra96/modern-nginx-proxy
+
+deploy:
+  provider: elasticbeanstalk
+  region: us-west-1
+  app: modern-webapp
+  env: ModernWebapp-env
+  bucket_name: elasticbeanstalk-us-west-1-818456680316
+  bucket_path: modern-webapp
+  access_key_id: "$AWS_ACCESS_KEY"
+  secret_access_key: "$AWS_SECRET_ACCESS_KEY"
