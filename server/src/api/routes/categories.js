@@ -41,17 +41,21 @@ router.post(CREATE_CATEGORY_ROUTE, isAuth, celebrate({
     name: Joi.string().messages({ "string.base": "Category name must be of type string" })
       .required().messages({ "string.empty": "Category name is required" })
       .pattern(/^[a-zA-Z0-9]*$/)
-      .message("Category name can only contain alphanumeric characters")
+      .message("Category name can only contain alphanumeric characters"),
+    color: Joi.string().messages({ "string.base": "Category color must be of type string" })
+      .pattern(/^[a-zA-Z0-9#]*$/)
+      .message("Category color must be a color or hex color")
   })
 }, { abortEarly: false }), async (req, res, next) => {
   const { userId } = req;
-  const { name } = req.body;
+  const { name, color } = req.body;
 
   try {
     const categoriesServiceInstance = container.get(CategoriesService);
     const payload = await categoriesServiceInstance.createCategory(
       userId,
-      name.toLowerCase()
+      name.toLowerCase(),
+      color
     );
     return res.status(201).send(payload);
   } catch (err) {
@@ -120,7 +124,8 @@ router.post(CREATE_LABEL_ROUTE, isAuth, celebrate({
  *   categories: [{
  *     id: ObjectId,
  *     owner: ObjectId,
- *     name: string
+ *     name: string,
+ *     color: string
  *   }]
  * }
  *
@@ -147,7 +152,8 @@ router.get(GET_CATEGORIES_ROUTE, isAuth, async (req, res, next) => {
  *   category: {
  *     id: ObjectId,
  *     owner: ObjectId,
- *     categoryName: string
+ *     name: string,
+ *     color: string
  *   }
  * }
  * @param   {ObjectId} userId User who created the Category (from middleware)
@@ -164,7 +170,6 @@ router.get(GET_CATEGORY_ROUTE, isAuth, celebrate({
   try {
     const categoriesServiceInstance = container.get(CategoriesService);
     const payload = await categoriesServiceInstance.getCategory(userId, categoryName);
-    console.log(payload);
     return res.status(200).send(payload);
   } catch (err) {
     return next(err);
@@ -211,7 +216,16 @@ router.get(GET_LABELS_ROUTE, isAuth, celebrate({
  * @route  POST api/categories/editCategory
  * @desc   Edit a Category
  * @access Private
- * @returns {object} { message: string }
+ * @returns {object}
+ * {
+ *   message: string,
+ *   category: {
+ *     id: ObjectId,
+ *     owner: ObjectId,
+ *     name: string,
+ *     color: string
+ *   }
+ * }
  * @param   {ObjectId} userId User who owns the Categories (from middleware)
  * @param   {ObjectId} categoryId ID of this Category
  * @param   {object} categoryUpdates { name: string }
@@ -225,7 +239,10 @@ router.post(EDIT_CATEGORY_ROUTE, isAuth, celebrate({
         .required()
         .messages({ "object.empty": "Category name is required" })
         .pattern(/^[a-zA-Z0-9]*$/)
-        .message("Category name can only contain alphanumeric characters")
+        .message("Category name can only contain alphanumeric characters"),
+      color: Joi.string().messages({ "string.base": "Category color must be of type string" })
+        .pattern(/^[a-zA-Z0-9#]*$/)
+        .message("Category color must be a color or hex color")
     })
       .messages({ "object.base": "Category updates must be an object" })
       .required()

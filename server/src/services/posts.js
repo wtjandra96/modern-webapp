@@ -105,9 +105,45 @@ class PostsService {
   }
 
   /**
+   * @desc    Get Bookmarked Posts
+   * @returns {object}
+   * {
+   *   message: string,
+   *   posts: [{
+   *     id: ObjectId,
+   *     owner: ObjectId,
+   *     category: ObjectId,
+   *     labels: [ObjectId],
+   *     title: string,
+   *     url: string,
+   *     originalDate: date
+   *     imgSrc: string
+   *   }
+   * }]
+   *
+   * @param   {ObjectId} userId User who owns the Posts
+   */
+  async getBookmarkedPosts (userId) {
+    const { postModel } = this;
+
+    const conditions = {
+      owner: userId,
+      isBookmarked: true
+    };
+
+    const postRecords = await postModel.find(conditions).populate("category");
+
+    const payload = {
+      message: "Posts retrieved",
+      posts: postRecords
+    };
+    return payload;
+  }
+
+  /**
    * @desc    Edit a post
    * @returns {object} { message: string }
-   * @param   {ObjectId} userId User who owns the Posts
+   * @param   {ObjectId} userId User who owns the Post
    * @param   {ObjectId} postId The ID of the Post to be edited
    * @param   {string} title
    * @param   {string} url
@@ -121,6 +157,31 @@ class PostsService {
       title,
       url,
       ...postAttributes
+    }, { new: true });
+    if (!postRecord) {
+      throw new ServiceError(404, [
+        { errorMessage: "Post not found" }
+      ]);
+    }
+    const payload = {
+      message: "Post updated",
+      post: postRecord
+    };
+    return payload;
+  }
+
+  /**
+   * @desc    Bookmark a post
+   * @returns {object} { message: string }
+   * @param   {ObjectId} userId User who owns the Post
+   * @param   {ObjectId} postId The ID of the Post to be bookmarked
+   * @param   {ObjectId} isNowBookmarked Whether the Post is now bookmarked or not
+   */
+  async bookmarkPost (userId, postId, isNowBookmarked) {
+    const { postModel } = this;
+
+    const postRecord = await postModel.findOneAndUpdate({ _id: postId, owner: userId }, {
+      isBookmarked: isNowBookmarked
     }, { new: true });
     if (!postRecord) {
       throw new ServiceError(404, [

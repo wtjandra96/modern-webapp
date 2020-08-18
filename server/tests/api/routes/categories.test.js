@@ -71,7 +71,7 @@ describe("Testing categories route", () => {
 
         const { errors } = payload.body;
         expect(errors).toBeDefined();
-        expect(errors.length).toStrictEqual(1);
+        expect(Object.keys(errors).length).toStrictEqual(1);
       });
 
       test("Empty string", async () => {
@@ -83,7 +83,7 @@ describe("Testing categories route", () => {
 
         const { errors } = payload.body;
         expect(errors).toBeDefined();
-        expect(errors.length).toStrictEqual(1);
+        expect(Object.keys(errors).length).toStrictEqual(1);
       });
 
       test("null", async () => {
@@ -95,7 +95,7 @@ describe("Testing categories route", () => {
 
         const { errors } = payload.body;
         expect(errors).toBeDefined();
-        expect(errors.length).toStrictEqual(1);
+        expect(Object.keys(errors).length).toStrictEqual(1);
       });
     });
 
@@ -142,7 +142,7 @@ describe("Testing categories route", () => {
 
         const { errors } = payload.body;
         expect(errors).toBeDefined();
-        expect(errors.length).toStrictEqual(3);
+        expect(Object.keys(errors).length).toStrictEqual(2);
       });
 
       test("Cateogry ID is not of type ObjectId", async () => {
@@ -163,7 +163,7 @@ describe("Testing categories route", () => {
 
         const { errors } = payload.body;
         expect(errors).toBeDefined();
-        expect(errors.length).toStrictEqual(3);
+        expect(Object.keys(errors).length).toStrictEqual(2);
       });
 
       test("Empty string", async () => {
@@ -184,7 +184,7 @@ describe("Testing categories route", () => {
 
         const { errors } = payload.body;
         expect(errors).toBeDefined();
-        expect(errors.length).toStrictEqual(3);
+        expect(Object.keys(errors).length).toStrictEqual(2);
       });
 
       test("null", async () => {
@@ -205,7 +205,7 @@ describe("Testing categories route", () => {
 
         const { errors } = payload.body;
         expect(errors).toBeDefined();
-        expect(errors.length).toStrictEqual(3);
+        expect(Object.keys(errors).length).toStrictEqual(2);
       });
 
       test("label is not an object", async () => {
@@ -223,7 +223,7 @@ describe("Testing categories route", () => {
 
         const { errors } = payload.body;
         expect(errors).toBeDefined();
-        expect(errors.length).toStrictEqual(2);
+        expect(Object.keys(errors).length).toStrictEqual(2);
       });
 
       test("label is null", async () => {
@@ -241,7 +241,7 @@ describe("Testing categories route", () => {
 
         const { errors } = payload.body;
         expect(errors).toBeDefined();
-        expect(errors.length).toStrictEqual(2);
+        expect(Object.keys(errors).length).toStrictEqual(2);
       });
     });
 
@@ -303,7 +303,7 @@ describe("Testing categories route", () => {
           .query({ categoryId: "12345" });
 
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(1);
+        expect(Object.keys(errors).length).toStrictEqual(1);
       });
 
       test("Empty string", async () => {
@@ -313,7 +313,7 @@ describe("Testing categories route", () => {
           .query({ categoryId: "" });
 
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(1);
+        expect(Object.keys(errors).length).toStrictEqual(1);
       });
 
       test("null", async () => {
@@ -323,7 +323,7 @@ describe("Testing categories route", () => {
           .query({ categoryId: null });
 
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(1);
+        expect(Object.keys(errors).length).toStrictEqual(1);
       });
 
       test("Not string", async () => {
@@ -333,7 +333,7 @@ describe("Testing categories route", () => {
           .query({ categoryId: {} });
 
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(1);
+        expect(Object.keys(errors).length).toStrictEqual(1);
       });
     });
 
@@ -377,7 +377,7 @@ describe("Testing categories route", () => {
 
         const { errors } = payload.body;
         expect(errors).toBeDefined();
-        expect(errors.length).toStrictEqual(2);
+        expect(Object.keys(errors).length).toStrictEqual(2);
       });
 
       test("Cateogry ID is not of type ObjectId", async () => {
@@ -397,7 +397,7 @@ describe("Testing categories route", () => {
 
         const { errors } = payload.body;
         expect(errors).toBeDefined();
-        expect(errors.length).toStrictEqual(2);
+        expect(Object.keys(errors).length).toStrictEqual(2);
       });
 
       test("Empty string", async () => {
@@ -417,7 +417,7 @@ describe("Testing categories route", () => {
 
         const { errors } = payload.body;
         expect(errors).toBeDefined();
-        expect(errors.length).toStrictEqual(2);
+        expect(Object.keys(errors).length).toStrictEqual(2);
       });
 
       test("null", async () => {
@@ -437,7 +437,7 @@ describe("Testing categories route", () => {
 
         const { errors } = payload.body;
         expect(errors).toBeDefined();
-        expect(errors.length).toStrictEqual(2);
+        expect(Object.keys(errors).length).toStrictEqual(2);
       });
 
       test("categoryUpdates is not an object", async () => {
@@ -455,7 +455,7 @@ describe("Testing categories route", () => {
 
         const { errors } = payload.body;
         expect(errors).toBeDefined();
-        expect(errors.length).toStrictEqual(2);
+        expect(Object.keys(errors).length).toStrictEqual(2);
       });
 
       test("categoryUpdates is null", async () => {
@@ -473,7 +473,7 @@ describe("Testing categories route", () => {
 
         const { errors } = payload.body;
         expect(errors).toBeDefined();
-        expect(errors.length).toStrictEqual(2);
+        expect(Object.keys(errors).length).toStrictEqual(2);
       });
     });
 
@@ -535,7 +535,7 @@ describe("Testing categories route", () => {
           .send(requestBody);
 
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(3);
+        expect(Object.keys(errors).length).toStrictEqual(2);
       });
 
       test("Label ID is not of type ObjectId", async () => {
@@ -555,7 +555,7 @@ describe("Testing categories route", () => {
           .send(requestBody);
 
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(3);
+        expect(Object.keys(errors).length).toStrictEqual(2);
       });
 
       test("Empty string", async () => {
@@ -575,7 +575,7 @@ describe("Testing categories route", () => {
           .send(requestBody);
 
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(3);
+        expect(Object.keys(errors).length).toStrictEqual(2);
       });
 
       test("null", async () => {
@@ -595,7 +595,7 @@ describe("Testing categories route", () => {
           .send(requestBody);
 
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(3);
+        expect(Object.keys(errors).length).toStrictEqual(2);
       });
 
       test("labelUpdates is not an object", async () => {
@@ -612,7 +612,7 @@ describe("Testing categories route", () => {
           .send(requestBody);
 
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(2);
+        expect(Object.keys(errors).length).toStrictEqual(2);
       });
 
       test("labelUpdates is null", async () => {
@@ -629,7 +629,7 @@ describe("Testing categories route", () => {
           .send(requestBody);
 
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(2);
+        expect(Object.keys(errors).length).toStrictEqual(2);
       });
     });
 
@@ -688,7 +688,7 @@ describe("Testing categories route", () => {
           .set("x-auth-token", testUserId);
 
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(1);
+        expect(Object.keys(errors).length).toStrictEqual(1);
       });
 
       test("Category ID is not of type ObjectId", async () => {
@@ -703,7 +703,7 @@ describe("Testing categories route", () => {
           .set("x-auth-token", testUserId);
 
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(1);
+        expect(Object.keys(errors).length).toStrictEqual(1);
       });
 
       test("Empty string", async () => {
@@ -720,7 +720,7 @@ describe("Testing categories route", () => {
         const { status } = payload;
         expect(status).toStrictEqual(404);
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(1);
+        expect(Object.keys(errors).length).toStrictEqual(1);
       });
 
       test("null", async () => {
@@ -735,7 +735,7 @@ describe("Testing categories route", () => {
           .set("x-auth-token", testUserId);
 
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(1);
+        expect(Object.keys(errors).length).toStrictEqual(1);
       });
     });
 
@@ -799,7 +799,7 @@ describe("Testing categories route", () => {
           .set("x-auth-token", testUserId);
 
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(1);
+        expect(Object.keys(errors).length).toStrictEqual(1);
       });
 
       test("Category ID is not of type ObjectId", async () => {
@@ -814,7 +814,7 @@ describe("Testing categories route", () => {
           .set("x-auth-token", testUserId);
 
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(1);
+        expect(Object.keys(errors).length).toStrictEqual(1);
       });
 
       test("Empty string", async () => {
@@ -831,7 +831,7 @@ describe("Testing categories route", () => {
         const { status } = payload;
         expect(status).toStrictEqual(404);
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(1);
+        expect(Object.keys(errors).length).toStrictEqual(1);
       });
 
       test("null", async () => {
@@ -846,7 +846,7 @@ describe("Testing categories route", () => {
           .set("x-auth-token", testUserId);
 
         const { errors } = payload.body;
-        expect(errors.length).toStrictEqual(1);
+        expect(Object.keys(errors).length).toStrictEqual(1);
       });
     });
 

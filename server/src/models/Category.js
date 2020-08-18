@@ -17,6 +17,10 @@ const CategorySchema = new Schema(
       type: String,
       required: true,
       unique: false
+    },
+    color: {
+      type: String,
+      default: "#EEEEEE"
     }
   },
   {

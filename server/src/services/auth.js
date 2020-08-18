@@ -48,9 +48,9 @@ class AuthService {
     // Check if User exists
     const userRecord = await userModel.findOne({ username });
     if (!userRecord) {
-      throw new ServiceError(400, [
-        { errorMessage: "Invalid username/password combination" }
-      ]);
+      throw new ServiceError(400, {
+        errorMessage: ["Invalid username/password combination"]
+      });
     }
 
     // Check if password is correct
@@ -59,9 +59,9 @@ class AuthService {
       userRecord.password
     );
     if (!passwordMatch) {
-      throw new ServiceError(400, [
-        { errorMessage: "Invalid username/password combination" }
-      ]);
+      throw new ServiceError(400, {
+        errorMessage: ["Invalid username/password combination"]
+      });
     }
 
     // Generate authentication token

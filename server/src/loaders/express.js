@@ -36,9 +36,12 @@ module.exports = (app) => {
 
     if (isCelebrate(err)) {
       const errDetails = err.joi.details;
-      const errors = [];
+      const errors = {};
       for (let i = 0; i < errDetails.length; i += 1) {
-        errors.push({ errorMessage: errDetails[i].message });
+        if (!(errDetails[i].path[0] in errors)) {
+          errors[errDetails[i].path[0]] = [];
+        }
+        errors[errDetails[i].path[0]].push(errDetails[i].message);
       }
 
       const reqBody = req.body;

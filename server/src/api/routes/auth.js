@@ -37,6 +37,8 @@ router.post("/register", celebrate({
     // - At least one digit
     // - At least one special character from the following (!@?+-)ee
     password: Joi.string().messages({ "string.base": "Password must be of type string" })
+      .required()
+      .messages({ "string.empty": "Password is required" })
       .min(8)
       .message("Password length should be at least 8 characters")
       .max(100)

@@ -43,7 +43,7 @@ describe("Testing auth route", () => {
 
         const { errors } = payload.body;
         expect(errors).toBeDefined();
-        expect(errors.length).toStrictEqual(2);
+        expect(Object.keys(errors).length).toStrictEqual(2);
       });
 
       test("Empty string", async () => {
@@ -52,7 +52,7 @@ describe("Testing auth route", () => {
 
         const { errors } = payload.body;
         expect(errors).toBeDefined();
-        expect(errors.length).toStrictEqual(2);
+        expect(Object.keys(errors).length).toStrictEqual(2);
       });
 
       test("null", async () => {
@@ -63,7 +63,7 @@ describe("Testing auth route", () => {
 
         const { errors } = payload.body;
         expect(errors).toBeDefined();
-        expect(errors.length).toStrictEqual(2);
+        expect(Object.keys(errors).length).toStrictEqual(2);
       });
     });
 
@@ -94,7 +94,7 @@ describe("Testing auth route", () => {
 
         const { errors } = payload.body;
         expect(errors).toBeDefined();
-        expect(errors.length).toStrictEqual(2);
+        expect(Object.keys(errors).length).toStrictEqual(2);
       });
 
       test("Empty string", async () => {
@@ -103,7 +103,7 @@ describe("Testing auth route", () => {
 
         const { errors } = payload.body;
         expect(errors).toBeDefined();
-        expect(errors.length).toStrictEqual(2);
+        expect(Object.keys(errors).length).toStrictEqual(2);
       });
 
       test("null", async () => {
@@ -114,7 +114,7 @@ describe("Testing auth route", () => {
 
         const { errors } = payload.body;
         expect(errors).toBeDefined();
-        expect(errors.length).toStrictEqual(2);
+        expect(Object.keys(errors).length).toStrictEqual(2);
       });
 
       test("Bad inputs", async () => {
@@ -123,7 +123,7 @@ describe("Testing auth route", () => {
 
         const { errors } = payload.body;
         expect(errors).toBeDefined();
-        expect(errors.length).toStrictEqual(6);
+        expect(Object.keys(errors).length).toStrictEqual(2);
       });
 
       test("Input length too long", async () => {
@@ -135,7 +135,7 @@ describe("Testing auth route", () => {
 
         const { errors } = payload.body;
         expect(errors).toBeDefined();
-        expect(errors.length).toStrictEqual(2);
+        expect(Object.keys(errors).length).toStrictEqual(2);
       });
 
       test("Input length too short", async () => {
@@ -144,7 +144,7 @@ describe("Testing auth route", () => {
 
         const { errors } = payload.body;
         expect(errors).toBeDefined();
-        expect(errors.length).toStrictEqual(2);
+        expect(Object.keys(errors).length).toStrictEqual(2);
       });
     });
 
