@@ -9,7 +9,7 @@
       "memory": 128
     },
     {
-      "name": "api",
+      "name": "server",
       "image": "wtjandra96/modern-node-server",
       "hostname": "api",
       "essential": true,
@@ -25,7 +25,7 @@
           "containerPort": 80
         }
       ],
-      "links": ["client", "api"],
+      "links": ["client", "server"],
       "memory": 128
     }
   ]
