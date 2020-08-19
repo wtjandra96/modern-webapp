@@ -41,7 +41,7 @@ deploy:
   provider: elasticbeanstalk
   region: us-west-1
   app: modern-webapp
-  env: ModernWebapp-env-1
+  env: ModernWebapp-env
   bucket_name: elasticbeanstalk-us-west-1-818456680316
   bucket_path: modern-webapp
   on:
