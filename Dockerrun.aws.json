@@ -5,20 +5,19 @@
       "name": "client",
       "image": "wtjandra96/modern-react-client",
       "hostname": "client",
-      "essential": false,
+      "essential": true,
       "memory": 128
     },
     {
-      "name": "server",
+      "name": "api",
       "image": "wtjandra96/modern-node-server",
       "hostname": "api",
-      "essential": false,
+      "essential": true,
       "memory": 128
     },
     {
-      "name": "nginx-proxy",
+      "name": "proxy",
       "image": "wtjandra96/modern-nginx-proxy",
-      "hostname": "nginx-proxy",
       "essential": true,
       "portMapping": [
         {
@@ -26,7 +25,7 @@
           "containerPort": 80
         }
       ],
-      "links": ["client", "server"],
+      "links": ["client", "api"],
       "memory": 128
     }
   ]
