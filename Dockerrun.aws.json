@@ -2,18 +2,18 @@
   "AWSEBDockerrunVersion": 2,
   "containerDefinitions": [
     {
-      "name": "react-client",
+      "name": "client",
       "image": "wtjandra96/modern-react-client",
-      "hostname": "react-client",
+      "hostname": "client",
       "essential": false,
       "memory": 128
     },
     {
-      "name": "node-server",
+      "name": "server",
       "image": "wtjandra96/modern-node-server",
-      "hostname": "node-server",
+      "hostname": "api",
       "essential": false,
-      "memory": 1024
+      "memory": 128
     },
     {
       "name": "nginx-proxy",
@@ -26,9 +26,7 @@
           "containerPort": 80
         }
       ],
-      "links": [
-        "react-client"
-      ],
+      "links": ["client", "server"],
       "memory": 128
     }
   ]
