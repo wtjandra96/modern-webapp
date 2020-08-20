@@ -7,9 +7,6 @@ module.exports = ({ models }) => {
     models.forEach((model) => {
       container.set(model.name, model.model);
     });
-
-    container.set("logger", logger);
-    logger.info("Logger injected into container");
   } catch (err) {
     logger.error(`Error on dependency injector loader: ${err}`);
   }

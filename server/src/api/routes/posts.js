@@ -8,6 +8,7 @@ const PostsService = require("../../services/posts");
 const { isAuth } = require("../middlewares");
 
 const router = express.Router();
+const logger = container.get("logger");
 
 const PREFIX = "/api/posts";
 
@@ -63,11 +64,12 @@ router.post(CREATE_POST_ROUTE, isAuth, celebrate({
     }).messages({ "object.base": "Post attributes must be an object" })
   })
 }, { abortEarly: false }), async (req, res, next) => {
+  logger.debug(PREFIX + CREATE_POST_ROUTE);
+  
   const { userId } = req;
   const {
     categoryId, title, url, postAttributes
   } = req.body;
-
   try {
     const postsServiceInstance = container.get(PostsService);
     const payload = await postsServiceInstance.createPost(
@@ -117,6 +119,8 @@ router.get(GET_POSTS_ROUTE, isAuth, celebrate({
     ).messages({ "array.base": "Label IDs must be an array" })
   })
 }, { abortEarly: false }), async (req, res, next) => {
+  logger.debug(PREFIX + GET_POSTS_ROUTE);
+  
   const { userId } = req;
   const { categoryId, labelIds } = req.query;
 
@@ -155,6 +159,8 @@ router.get(GET_POSTS_ROUTE, isAuth, celebrate({
  * @param   {array} labelIds optional - [ObjectId]
  */
 router.get(GET_BOOKMARKED_POSTS_ROUTE, isAuth, async (req, res, next) => {
+  logger.debug(PREFIX + GET_BOOKMARKED_POSTS_ROUTE);
+  
   const { userId } = req;
 
   try {
@@ -198,6 +204,8 @@ router.post(BOOKMARK_POST_ROUTE, isAuth, celebrate({
       .required().messages({ "boolean.empty": "Bookmarked value is required" })
   })
 }, { abortEarly: false }), async (req, res, next) => {
+  logger.debug(PREFIX + BOOKMARK_POST_ROUTE);
+  
   const { userId } = req;
   const { postId, isNowBookmarked } = req.body;
   try {
@@ -256,6 +264,8 @@ router.post(EDIT_POST_ROUTE, isAuth, celebrate({
     }).messages({ "object.base": "Post attributes must be an object" })
   })
 }, { abortEarly: false }), async (req, res, next) => {
+  logger.debug(PREFIX + EDIT_POST_ROUTE);
+  
   const { userId } = req;
   const {
     postId, title, url, postAttributes
@@ -289,6 +299,8 @@ router.delete(`${DELETE_POST_ROUTE}/:postId`, isAuth, celebrate({
       .required().messages({ "any.required": "Post ID is missing" })
   })
 }, { abortEarly: false }), async (req, res, next) => {
+  logger.debug(PREFIX + DELETE_POST_ROUTE);
+  
   const { userId } = req;
   const { postId } = req.params;
 

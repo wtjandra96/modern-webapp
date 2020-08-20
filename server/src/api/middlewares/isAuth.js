@@ -7,6 +7,8 @@ const isAuth = (req, res, next) => {
   const logger = container.get("logger");
   const token = req.header("x-auth-token"); // Grab token from header
 
+  logger.debug("Checking authentication token");
+
   // Check if token exists
   if (!token || typeof token !== "string") {
     return res.status(401).json({

@@ -7,6 +7,7 @@ const CategoriesService = require("../../services/categories");
 const { isAuth } = require("../middlewares");
 
 const router = express.Router();
+const logger = container.get("logger");
 
 const PREFIX = "/api/categories";
 
@@ -49,6 +50,8 @@ router.post(CREATE_CATEGORY_ROUTE, isAuth, celebrate({
       .message("Category color must be a color or hex color")
   })
 }, { abortEarly: false }), async (req, res, next) => {
+  logger.debug(PREFIX + CREATE_CATEGORY_ROUTE);
+
   const { userId } = req;
   const { name, color } = req.body;
 
@@ -100,6 +103,8 @@ router.post(CREATE_LABEL_ROUTE, isAuth, celebrate({
       .messages({ "object.empty": "Label information is required" })
   })
 }, { abortEarly: false }), async (req, res, next) => {
+  logger.debug(PREFIX + CREATE_LABEL_ROUTE);
+  
   const { userId } = req;
   const { categoryId, label } = req.body;
 
@@ -134,6 +139,8 @@ router.post(CREATE_LABEL_ROUTE, isAuth, celebrate({
  * @param   {ObjectId} userId User who owns the Categories (from middleware)
  */
 router.get(GET_CATEGORIES_ROUTE, isAuth, async (req, res, next) => {
+  logger.debug(PREFIX + GET_CATEGORIES_ROUTE);
+  
   const { userId } = req;
   try {
     const categoriesServiceInstance = container.get(CategoriesService);
@@ -166,6 +173,8 @@ router.get(GET_CATEGORY_ROUTE, isAuth, celebrate({
     categoryName: Joi.string().messages({ "string.base": "Category name must be of type string" })
   }
 }, { abortEarly: false }), async (req, res, next) => {
+  logger.debug(PREFIX + GET_CATEGORY_ROUTE);
+  
   const { userId } = req;
   const { categoryName } = req.query;
 
@@ -203,6 +212,8 @@ router.get(GET_LABELS_ROUTE, isAuth, celebrate({
       .required().messages({ "any.required": "Category ID is missing" })
   }
 }, { abortEarly: false }), async (req, res, next) => {
+  logger.debug(PREFIX + GET_LABELS_ROUTE);
+  
   const { userId } = req;
   const { categoryId } = req.query;
   try {
@@ -253,6 +264,8 @@ router.post(EDIT_CATEGORY_ROUTE, isAuth, celebrate({
       .messages({ "object.empty": "Category updates are required" })
   })
 }, { abortEarly: false }), async (req, res, next) => {
+  logger.debug(PREFIX + EDIT_CATEGORY_ROUTE);
+  
   const { userId } = req;
   const { categoryId, categoryUpdates } = req.body;
 
@@ -292,6 +305,8 @@ router.post(EDIT_LABEL_ROUTE, isAuth, celebrate({
       .messages({ "object.empty": "Label updates are required" })
   })
 }, { abortEarly: false }), async (req, res, next) => {
+  logger.debug(PREFIX + EDIT_LABEL_ROUTE);
+  
   const { userId } = req;
   const { labelId, labelUpdates } = req.body;
 
@@ -321,6 +336,8 @@ router.delete(`${DELETE_CATEGORY_ROUTE}/:categoryId`, isAuth, celebrate({
     categoryId: Joi.objectId().message("Category ID is invalid")
   }
 }, { abortEarly: false }), async (req, res, next) => {
+  logger.debug(PREFIX + DELETE_CATEGORY_ROUTE);
+  
   const { userId } = req;
   const { categoryId } = req.params;
 
@@ -347,6 +364,8 @@ router.delete(`${DELETE_LABEL_ROUTE}/:labelId`, isAuth, celebrate({
       .required().messages({ "any.required": "Label ID is missing" })
   })
 }, { abortEarly: false }), async (req, res, next) => {
+  logger.debug(PREFIX + DELETE_LABEL_ROUTE);
+  
   const { userId } = req;
   const { labelId } = req.params;
 

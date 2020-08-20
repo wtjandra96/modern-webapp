@@ -9,6 +9,8 @@ module.exports = (app) => {
   const logger = container.get("logger");
 
   app.get("/api/status", (req, res) => {
+    logger.info("/api/status OK");
+    
     res.status(200).send("OK");
   });
 
@@ -23,6 +25,7 @@ module.exports = (app) => {
     const err = new Error("Not found");
     err.httpStatusCode = 404;
     err.errors = [{ errorMessage: "404 Not Found" }];
+  
     next(err);
   });
 

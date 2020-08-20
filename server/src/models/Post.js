@@ -1,9 +1,13 @@
 /* eslint-disable prefer-destructuring */
+const container = require("typedi").Container;
 const mongoose = require("mongoose");
 const axios = require("axios");
 const config = require("../config");
 
+const logger = container.get("logger"); 
+
 const extractHostname = (url) => {
+  logger.debug("Extracting hostname");
   let hostname;
 
   // http prefix
@@ -21,6 +25,8 @@ const extractHostname = (url) => {
 
 const getImgSrc = async (hostname) => {
   if (process.env.NODE_ENV === "test") return null;
+  logger.debug("Getting image source")
+
   let topic;
   topic = hostname.split(".");
   if (topic.length > 2) {
@@ -30,6 +36,7 @@ const getImgSrc = async (hostname) => {
   }
 
   const searchTerm = `${topic} icon`;
+  logger.debug("Searching images for " + searchTerm);
   try {
     const res = await axios.get(
       "https://customsearch.googleapis.com/customsearch/v1", {
@@ -43,7 +50,11 @@ const getImgSrc = async (hostname) => {
     );
     const items = res.data.items;
 
-    if (!items) return null;
+    if (!items || items.length === 0) {
+      logger.debug("Didn't find any images")
+      return null;
+    }
+    logger.debug("Found image")
     let pickedItem = null;
     for (let i = 0; i < items.length; i += 1) {
       const item = items[i];
@@ -56,12 +67,10 @@ const getImgSrc = async (hostname) => {
     if (pickedItem) {
       return pickedItem.link;
     }
-    if (!pickedItem && items && items.length > 0) {
-      return items[0].link;
-    }
-    return null;
+    return items[0].link;
   } catch (err) {
     // return null if error
+    logger.error(err);
     return null;
   }
 };
@@ -126,6 +135,7 @@ PostSchema.pre("save", async function addSource (next) {
   post.source = hostname;
   const imgSrc = await getImgSrc(hostname);
   post.imgSrc = imgSrc;
+  logger.debug("Saving Post");
   return next();
 });
 PostSchema.pre("findOneAndUpdate", async function addSource (next) {
@@ -137,6 +147,7 @@ PostSchema.pre("findOneAndUpdate", async function addSource (next) {
     const imgSrc = await getImgSrc(hostname);
     _update.imgSrc = imgSrc;
   }
+  logger.debug("Saving Post updates");
   return next();
 });
 PostSchema.method("toJSON", function toJSON () {
