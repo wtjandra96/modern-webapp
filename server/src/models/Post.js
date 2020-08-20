@@ -17,7 +17,7 @@ const extractHostname = (url) => {
   hostname = hostname.split(":")[0]
     .split("?")[0];
   return hostname;
-}
+};
 
 const getImgSrc = async (hostname) => {
   if (process.env.NODE_ENV === "test") return null;
@@ -29,28 +29,29 @@ const getImgSrc = async (hostname) => {
     topic = topic[0];
   }
 
-  let searchTerm = topic + " icon";
+  const searchTerm = `${topic} icon`;
   try {
     const res = await axios.get(
       "https://customsearch.googleapis.com/customsearch/v1", {
-      params: {
-        q: searchTerm,
-        cx: config.cx,
-        key: config.GOOGLE_API_KEY,
-        searchType: "image"
+        params: {
+          q: searchTerm,
+          cx: config.cx,
+          key: config.GOOGLE_API_KEY,
+          searchType: "image"
+        }
       }
-    })
-    let items = res.data.items;
-    
+    );
+    const items = res.data.items;
+
     if (!items) return null;
     let pickedItem = null;
-    for (let i = 0; i < items.length; i++) {
-      let item = items[i];
-      console.log(item.image, item.link);
-      let width = item.image.width;
-      let height = item.image.height;
-      if (width !== height) continue;
-      pickedItem = item;
+    for (let i = 0; i < items.length; i += 1) {
+      const item = items[i];
+      const width = item.image.width;
+      const height = item.image.height;
+      if (width === height) {
+        pickedItem = item;
+      }
     }
     if (pickedItem) {
       return pickedItem.link;
@@ -63,7 +64,7 @@ const getImgSrc = async (hostname) => {
     // return null if error
     return null;
   }
-}
+};
 
 const { Schema } = mongoose;
 const PostSchema = new Schema(
