@@ -23,3 +23,13 @@ img {
   width: 100%;
   min-height: 100%;
 }
+
+.d-none {
+  display: none;
+}
+
+@media (min-width: 600px) {
+  .d-md {
+    display: block;
+  }
+}

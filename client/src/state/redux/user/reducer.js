@@ -15,7 +15,8 @@ const initialState = {
   isAuthenticated: false,
   token: null,
   errors: {},
-  isGuest: false
+  isGuest: false,
+  currentlyProcessing: false
 };
 
 export default (state = initialState, action) => {
@@ -57,7 +58,7 @@ export default (state = initialState, action) => {
         isAuthenticated: false,
         isGuest: false
       }
-    case types.SET_ERRORS:
+    case types.SET_USER_ERRORS:
       return {
         ...state,
         errors: payload
@@ -66,6 +67,16 @@ export default (state = initialState, action) => {
       return {
         ...state,
         errors: {}
+      }
+    case types.START_USER_ACTION:
+      return {
+        ...state,
+        currentlyProcessing: true
+      }
+    case types.STOP_USER_ACTION:
+      return {
+        ...state,
+        currentlyProcessing: false
       }
     default:
       return state;

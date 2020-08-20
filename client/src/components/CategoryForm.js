@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from "react-redux"
 
 import styled from "styled-components"
@@ -18,6 +18,10 @@ const Wrapper = styled.div`
   padding: 12px;
   display: flex;
   flex-direction: column;
+
+  &:focus {
+    outline: 0;
+  }
 `
 
 const FormControl = styled.div`
@@ -44,17 +48,56 @@ const CategoryForm = props => {
   // dispatch
   const { createCategory, editCategory } = props;
   // redux state
-  const { isGuest } = props;
+  const { isGuest, categoryErrors } = props;
   // passed function
   const { closeForm } = props;
   // passed props
-  const { id, categoryColor, categoryName, isEdit } = props;
+  const { id, categoryColor, categoryName, isEdit, isBottomSheet } = props;
 
   const [color, setColor] = useState(categoryColor || "");
   const [newCategoryName, setNewCategoryName] = useState(categoryName || "");
+  const [loading, setLoading] = useState(true);
+
+  const ref = React.createRef();
+  
+  useEffect(() => {
+    if (ref.current && isBottomSheet) {
+      ref.current.focus();
+      setLoading(false);
+    }
+  }, [loading, ref])
+
+  let currentCategoryErrors;
+  let categoryNameErrors;
+
+  if (categoryErrors) {
+    if (isEdit && id) {
+      currentCategoryErrors = categoryErrors[id];
+      if (currentCategoryErrors) {
+        categoryNameErrors = currentCategoryErrors.name;
+      }
+    } else {
+      categoryNameErrors = categoryErrors.name;
+    }
+  }
+
+  let timeoutId = null;
+
+  const onBlur = () => {
+    if (loading) return;
+    if (isEdit || isBottomSheet) {
+      timeoutId = setTimeout(() => closeForm && closeForm());
+    }
+  }
+
+  const onFocus = () => {
+    if (isEdit || isBottomSheet) {
+      clearTimeout(timeoutId);
+    }
+  }
 
   return (
-    <Wrapper>
+    <Wrapper tabIndex="0" role="form" onBlur={onBlur} onFocus={onFocus}>
       {isEdit &&
         <>
           <FormHeader>
@@ -71,7 +114,18 @@ const CategoryForm = props => {
         onChange={e => setNewCategoryName(e.target.value)}
         placeholder="Category Name"
         value={newCategoryName}
+        ref={ref}
       />
+      {categoryNameErrors && 
+        <>
+          <Space height="6" />
+          {categoryNameErrors.map(errorMessage => (
+            <Text key={errorMessage} color="red" fontSize="14">
+              {errorMessage}
+            </Text>
+          ))}
+        </>
+      }
       <Space height="12" />
       <FormControl>
         <ColorPicker color={color} setColor={setColor} />
@@ -93,7 +147,8 @@ const CategoryForm = props => {
 }
 
 const mapStateToProps = state => ({
-  isGuest: state.user.isGuest
+  isGuest: state.user.isGuest,
+  categoryErrors: state.category.errors
 })
 
 const mapDispatchToProps = {

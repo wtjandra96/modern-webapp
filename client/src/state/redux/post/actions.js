@@ -1,5 +1,13 @@
 import * as types from "./types";
 
+const startAction = () => ({
+  type: types.START_POST_ACTION
+})
+
+const stopAction = () => ({
+  type: types.STOP_POST_ACTION
+})
+
 const addNewPost = (post) => ({
   type: types.ADD_NEW_POST,
   payload: post
@@ -25,7 +33,7 @@ const clearPosts = () => ({
 });
 
 const setErrors = (errorMessages) => ({
-  type: types.SET_ERRORS,
+  type: types.SET_POST_ERRORS,
   payload: errorMessages
 })
 
@@ -46,5 +54,7 @@ export {
   removePost,
   setErrors,
   clearErrors,
-  removePostsOfDeletedCategory
+  removePostsOfDeletedCategory,
+  startAction,
+  stopAction
 };

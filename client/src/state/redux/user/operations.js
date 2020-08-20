@@ -4,7 +4,8 @@ import { clearPosts } from "../post/actions";
 import { clearCategoriesList } from "../category/actions";
 
 const register = (username, password) => async dispatch => {
-  const { setErrors, clearErrors } = actions;
+  const { setErrors, clearErrors, startAction, stopAction } = actions;
+  dispatch(startAction());
   dispatch(clearErrors());
 
   const url = "/auth/register";
@@ -20,11 +21,14 @@ const register = (username, password) => async dispatch => {
     } else {
       console.error(err);
     }
+  } finally {
+    dispatch(stopAction());
   }
 };
 
 const login = (username, password) => async dispatch => {
-  const { setUser, setErrors, clearErrors } = actions;
+  const { setUser, setErrors, clearErrors, startAction, stopAction } = actions;
+  dispatch(startAction());
   dispatch(clearErrors());
 
   const url = "/auth/login";
@@ -43,6 +47,8 @@ const login = (username, password) => async dispatch => {
     } else {
       console.error(err);
     }
+  } finally {
+    dispatch(stopAction());
   }
 };
 
@@ -60,9 +66,16 @@ const logout = () => async dispatch => {
   api.setAuthToken(null);
 };
 
-const changePassword = (oldPassword, newPassword) => async dispatch => {
-  const { setErrors, clearErrors } = actions;
+const changePassword = (oldPassword, newPassword, confirmNewPassword) => async dispatch => {
+  const { setErrors, clearErrors, startAction, stopAction } = actions;
+  dispatch(startAction());
   dispatch(clearErrors());
+  
+  if (newPassword !== confirmNewPassword) {
+    dispatch(setErrors({ newPassword: ["New passwords do not match"] }))
+    dispatch(stopAction());
+    return;
+  }
 
   const url = "/auth/changePassword";
   const data = { oldPassword, newPassword };
@@ -76,6 +89,8 @@ const changePassword = (oldPassword, newPassword) => async dispatch => {
     } else {
       console.error(err);
     }
+  } finally {
+    dispatch(stopAction());
   }
 }
 

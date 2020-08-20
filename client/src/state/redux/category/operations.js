@@ -27,6 +27,13 @@ const createCategory = (categoryName, color, isGuest) => async (dispatch) => {
     if (!categories || !(categories instanceof Array)) {
       categories = [];
     }
+    for (let i = 0; i < categories.length; i++) {
+      let category = categories[i];
+      if (category.name === categoryName) {
+        dispatch(setErrors({ name: ["Category already exists"] }));
+        return;
+      }
+    }
     let category = {};
     category.name = categoryName;
     category.color = color;
@@ -59,10 +66,15 @@ const editCategory = (categoryId, categoryName, color, isGuest) => async (dispat
   dispatch(clearErrors());
 
   let errors = {};
-  if (!categoryName || categoryName.length === 0) {
-    errors.name = ["Category name is required"];
+  if (!categoryId) {
+    dispatch(setErrors(errors.name = ["Invalid request"]));
+    return;
   }
-  if (errors.name) {
+  errors[categoryId] = {};
+  if (!categoryName || categoryName.length === 0) {
+    errors[categoryId].name = ["Category name is required"];
+  }
+  if (errors[categoryId].name) {
     dispatch(setErrors(errors));
     return;
   }
@@ -76,17 +88,33 @@ const editCategory = (categoryId, categoryName, color, isGuest) => async (dispat
     if (!categories || !(categories instanceof Array)) {
       categories = [];
     }
+    if (!categories || !(categories instanceof Array)) {
+      categories = [];
+    }
+    let categoryToUpdate = null;
+    let categoryToUpdateIndex = -1;
     for (let i = 0; i < categories.length; i++) {
       let category = categories[i];
+      if (category.name === categoryName) {
+        dispatch(setErrors({
+          categoryId: {
+            name: ["Category already exists"]
+          }
+        }));
+        return;
+      }
       if (category.id === categoryId) {
-        category.name = categoryName;
-        category.color = color;
-        dispatch(updateCategory(category));
-        categories[i] = category;
-        break;
+        categoryToUpdate = category;
+        categoryToUpdateIndex = i;
       }
     }
-    localForage.setItem("categories", categories);
+    if (categoryToUpdateIndex !== -1) {
+      categoryToUpdate.name = categoryName;
+      categoryToUpdate.color = color;
+      dispatch(updateCategory(categoryToUpdate));
+      categories[categoryToUpdateIndex] = categoryToUpdate;
+      localForage.setItem("categories", categories);
+    }
   } else {
     const url = "/categories/editCategory";
     const data = {
@@ -106,7 +134,7 @@ const editCategory = (categoryId, categoryName, color, isGuest) => async (dispat
 
       if (err.response.data && err.response.data.errors) {
         const errorMessages = err.response.data.errors;
-        dispatch(setErrors(errorMessages));
+        dispatch(setErrors({ categoryId: errorMessages }));
       } else {
         console.error(err);
       }

@@ -1,12 +1,12 @@
-import React, { useState } from 'react'
-import { connect } from 'react-redux'
+import React, { useState, useEffect } from 'react'
+import { connect, useDispatch } from 'react-redux'
 import styled from "styled-components"
 
-import Button from "./basic/Button"
+import Button from "./basic/Button";
 import Space from "./basic/Space";
 import Text from "./basic/Text";
 
-import { userOperations } from "../state/redux/user";
+import { userOperations, userActions } from "../state/redux/user";
 
 const Input = styled.input`
   width: 100%;
@@ -19,6 +19,7 @@ const Input = styled.input`
 const Form = styled.div`
   display: flex;
   flex-direction: column;
+  max-height: 800px;
   padding: 12px;
 `
 
@@ -27,21 +28,46 @@ const FormControl = styled.div`
   justify-content: flex-end;
 `
 
+const Filler = styled.div`
+  flex-grow: 1;
+`
+
 const ChangePasswordForm = props => {
   // dispatch 
   const { changePassword } = props;
   // passed function
   const { closeForm } = props;
+  // redux state
+  const { userErrors, currentlyProcessing } = props;
 
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [requesting, setRequesting] = useState(false);
 
-  const passwordMatch = () => {
-    if (newPassword === confirmNewPassword) {
-      return true;
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    return () => dispatch(userActions.clearErrors());
+  }, [dispatch])
+
+  useEffect(() => {
+    if (currentlyProcessing) {
+      setRequesting(true);
     }
-    return false;
+    if (requesting && !currentlyProcessing) {
+        setRequesting(false);
+      if (Object.keys(userErrors).length === 0 && closeForm) {
+        closeForm();
+      }
+    }
+  }, [requesting, currentlyProcessing, userErrors, closeForm])
+
+  let oldPasswordErrors;
+  let newPasswordErrors;
+  if (userErrors) {
+    oldPasswordErrors = userErrors.oldPassword;
+    newPasswordErrors = userErrors.newPassword;
   }
 
   return (
@@ -54,6 +80,17 @@ const ChangePasswordForm = props => {
         value={oldPassword}
         onChange={e => setOldPassword(e.target.value)}
       />
+      {oldPasswordErrors &&
+        <>
+          <Space height="6" />
+          {oldPasswordErrors.map(errorMessage => (
+            <Text key={errorMessage}
+              color="red"
+              fontSize="14"
+            >{errorMessage}</Text>
+          ))}
+        </>
+      }
       <Space height="24" />
       <Text>Confirm Password</Text>
       <Space height="6" />
@@ -63,6 +100,17 @@ const ChangePasswordForm = props => {
         value={newPassword}
         onChange={e => setNewPassword(e.target.value)}
       />
+      {newPasswordErrors &&
+        <>
+          <Space height="6" />
+          {newPasswordErrors.map(errorMessage => (
+            <Text key={errorMessage}
+              color="red"
+              fontSize="14"
+            >{errorMessage}</Text>
+          ))}
+        </>
+      }
       <Space height="24" />
       <Text>Confirm New Password</Text>
       <Space height="6" />
@@ -74,10 +122,9 @@ const ChangePasswordForm = props => {
       />
       <Space height="24" />
       <FormControl>
+        <Filler />
         <Button onClick={() => {
-          if (passwordMatch()) {
-            changePassword(oldPassword, newPassword);
-          }
+          changePassword(oldPassword, newPassword, confirmNewPassword);
         }}>
           Confirm
         </Button>
@@ -88,8 +135,13 @@ const ChangePasswordForm = props => {
   )
 }
 
+const mapStateToProps = state => ({
+  userErrors: state.user.errors,
+  currentlyProcessing: state.user.currentlyProcessing
+})
+
 const mapDispatchToProps = {
   changePassword: userOperations.changePassword
 }
 
-export default connect(null, mapDispatchToProps)(ChangePasswordForm)
+export default connect(mapStateToProps, mapDispatchToProps)(ChangePasswordForm)
