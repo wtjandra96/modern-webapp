@@ -61,7 +61,7 @@ const CategoryForm = props => {
   const ref = React.createRef();
   
   useEffect(() => {
-    if (ref.current && isBottomSheet) {
+    if (ref.current && isBottomSheet && loading) {
       ref.current.focus();
       setLoading(false);
     }
