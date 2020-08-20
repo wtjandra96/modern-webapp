@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const axios = require("axios");
 const config = require("../config");
 
-const logger = container.get("logger"); 
+const logger = container.get("logger");
 
 const extractHostname = (url) => {
   logger.debug("Extracting hostname");
@@ -25,8 +25,8 @@ const extractHostname = (url) => {
 
 const getImgSrc = async (hostname) => {
   if (process.env.NODE_ENV === "test") return null;
-  logger.debug("Getting image source")
-  
+  logger.debug("Getting image source");
+
   let topic;
   topic = hostname.split(".");
   if (topic.length > 2) {
@@ -36,8 +36,8 @@ const getImgSrc = async (hostname) => {
   }
 
   const searchTerm = `${topic} icon`;
-  logger.debug("Searching images for " + searchTerm);
-  
+  logger.debug(`Searching images for ${searchTerm}`);
+
   try {
     const res = await axios.get(
       "https://customsearch.googleapis.com/customsearch/v1", {
@@ -52,11 +52,11 @@ const getImgSrc = async (hostname) => {
     const items = res.data.items;
 
     if (!items || items.length === 0) {
-      logger.debug("Didn't find any images")
+      logger.debug("Didn't find any images");
       return null;
     }
-    logger.debug("Found image")
-    
+    logger.debug("Found image");
+
     let pickedItem = null;
     for (let i = 0; i < items.length; i += 1) {
       const item = items[i];
@@ -137,7 +137,7 @@ PostSchema.pre("save", async function addSource (next) {
   post.source = hostname;
   const imgSrc = await getImgSrc(hostname);
   post.imgSrc = imgSrc;
-  
+
   logger.debug("Saving Post");
   return next();
 });

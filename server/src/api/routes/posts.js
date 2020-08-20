@@ -65,7 +65,7 @@ router.post(CREATE_POST_ROUTE, isAuth, celebrate({
   })
 }, { abortEarly: false }), async (req, res, next) => {
   logger.debug(PREFIX + CREATE_POST_ROUTE);
-  
+
   const { userId } = req;
   const {
     categoryId, title, url, postAttributes
@@ -120,7 +120,7 @@ router.get(GET_POSTS_ROUTE, isAuth, celebrate({
   })
 }, { abortEarly: false }), async (req, res, next) => {
   logger.debug(PREFIX + GET_POSTS_ROUTE);
-  
+
   const { userId } = req;
   const { categoryId, labelIds } = req.query;
 
@@ -160,7 +160,7 @@ router.get(GET_POSTS_ROUTE, isAuth, celebrate({
  */
 router.get(GET_BOOKMARKED_POSTS_ROUTE, isAuth, async (req, res, next) => {
   logger.debug(PREFIX + GET_BOOKMARKED_POSTS_ROUTE);
-  
+
   const { userId } = req;
 
   try {
@@ -205,7 +205,7 @@ router.post(BOOKMARK_POST_ROUTE, isAuth, celebrate({
   })
 }, { abortEarly: false }), async (req, res, next) => {
   logger.debug(PREFIX + BOOKMARK_POST_ROUTE);
-  
+
   const { userId } = req;
   const { postId, isNowBookmarked } = req.body;
   try {
@@ -265,7 +265,7 @@ router.post(EDIT_POST_ROUTE, isAuth, celebrate({
   })
 }, { abortEarly: false }), async (req, res, next) => {
   logger.debug(PREFIX + EDIT_POST_ROUTE);
-  
+
   const { userId } = req;
   const {
     postId, title, url, postAttributes
@@ -300,7 +300,7 @@ router.delete(`${DELETE_POST_ROUTE}/:postId`, isAuth, celebrate({
   })
 }, { abortEarly: false }), async (req, res, next) => {
   logger.debug(PREFIX + DELETE_POST_ROUTE);
-  
+
   const { userId } = req;
   const { postId } = req.params;
 

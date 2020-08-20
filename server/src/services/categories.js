@@ -28,7 +28,7 @@ class CategoriesService {
    */
   async createCategory (userId, name, color) {
     logger.debug("Creating category");
-    
+
     const { categoryModel } = this;
 
     const categoryRecord = await categoryModel.create({
@@ -64,7 +64,7 @@ class CategoriesService {
    */
   async createLabel (userId, categoryId, label) {
     logger.debug("Creating Label");
-    
+
     const { categoryModel, labelModel } = this;
 
     const categoryRecord = await categoryModel.findOne({ _id: categoryId, owner: userId }).lean();
@@ -104,7 +104,7 @@ class CategoriesService {
    */
   async getCategories (userId) {
     logger.debug("Getting Categories");
-    
+
     const { categoryModel } = this;
 
     const categoryRecords = await categoryModel.find({ owner: userId });
@@ -134,7 +134,7 @@ class CategoriesService {
    */
   async getCategory (userId, categoryName) {
     logger.debug("Getting Category");
-    
+
     const { categoryModel } = this;
 
     const categoryRecord = await categoryModel.findOne({
@@ -168,7 +168,7 @@ class CategoriesService {
    */
   async getLabels (userId, categoryId) {
     logger.debug("Getting all Labels");
-    
+
     const { labelModel } = this;
 
     const labelRecords = await labelModel.find({ owner: userId, category: categoryId });
@@ -188,7 +188,7 @@ class CategoriesService {
    */
   async editCategory (userId, categoryId, categoryUpdates) {
     logger.debug("Editing Category");
-    
+
     const { categoryModel } = this;
 
     const categoryRecord = await categoryModel.findOneAndUpdate({
@@ -218,7 +218,7 @@ class CategoriesService {
    */
   async editLabel (userId, labelId, labelUpdates) {
     logger.debug("Editing Label");
-    
+
     const { labelModel } = this;
 
     const labelRecord = await labelModel.findOneAndUpdate({
@@ -246,7 +246,7 @@ class CategoriesService {
    */
   async deleteCategory (userId, categoryId) {
     logger.debug("Deleting Category");
-    
+
     const { categoryModel, labelModel, postModel } = this;
 
     await categoryModel.findOneAndDelete({ _id: categoryId, owner: userId });
@@ -267,7 +267,7 @@ class CategoriesService {
    */
   async deleteLabel (userId, labelId) {
     logger.debug("Deleting Label");
-    
+
     const { labelModel } = this;
 
     await labelModel.findOneAndDelete({ _id: labelId, owner: userId });

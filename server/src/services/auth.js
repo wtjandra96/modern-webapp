@@ -12,7 +12,7 @@ class AuthService {
 
   async changePassword (userId, oldPassword, newPassword) {
     logger.debug("Changing password");
-    
+
     const { userModel } = this;
     const userRecord = await userModel.findById(userId);
     if (!userRecord) {
@@ -52,7 +52,7 @@ class AuthService {
    */
   async register (username, password) {
     logger.debug("Registering User");
-    
+
     const { userModel } = this;
 
     await userModel.create({
@@ -82,7 +82,7 @@ class AuthService {
    */
   async login (username, password) {
     logger.debug("Logging in User");
-    
+
     const { userModel } = this;
 
     // Check if User exists

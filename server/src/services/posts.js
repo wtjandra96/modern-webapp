@@ -3,7 +3,6 @@ const ServiceError = require("../utils/errors/serviceError");
 let logger = null;
 
 class PostsService {
-
   constructor (container) {
     this.categoryModel = container.get("CategoryModel");
     this.postModel = container.get("PostModel");

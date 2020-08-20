@@ -56,7 +56,7 @@ router.post(CHANGE_PASSWORD_ROUTE, isAuth, celebrate({
   })
 }, { abortEarly: false }), async (req, res, next) => {
   logger.debug(PREFIX + CHANGE_PASSWORD_ROUTE);
-  
+
   const { userId } = req;
   const { oldPassword, newPassword } = req.body;
 
@@ -119,7 +119,7 @@ router.post(REGISTER_ROUTE, celebrate({
   })
 }, { abortEarly: false }), async (req, res, next) => {
   logger.debug(PREFIX + REGISTER_ROUTE);
-  
+
   const { username, password } = req.body;
 
   try {
@@ -168,7 +168,7 @@ router.post(LOGIN_ROUTE, celebrate({
   })
 }, { abortEarly: false }), async (req, res, next) => {
   logger.debug(PREFIX + LOGIN_ROUTE);
-  
+
   const { username, password } = req.body;
   try {
     const authServiceInstance = container.get(AuthService);

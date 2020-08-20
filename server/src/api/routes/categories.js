@@ -104,7 +104,7 @@ router.post(CREATE_LABEL_ROUTE, isAuth, celebrate({
   })
 }, { abortEarly: false }), async (req, res, next) => {
   logger.debug(PREFIX + CREATE_LABEL_ROUTE);
-  
+
   const { userId } = req;
   const { categoryId, label } = req.body;
 
@@ -140,7 +140,7 @@ router.post(CREATE_LABEL_ROUTE, isAuth, celebrate({
  */
 router.get(GET_CATEGORIES_ROUTE, isAuth, async (req, res, next) => {
   logger.debug(PREFIX + GET_CATEGORIES_ROUTE);
-  
+
   const { userId } = req;
   try {
     const categoriesServiceInstance = container.get(CategoriesService);
@@ -174,7 +174,7 @@ router.get(GET_CATEGORY_ROUTE, isAuth, celebrate({
   }
 }, { abortEarly: false }), async (req, res, next) => {
   logger.debug(PREFIX + GET_CATEGORY_ROUTE);
-  
+
   const { userId } = req;
   const { categoryName } = req.query;
 
@@ -213,7 +213,7 @@ router.get(GET_LABELS_ROUTE, isAuth, celebrate({
   }
 }, { abortEarly: false }), async (req, res, next) => {
   logger.debug(PREFIX + GET_LABELS_ROUTE);
-  
+
   const { userId } = req;
   const { categoryId } = req.query;
   try {
@@ -265,7 +265,7 @@ router.post(EDIT_CATEGORY_ROUTE, isAuth, celebrate({
   })
 }, { abortEarly: false }), async (req, res, next) => {
   logger.debug(PREFIX + EDIT_CATEGORY_ROUTE);
-  
+
   const { userId } = req;
   const { categoryId, categoryUpdates } = req.body;
 
@@ -306,7 +306,7 @@ router.post(EDIT_LABEL_ROUTE, isAuth, celebrate({
   })
 }, { abortEarly: false }), async (req, res, next) => {
   logger.debug(PREFIX + EDIT_LABEL_ROUTE);
-  
+
   const { userId } = req;
   const { labelId, labelUpdates } = req.body;
 
@@ -337,7 +337,7 @@ router.delete(`${DELETE_CATEGORY_ROUTE}/:categoryId`, isAuth, celebrate({
   }
 }, { abortEarly: false }), async (req, res, next) => {
   logger.debug(PREFIX + DELETE_CATEGORY_ROUTE);
-  
+
   const { userId } = req;
   const { categoryId } = req.params;
 
@@ -365,7 +365,7 @@ router.delete(`${DELETE_LABEL_ROUTE}/:labelId`, isAuth, celebrate({
   })
 }, { abortEarly: false }), async (req, res, next) => {
   logger.debug(PREFIX + DELETE_LABEL_ROUTE);
-  
+
   const { userId } = req;
   const { labelId } = req.params;
 

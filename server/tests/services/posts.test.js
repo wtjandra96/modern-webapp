@@ -1,5 +1,6 @@
 const container = require("typedi").Container;
 const logger = require("../logger");
+
 container.set("logger", logger);
 
 const PostsService = require("../../src/services/posts");
