@@ -26,7 +26,7 @@ const extractHostname = (url) => {
 const getImgSrc = async (hostname) => {
   if (process.env.NODE_ENV === "test") return null;
   logger.debug("Getting image source")
-
+  
   let topic;
   topic = hostname.split(".");
   if (topic.length > 2) {
@@ -37,6 +37,7 @@ const getImgSrc = async (hostname) => {
 
   const searchTerm = `${topic} icon`;
   logger.debug("Searching images for " + searchTerm);
+  
   try {
     const res = await axios.get(
       "https://customsearch.googleapis.com/customsearch/v1", {
@@ -55,6 +56,7 @@ const getImgSrc = async (hostname) => {
       return null;
     }
     logger.debug("Found image")
+    
     let pickedItem = null;
     for (let i = 0; i < items.length; i += 1) {
       const item = items[i];
@@ -135,6 +137,7 @@ PostSchema.pre("save", async function addSource (next) {
   post.source = hostname;
   const imgSrc = await getImgSrc(hostname);
   post.imgSrc = imgSrc;
+  
   logger.debug("Saving Post");
   return next();
 });
