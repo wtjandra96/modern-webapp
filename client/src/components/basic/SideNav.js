@@ -18,7 +18,7 @@ const Container = styled.div`
   }
 
   @media (min-width: 860px) {
-    width: 276px;
+    width: 236px;
   }
 `;
 
@@ -39,7 +39,7 @@ const FixedWrapper = styled.div`
   }
 
   @media (min-width: 860px) {
-    width: 276px;
+    width: 236px;
   }
 `;
 

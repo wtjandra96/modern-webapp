@@ -25,7 +25,7 @@ const updateCategoriesList = () => ({
 });
 
 const setErrors = (errorMessages) => ({
-  type: types.SET_ERRORS,
+  type: types.SET_CATEGORY_ERRORS,
   payload: errorMessages
 })
 

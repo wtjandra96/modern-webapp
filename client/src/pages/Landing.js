@@ -60,15 +60,16 @@ const Landing = props => {
 
   let passwordErrors;
   let usernameErrors;
-  let genericErrors;
   if (userErrors) {
     passwordErrors = userErrors.password;
     usernameErrors = userErrors.username;
-    genericErrors = userErrors.errorMessage;
   }
 
   const passwordMatch = () => {
     if (password === confirmPassword) {
+      dispatch(userActions.setErrors({
+        password: ["Passwords do not match"]
+      }));
       return true;
     }
     return false;
@@ -87,17 +88,6 @@ const Landing = props => {
         <Space height="12" />
         <DividerH />
         <Space height="24" />
-        {genericErrors &&
-          <>
-            {genericErrors.map(errorMessage => (
-              <Text key={errorMessage}
-                color="red"
-                fontSize="14"
-              >{errorMessage}</Text>
-            ))}
-            <Space height="12" />
-          </>
-        }
         <Input
           type="text"
           autoComplete="username"
@@ -163,10 +153,6 @@ const Landing = props => {
             if (isRegister) {
               if (passwordMatch()) {
                 register(username, password);
-              } else {
-                dispatch(userActions.setErrors({
-                  password: ["Password does not match"]
-                }))
               }
             } else {
               login(username, password)
@@ -190,7 +176,10 @@ const Landing = props => {
             fontSize="14"
             color="hsl(206, 100%, 50%)"
             cursor="pointer"
-            onClick={() => setIsRegister(!isRegister)}
+            onClick={() => {
+              dispatch(userActions.clearErrors());
+              setIsRegister(!isRegister);
+            }}
           >
             {isRegister ? "Login" : "Sign Up"}
           </Text>

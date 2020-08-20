@@ -1,5 +1,5 @@
 import React from 'react'
-import { Switch } from "react-router-dom"
+import { Switch, Route } from "react-router-dom"
 
 import styled from "styled-components"
 
@@ -11,6 +11,7 @@ import SideNavigation from "../components/SideNavigation"
 import Home from "../pages/Home"
 import Category from '../pages/Category'
 import Bookmarks from '../pages/Bookmarks'
+import NotFound from '../pages/NotFound';
 
 
 const Wrapper = styled.div`
@@ -39,6 +40,7 @@ const Routes = () => {
             <PrivateRoute exact path="/posts" component={Home} />
             <PrivateRoute exact path="/posts/:categoryName" component={Category} />
             <PrivateRoute exact path="/bookmarks" component={Bookmarks} />
+            <Route exact path="*" component={NotFound} />
           </Switch>
         </Content>
       </Wrapper>

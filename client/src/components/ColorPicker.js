@@ -15,7 +15,7 @@ const Color = styled.div`
 `
 
 const Input = styled.input`
-  width: 100px;
+  width: 110px;
   font-size: 14px;
   border-radius: 4px;
   border: 1px solid #c0c0c0;
@@ -31,7 +31,7 @@ const ColorPicker = props => {
         type="text"
         value={color}
         onChange={e => setColor(e.target.value)}
-        placeholder="Color"
+        placeholder="Color (e.g. red)"
       />
     </Wrapper>
   )

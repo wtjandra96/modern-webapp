@@ -19,7 +19,7 @@ services:
     environment:
       - CHOKIDAR_USEPOLLING=true
     ports:
-      - "80:80"
+      - "3001:80"
   client:
     # Restarts on exit
     restart: always
