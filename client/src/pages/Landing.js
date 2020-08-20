@@ -77,7 +77,7 @@ const Landing = props => {
         }
       }
     }
-  }, [requesting, currentlyProcessing, userErrors])
+  }, [requesting, currentlyProcessing, userErrors, isRegister])
 
   let passwordErrors;
   let usernameErrors;
