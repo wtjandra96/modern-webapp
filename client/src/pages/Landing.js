@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect, useDispatch } from 'react-redux';
 import { Redirect } from "react-router-dom"
 
@@ -49,7 +49,7 @@ const Landing = props => {
   // dispatch
   const { login, register, guestLogin } = props;
   // redux state
-  const { isAuthenticated, userErrors } = props;
+  const { isAuthenticated, userErrors, currentlyProcessing } = props;
 
   const dispatch = useDispatch();
 
@@ -57,22 +57,33 @@ const Landing = props => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [isRegister, setIsRegister] = useState(false);
+  const [requesting, setRequesting] = useState(false);
+
+  useEffect(() => {
+    return () => dispatch(userActions.clearErrors());
+  }, [dispatch])
+
+  useEffect(() => {
+    if (currentlyProcessing) {
+      setRequesting(true);
+    }
+    if (requesting && !currentlyProcessing) {
+        setRequesting(false);
+      if (Object.keys(userErrors).length === 0) {
+        if (isRegister) {
+          setPassword("");
+          setConfirmPassword("");
+          setIsRegister(false);
+        }
+      }
+    }
+  }, [requesting, currentlyProcessing, userErrors])
 
   let passwordErrors;
   let usernameErrors;
   if (userErrors) {
     passwordErrors = userErrors.password;
     usernameErrors = userErrors.username;
-  }
-
-  const passwordMatch = () => {
-    if (password === confirmPassword) {
-      dispatch(userActions.setErrors({
-        password: ["Passwords do not match"]
-      }));
-      return true;
-    }
-    return false;
   }
 
   if (isAuthenticated) {
@@ -151,9 +162,7 @@ const Landing = props => {
           </Text>
           <Button onClick={() => {
             if (isRegister) {
-              if (passwordMatch()) {
-                register(username, password);
-              }
+              register(username, password, confirmPassword);
             } else {
               login(username, password)
             }
@@ -205,7 +214,8 @@ const Landing = props => {
 
 const mapStateToProps = state => ({
   isAuthenticated: state.user.isAuthenticated,
-  userErrors: state.user.errors
+  userErrors: state.user.errors,
+  currentlyProcessing: state.user.currentlyProcessing
 })
 
 const mapDispatchToProps = {
