@@ -7,6 +7,37 @@ class AuthService {
     this.userModel = container.get("UserModel");
   }
 
+  async changePassword (userId, oldPassword, newPassword) {
+    const { userModel } = this;
+    const userRecord = await userModel.findById(userId);
+    if (!userRecord) {
+      throw new ServiceError(400, {
+        username: ["Invalid user"]
+      });
+    }
+
+    // Check if password is correct
+    const passwordMatch = await userRecord.comparePassword(
+      oldPassword,
+      userRecord.password
+    );
+    if (!passwordMatch) {
+      throw new ServiceError(400, {
+        errorMessage: ["Old password is incorrect"]
+      });
+    }
+
+    // Update password
+    await userModel.findOneAndUpdate({
+      _id: userId
+    }, { $set: { password: newPassword } });
+
+    const payload = {
+      message: "Password updated!"
+    };
+    return payload;
+  }
+
   /**
    * @desc    Register a new User
    * @access  Public
@@ -49,7 +80,7 @@ class AuthService {
     const userRecord = await userModel.findOne({ username });
     if (!userRecord) {
       throw new ServiceError(400, {
-        errorMessage: ["Invalid username/password combination"]
+        username: ["Invalid username/password combination"]
       });
     }
 
@@ -60,7 +91,7 @@ class AuthService {
     );
     if (!passwordMatch) {
       throw new ServiceError(400, {
-        errorMessage: ["Invalid username/password combination"]
+        username: ["Invalid username/password combination"]
       });
     }
 

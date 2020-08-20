@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { connect } from "react-redux";
+import React, { useState, useEffect } from 'react'
+import { connect, useDispatch } from "react-redux";
 
 import styled from "styled-components"
 
@@ -8,10 +8,7 @@ import DividerH from './basic/DividerH';
 import Space from './basic/Space';
 import Text from "./basic/Text";
 
-import { postOperations } from '../state/redux/post';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
-import Icon from './basic/Icon';
+import { postOperations, postActions } from '../state/redux/post';
 
 const Wrapper = styled.div`
   padding: 12px;
@@ -45,16 +42,11 @@ const TextArea = styled.textarea`
 	min-height: 56px;
 `
 
-const FormHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-`
-
 const PostForm = props => {
   // dispatch
   const { createPost, editPost } = props;
   // redux state
-  const { isGuest } = props;
+  const { isGuest, postErrors, currentlyProcessing } = props;
   // passed function
   const { closeForm } = props;
   // passed props
@@ -62,32 +54,68 @@ const PostForm = props => {
 
   const [title, setTitle] = useState((post && post.title) || "");
   const [url, setUrl] = useState((post && post.url) || "");
+  const [requesting, setRequesting] = useState(false);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (currentlyProcessing) {
+      setRequesting(true);
+    }
+    if (requesting && !currentlyProcessing) {
+      // request is finished
+      if (Object.keys(postErrors.length === 0) && closeForm) {
+        closeForm();
+      }
+    }
+  }, [currentlyProcessing, requesting, postErrors, closeForm]);
+
+  useEffect(() => {
+    return () => dispatch(postActions.clearErrors());
+  }, [dispatch])
+
+  let currentPostErrors;
+  let postTitleErrors;
+  let postUrlErrors;
+
+  if (postErrors) {
+    if (isEdit && post) {
+      currentPostErrors = postErrors[post.id];
+      if (currentPostErrors) {
+        postTitleErrors = currentPostErrors.title;
+        postUrlErrors = currentPostErrors.url;
+      }
+    } else {
+      postTitleErrors = postErrors.title;
+      postUrlErrors = postErrors.url;
+    }
+  }
 
   return (
     <Wrapper>
       <FormWrapper>
-        {isEdit &&
-          <>
-            <FormHeader>
-              <Text fontWeight="500">Editing "{post && post.title}"</Text>
-              <Icon onClick={closeForm}>
-                <FontAwesomeIcon icon={faTimes} />
-              </Icon>
-            </FormHeader>
-            <Space height="12" />
-          </>
-        }
         <Input type="text"
           placeholder="Title"
           value={title}
           onChange={e => setTitle(e.target.value)}
+          autoFocus={true}
         />
+        {postTitleErrors && postTitleErrors.map(errorMessage => (
+          <Text key={errorMessage} color="red" fontSize="14">
+            {errorMessage}
+          </Text>
+        ))}
         <Space height="12" />
         <TextArea
           placeholder="Url"
           value={url}
           onChange={e => setUrl(e.target.value)}
         />
+        {postUrlErrors && postUrlErrors.map(errorMessage => (
+          <Text key={errorMessage} color="red" fontSize="14">
+            {errorMessage}
+          </Text>
+        ))}
       </FormWrapper>
       <Space height="12" />
       <DividerH />
@@ -99,12 +127,9 @@ const PostForm = props => {
         <Button onClick={() => {
           if (isEdit) {
             editPost(post.id, title, url, post.category, isGuest);
-            closeForm();
           } else {
             createPost(categoryId, categoryName, title, url, isGuest)
           }
-          setTitle((post && post.title) || "");
-          setUrl((post && post.url) || "");
         }}>
           <Text fontWeight="500">
             {isEdit ? "Edit" : "Post"}
@@ -116,7 +141,9 @@ const PostForm = props => {
 }
 
 const mapStateToProps = state => ({
-  isGuest: state.user.isGuest
+  isGuest: state.user.isGuest,
+  postErrors: state.post.errors,
+  currentlyProcessing: state.post.currentlyProcessing
 })
 
 const mapDispatchToProps = {

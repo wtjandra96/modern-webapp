@@ -53,7 +53,7 @@ export default (state = initialState, action) => {
         ...state,
         categoriesList: state.categoriesList.filter(category => category.id !== payload)
       }
-    case types.SET_ERRORS:
+    case types.SET_CATEGORY_ERRORS:
       return {
         ...state,
         errors: payload

@@ -23,6 +23,8 @@ const extractHostname = url => {
 
 const getPosts = (categoryId, isGuest) => async (dispatch) => {
   const { setPostsList, clearPosts, setErrors, clearErrors } = actions;
+  const { startAction, stopAction } = actions;
+  dispatch(startAction());
   dispatch(clearPosts());
   dispatch(clearErrors());
 
@@ -36,6 +38,7 @@ const getPosts = (categoryId, isGuest) => async (dispatch) => {
       posts = posts.filter(post => post.category.id === categoryId);
     }
     dispatch(setPostsList(posts));
+    dispatch(stopAction());
   } else {
     let url = "/posts/getPosts";
     if (categoryId) {
@@ -53,12 +56,16 @@ const getPosts = (categoryId, isGuest) => async (dispatch) => {
       } else {
         console.error(err);
       }
+    } finally {
+      dispatch(stopAction());
     }
   }
 };
 
 const getBookmarkedPosts = (isGuest) => async (dispatch) => {
   const { setPostsList, clearPosts, setErrors, clearErrors } = actions;
+  const { startAction, stopAction } = actions;
+  dispatch(startAction());
   dispatch(clearPosts());
   dispatch(clearErrors());
 
@@ -76,6 +83,7 @@ const getBookmarkedPosts = (isGuest) => async (dispatch) => {
       }
     }
     dispatch(setPostsList(bookmarkedPosts));
+    dispatch(stopAction());
   } else {
     let url = "/posts/getBookmarkedPosts";
 
@@ -90,6 +98,8 @@ const getBookmarkedPosts = (isGuest) => async (dispatch) => {
       } else {
         console.error(err);
       }
+    } finally {
+      dispatch(stopAction());
     }
   }
 };
@@ -136,19 +146,30 @@ const bookmarkPost = (postId, isNowBookmarked, category, isGuest) => async (disp
 }
 
 const editPost = (postId, postTitle, postUrl, category, isGuest) => async (dispatch) => {
-  const { updatePost, setErrors, clearErrors } = actions;
+  const { updatePost, setErrors, clearErrors, startAction, stopAction } = actions;
   dispatch(clearErrors());
+  dispatch(startAction());
 
   let errors = {};
+  if (!postId) {
+    dispatch(setErrors(errors.title = ["Invalid request"]));
+    dispatch(stopAction());
+    return;
+  }
+
+  errors[postId] = {};
   if (!postTitle || postTitle.length === 0) {
-    errors.title = ["Post title is required"];
+    const errorMessage = "Post title is required";
+    errors[postId].title = [errorMessage];
   }
 
   if (!postUrl || postUrl.length === 0) {
-    errors.url = ["Post url is required"];
+    const errorMessage = "Post url is required";
+    errors[postId].url = [errorMessage];
   }
-  if (errors.title || errors.url) {
+  if (errors[postId].title || errors[postId].url) {
     dispatch(setErrors(errors));
+    dispatch(stopAction());
     return;
   }
 
@@ -169,6 +190,7 @@ const editPost = (postId, postTitle, postUrl, category, isGuest) => async (dispa
       }
     }
     localForage.setItem("posts", posts);
+    dispatch(stopAction());
   } else {
     const url = "/posts/editPost";
     const data = {
@@ -184,17 +206,21 @@ const editPost = (postId, postTitle, postUrl, category, isGuest) => async (dispa
     } catch (err) {
       if (err.response.data && err.response.data.errors) {
         const errorMessages = err.response.data.errors;
-        dispatch(setErrors(errorMessages));
+        errors = { postId: errorMessages }
+        dispatch(setErrors(errors));
       } else {
         console.error(err);
       }
+    } finally {
+      dispatch(stopAction());
     }
   }
 };
 
 const createPost = (categoryId, categoryName, postTitle, postUrl, isGuest) => async (dispatch) => {
-  const { addNewPost, setErrors, clearErrors } = actions;
+  const { addNewPost, setErrors, clearErrors, startAction, stopAction } = actions;
   dispatch(clearErrors());
+  dispatch(startAction());
 
   let errors = {};
   if (!postTitle || postTitle.length === 0) {
@@ -206,6 +232,7 @@ const createPost = (categoryId, categoryName, postTitle, postUrl, isGuest) => as
   }
   if (errors.title || errors.url) {
     dispatch(setErrors(errors));
+    dispatch(stopAction());
     return;
   }
 
@@ -228,6 +255,7 @@ const createPost = (categoryId, categoryName, postTitle, postUrl, isGuest) => as
     dispatch(addNewPost(post));
     posts.push(post);
     localForage.setItem("posts", posts);
+    dispatch(stopAction());
   } else {
     const url = "/posts/createPost";
     const data = {
@@ -248,6 +276,8 @@ const createPost = (categoryId, categoryName, postTitle, postUrl, isGuest) => as
       } else {
         console.error(err);
       }
+    } finally {
+      dispatch(stopAction());
     }
   }
 };

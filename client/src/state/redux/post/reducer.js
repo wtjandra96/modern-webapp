@@ -2,7 +2,8 @@ import * as types from "./types";
 
 const initialState = {
   postsList: [],
-  errors: {}
+  errors: {},
+  currentlyProcessing: false
 };
 
 const insertItem = (array, item) => {
@@ -56,7 +57,7 @@ export default (state = initialState, action) => {
         ...state,
         postsList: []
       };
-    case types.SET_ERRORS:
+    case types.SET_POST_ERRORS:
       return {
         ...state,
         errors: payload
@@ -65,6 +66,16 @@ export default (state = initialState, action) => {
       return {
         ...state,
         errors: {}
+      }
+    case types.START_POST_ACTION:
+      return {
+        ...state,
+        currentlyProcessing: true
+      }
+    case types.STOP_POST_ACTION:
+      return {
+        ...state,
+        currentlyProcessing: false
       }
     default:
       return state;

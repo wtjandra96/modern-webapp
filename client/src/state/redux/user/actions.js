@@ -18,7 +18,7 @@ const deauthenticate = () => ({
 });
 
 const setErrors = errorMessages => ({
-  type: types.SET_ERRORS,
+  type: types.SET_USER_ERRORS,
   payload: errorMessages
 })
 
@@ -30,6 +30,14 @@ const setGuest = () => ({
   type: types.SET_GUEST
 })
 
+const startAction = () => ({
+  type: types.START_USER_ACTION
+})
+
+const stopAction = () => ({
+  type: types.STOP_USER_ACTION
+})
+
 export {
   setUser,
   setGuest,
@@ -37,5 +45,7 @@ export {
   authenticate,
   deauthenticate,
   setErrors,
-  clearErrors
+  clearErrors,
+  startAction,
+  stopAction
 };

@@ -40,6 +40,8 @@ router.post(CREATE_CATEGORY_ROUTE, isAuth, celebrate({
   body: Joi.object().keys({
     name: Joi.string().messages({ "string.base": "Category name must be of type string" })
       .required().messages({ "string.empty": "Category name is required" })
+      .max(20)
+      .message("Category name cannot be more than 20 characters")
       .pattern(/^[a-zA-Z0-9]*$/)
       .message("Category name can only contain alphanumeric characters"),
     color: Joi.string().messages({ "string.base": "Category color must be of type string" })
@@ -238,6 +240,8 @@ router.post(EDIT_CATEGORY_ROUTE, isAuth, celebrate({
       name: Joi.string().messages({ "string.base": "Category name must be of type string" })
         .required()
         .messages({ "object.empty": "Category name is required" })
+        .max(20)
+        .message("Category name cannot be more than 20 characters")
         .pattern(/^[a-zA-Z0-9]*$/)
         .message("Category name can only contain alphanumeric characters"),
       color: Joi.string().messages({ "string.base": "Category color must be of type string" })

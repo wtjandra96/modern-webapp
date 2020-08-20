@@ -1,25 +1,29 @@
-import React from 'react'
+import React, { useEffect } from 'react';
+import { useDispatch } from "react-redux";
 
 import styled from "styled-components"
+
+import { modalActions } from "../../state/redux/modal";
 
 const ModalContainer = styled.div`
   width: 100vw;
   height: 100vh;
+  z-index: 112;
   display: flex;
   justify-content: center;
   align-items: center;
   position: fixed;
   pointer-events: none;
-  z-index: 99;
   top: 0;
   left: 0;
+  padding: 0 12px;
 `
 
 const Wrapper = styled.div`
   flex-grow: 1;
   max-width: 500px;
-  height: 360px;
-  max-height: 360px;
+  min-height: 230px;
+  max-height: 560px;
   background-color: white;
   display: flex;
   flex-direction: column;
@@ -41,6 +45,16 @@ const Overlay = styled.div`
 const Modal = props => {
   const { children } = props;
   const { closeModal } = props;
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(modalActions.openModal())
+    return () => {
+      dispatch(modalActions.closeModal());
+    }
+  }, [dispatch])
+
   return (
     <>
       <Overlay onClick={closeModal} />

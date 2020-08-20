@@ -44,7 +44,7 @@ UserSchema.pre("save", async function hashPassword (next) {
 // Reference: https://mongoosejs.com/docs/middleware.html#error-handling-middleware
 UserSchema.post("save", (error, doc, next) => {
   if (error.name === "MongoError" && error.code === 11000) {
-    next(new MongoError(400, [{ errorMessage: "Username already exists" }]));
+    next(new MongoError(400, { username: ["Username already exists"] }));
   } else {
     next();
   }

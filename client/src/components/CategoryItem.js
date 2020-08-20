@@ -53,80 +53,83 @@ const CategoryItem = props => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
 
-  return (
-    <>
-      {isEdit ?
-        <>
-          <CategoryForm
-            id={id}
-            closeForm={() => setIsEdit(false)}
-            categoryName={name}
-            categoryColor={color}
-            isEdit={true}
-          />
-          <DividerH />
-        </>
-        :
-        <Wrapper
-          showDropdown={showDropdown}
-          onClick={() => {
-            if (showDropdown || isEdit) return;
-            onClick();
-          }}
-        >
-          <Space width="12" />
-          <Color color={color} />
-          <Space width="12" />
-          {name}
-          <Filler />
-          <EllipsisContainer>
-            <Icon
-              onClick={e => {
+  let content;
+  if (isEdit) {
+    content = (
+      <>
+        <DividerH />
+        <CategoryForm
+          id={id}
+          closeForm={() => setIsEdit(false)}
+          categoryName={name}
+          categoryColor={color}
+          isEdit={true}
+        />
+        <DividerH />
+      </>
+    )
+  } else {
+    content = (
+      <Wrapper
+        showDropdown={showDropdown}
+        onClick={() => {
+          if (showDropdown || isEdit) return;
+          onClick();
+        }}
+      >
+        <Space width="12" />
+        <Color color={color} />
+        <Space width="12" />
+        {name}
+        <Filler />
+        <EllipsisContainer>
+          <Icon
+            onClick={e => {
+              e.stopPropagation();
+              if (!showDropdown) {
+                setShowDropdown(true);
+              }
+            }}
+          >
+            <FontAwesomeIcon icon={faEllipsisH} />
+          </Icon>
+          <Dropdown show={showDropdown} topOffset="24" onBlur={() => {
+            setShowDropdown(false);
+          }}>
+            <DropdownItem
+              onClick={(e) => {
                 e.stopPropagation();
-                if (!showDropdown) {
-                  setShowDropdown(true);
-                }
-              }}
-            >
-              <FontAwesomeIcon icon={faEllipsisH} />
-            </Icon>
-            <Dropdown show={showDropdown} topOffset="24" onBlur={() => {
-              setShowDropdown(false);
-            }}>
-              <DropdownItem
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsEdit(true);
-                  setShowDropdown(false);
-                }}>
-                <Text fontWeight="500">
-                  <Space width="2" />
-                  <Icon button={false}><FontAwesomeIcon icon={faEdit} /></Icon>
-                  <Space width="10" />
-                  Edit
-                </Text>
-              </DropdownItem>
-              <DividerH />
-              <DropdownItem onClick={e => {
-                e.stopPropagation();
-                deleteCategory(id, isGuest);
+                setIsEdit(true);
                 setShowDropdown(false);
               }}>
-                <Text color="red" fontWeight="500">
-                  <Icon button={false}>
-                    <FontAwesomeIcon icon={faTrashAlt} />
-                  </Icon>
-                  <Space width="12" />
-                  Delete
-                </Text>
-              </DropdownItem>
-            </Dropdown>
-          </EllipsisContainer>
-          <Space width="12" />
-        </Wrapper>
-      }
-    </>
-  )
+              <Text fontWeight="500">
+                <Space width="2" />
+                <Icon button={false}><FontAwesomeIcon icon={faEdit} /></Icon>
+                <Space width="10" />
+                Edit
+              </Text>
+            </DropdownItem>
+            <DividerH />
+            <DropdownItem onClick={e => {
+              e.stopPropagation();
+              deleteCategory(id, isGuest);
+              setShowDropdown(false);
+            }}>
+              <Text color="red" fontWeight="500">
+                <Icon button={false}>
+                  <FontAwesomeIcon icon={faTrashAlt} />
+                </Icon>
+                <Space width="12" />
+                Delete
+              </Text>
+            </DropdownItem>
+          </Dropdown>
+        </EllipsisContainer>
+        <Space width="12" />
+      </Wrapper>
+    )
+  }
+  return content
 }
 
 const mapStateToProps = state => ({

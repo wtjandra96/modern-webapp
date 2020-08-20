@@ -1,5 +1,5 @@
 import React, { Fragment, useState } from 'react'
-import { connect, useDispatch } from "react-redux";
+import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { matchPath } from "react-router";
 
@@ -7,7 +7,7 @@ import styled from "styled-components"
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHome, faBookmark, faThLarge, faTimes } from "@fortawesome/free-solid-svg-icons";
-import { faReact } from "@fortawesome/free-brands-svg-icons";
+import { faReact, faGithub } from "@fortawesome/free-brands-svg-icons";
 
 import DividerH from "./basic/DividerH";
 import Icon from "./basic/Icon";
@@ -22,8 +22,6 @@ import Text from "./basic/Text";
 import CategoryItem from "./CategoryItem";
 import CategoryForm from './CategoryForm';
 
-import { modalActions } from '../state/redux/modal';
-
 const SideNavText = styled.div`
   display: none;
   @media (min-width: 860px) {
@@ -32,13 +30,22 @@ const SideNavText = styled.div`
   }
 `
 
+const NoCategory = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-grow: 1;
+`
+
+const Padding = styled.div`
+  min-height: 56px;
+`
+
 const SideNavigation = props => {
   // redux state
   const { categoriesList } = props;
   // react-router-dom
   const { history, location } = props;
-
-  const dispatch = useDispatch();
 
   const [showCategories, setShowCategories] = useState(false);
 
@@ -55,13 +62,11 @@ const SideNavigation = props => {
       {showCategories && (
         <Modal closeModal={() => {
           setShowCategories(false);
-          dispatch(modalActions.closeModal());
         }}>
           <ModalHeader>
             <Text fontWeight="500" fontSize="18">Categories</Text>
             <Icon onClick={() => {
               setShowCategories(false);
-              dispatch(modalActions.closeModal());
             }}>
               <FontAwesomeIcon icon={faTimes} />
             </Icon>
@@ -76,7 +81,6 @@ const SideNavigation = props => {
                     onClick={() => {
                       navigate(`/posts/${category.name}`);
                       setShowCategories(false);
-                      dispatch(modalActions.closeModal());
                     }}
                     color={category.color}
                     id={category.id}
@@ -85,6 +89,12 @@ const SideNavigation = props => {
                 </Fragment>
               )
             })}
+            {(!categoriesList || categoriesList.length === 0) ?
+              <NoCategory>
+                <Text fontWeight="500">Create a category to get started!</Text>
+              </NoCategory> :
+              <Padding />
+            }
             <Space height="6" />
           </List>
           <DividerH />
@@ -116,7 +126,6 @@ const SideNavigation = props => {
         </SideNavItem>
         <SideNavItem onClick={() => {
           setShowCategories(true);
-          dispatch(modalActions.openModal());
         }}>
           <Icon button={false} fontSize="22">
             <FontAwesomeIcon icon={faThLarge} />
@@ -145,6 +154,20 @@ const SideNavigation = props => {
               color={isActivePath("/bookmarks") && "#A0A0A0"}
             >
               Bookmarks
+            </Text>
+          </SideNavText>
+        </SideNavItem>
+        <SideNavItem onClick={() => window.open("https://github.com/wtjandra96/modern-webapp.git", "_blank")}>
+          <Icon button={false} fontSize="24">
+            <FontAwesomeIcon icon={faGithub} />
+          </Icon>
+          <SideNavText>
+            <Space width="20" />
+            <Text
+              fontSize="18"
+              fontWeight="500"
+            >
+              GitHub Page
             </Text>
           </SideNavText>
         </SideNavItem>

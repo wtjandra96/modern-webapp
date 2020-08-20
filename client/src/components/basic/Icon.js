@@ -36,7 +36,7 @@ const Wrapper = styled.div`
 const Icon = props => {
   const { className } = props;
   const { children } = props;
-  const { onClick } = props;
+  const { onClick, onMouseDown } = props;
   const {
     touchRadius,
     button,
@@ -51,6 +51,7 @@ const Icon = props => {
   return (
     <TouchArea
       className={className}
+      onMouseDown={onMouseDown}
       onClick={onClick}
       touchRadius={touchRadius}
       role="button"

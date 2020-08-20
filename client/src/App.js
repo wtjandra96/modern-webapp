@@ -13,7 +13,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  max-width: 922px;
+  max-width: 860px;
   margin: 0 auto;
 `
 
