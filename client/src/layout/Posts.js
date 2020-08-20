@@ -47,7 +47,11 @@ const Posts = React.memo((props) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setPosts(postsList)
+    let sortedPosts = postsList.sort((p1, p2) => {
+      if (p1.originalDate < p2.originalDate) return 1;
+      return -1;
+    })
+    setPosts(sortedPosts)
   }, [postsList])
 
   useEffect(() => {
