@@ -99,7 +99,8 @@ describe("Testing CategoriesService", () => {
       } catch (err) {
         expect(err).toBeInstanceOf(MongoError);
         expect(err.httpStatusCode).toStrictEqual(400);
-        expect(err.errors.length).toStrictEqual(1);
+        const { errors } = err;
+        expect(Object.keys(errors).length).toStrictEqual(1);
       }
     });
 
@@ -356,7 +357,8 @@ describe("Testing CategoriesService", () => {
       } catch (err) {
         expect(err).toBeInstanceOf(ServiceError);
         expect(err.httpStatusCode).toStrictEqual(404);
-        expect(err.errors.length).toStrictEqual(1);
+        const { errors } = err;
+        expect(Object.keys(errors).length).toStrictEqual(1);
       }
     });
 
