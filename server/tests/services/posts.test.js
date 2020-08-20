@@ -1,4 +1,7 @@
 const container = require("typedi").Container;
+const logger = require("../logger");
+container.set("logger", logger);
+
 const PostsService = require("../../src/services/posts");
 const ServiceError = require("../../src/utils/errors/serviceError");
 const LabelModel = require("../../src/models/Label");

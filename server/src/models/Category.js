@@ -2,8 +2,9 @@ const container = require("typedi").Container;
 const mongoose = require("mongoose");
 const MongoError = require("../utils/errors/mongoError");
 
-const { Schema } = mongoose;
+const logger = container.get("logger");
 
+const { Schema } = mongoose;
 const CategorySchema = new Schema(
   {
     owner: {

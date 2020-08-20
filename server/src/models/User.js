@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const container = require("typedi").Container;
 const MongoError = require("../utils/errors/mongoError");
+
+const logger = container.get("logger");
 
 const UserSchema = new mongoose.Schema(
   {
