@@ -112,7 +112,7 @@ describe("Testing auth route", () => {
 
       test("Input length too short", async () => {
         expect.assertions(2);
-        const payload = await request(app).post(CHANGE_PASSWORD_ROUTE).send({ oldPassword: "", newPassword: "Aa!1234" });
+        const payload = await request(app).post(CHANGE_PASSWORD_ROUTE).send({ oldPassword: "a", newPassword: "Aa!1234" });
 
         const { errors } = payload.body;
         expect(errors).toBeDefined();
@@ -131,7 +131,7 @@ describe("Testing auth route", () => {
       expect(status).toStrictEqual(400);
     });
 
-    it("Should return status code 200 with the correct old password", async () => {
+    it("Should return status code 201 with the correct old password", async () => {
       expect.assertions(1);
       const payload = await request(app)
         .post(CHANGE_PASSWORD_ROUTE)
@@ -139,7 +139,7 @@ describe("Testing auth route", () => {
         .send({ oldPassword: "Aa!1abcd", newPassword: "Aa!1abcdef" });
 
       const { status } = payload;
-      expect(status).toStrictEqual(200);
+      expect(status).toStrictEqual(201);
     });
   });
 

@@ -84,7 +84,7 @@ describe("Testing AuthService", () => {
     });
 
     it("Should allow changing password with valid credentials", async () => {
-      expect.assertions(4);
+      expect.assertions(1);
 
       const authServiceInstance = container.get(AuthService);
       const payload = await authServiceInstance.changePassword(
