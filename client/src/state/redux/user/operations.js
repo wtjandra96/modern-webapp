@@ -3,10 +3,16 @@ import * as actions from "./actions";
 import { clearPosts } from "../post/actions";
 import { clearCategoriesList } from "../category/actions";
 
-const register = (username, password) => async dispatch => {
+const register = (username, password, confirmPassword) => async dispatch => {
   const { setErrors, clearErrors, startAction, stopAction } = actions;
   dispatch(startAction());
   dispatch(clearErrors());
+  
+  if (password !== confirmPassword) {
+    dispatch(setErrors({ password: ["Passwords do not match"] }))
+    dispatch(stopAction());
+    return;
+  }
 
   const url = "/auth/register";
   const data = { username, password };

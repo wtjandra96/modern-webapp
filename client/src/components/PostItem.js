@@ -56,6 +56,7 @@ const Thumbnail = styled.div`
 	flex-shrink: 0;
 	overflow: hidden;
 	border-radius: 4px;
+	background-color: white;
 `
 
 const ChevronContainer = styled.div`

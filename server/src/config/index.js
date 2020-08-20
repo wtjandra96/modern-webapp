@@ -19,5 +19,7 @@ module.exports = {
   },
   api: {
     prefix: "/api"
-  }
+  },
+  cx: process.env.cx || "",
+  GOOGLE_API_KEY: process.env.GOOGLE_API_KEY || ""
 };

@@ -15,7 +15,7 @@ const testLabel2Id = "5e868964c037680d183cd5a8";
 const testDateString = "2020-01-01";
 const sampleTitle = "Sample Title";
 const sampleUrl = "https://www.example.com";
-const sampleImgSrc = "https://www.example.com/sampleImage.png";
+const sampleImgSrc = null;
 
 describe("Testing PostsService", () => {
   let testCategory1Id = null;
