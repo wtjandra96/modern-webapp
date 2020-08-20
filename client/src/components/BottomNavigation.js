@@ -30,7 +30,7 @@ const Wrapper = styled.div`
   @media (min-width: 600px) {
     display: none;
   }
-  z-index: 0;
+  z-index: 80;
 `
 
 const BottomSheetControl = styled.div`
@@ -76,6 +76,8 @@ const BottomNavigation = props => {
               <Icon touchRadius="10" onMouseDown={() => {
                 if (!isAddingCategory)
                   setIsAddingCategory(true)
+                else
+                  setIsAddingCategory(false)
               }}>
                 <FontAwesomeIcon icon={isAddingCategory ? faChevronUp : faPlus} />
               </Icon>
