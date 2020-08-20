@@ -19,7 +19,7 @@
       "name": "proxy",
       "image": "wtjandra96/modern-nginx-proxy",
       "essential": true,
-      "portMapping": [
+      "portMappings": [
         {
           "hostPort": 80,
           "containerPort": 80
