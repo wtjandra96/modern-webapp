@@ -104,11 +104,13 @@ const getBookmarkedPosts = (isGuest) => async (dispatch) => {
   }
 };
 
-const bookmarkPost = (postId, isNowBookmarked, category, isGuest) => async (dispatch) => {
-  const { updatePost, setErrors, clearErrors } = actions;
+const bookmarkPost = (postId, isNowBookmarked, isGuest) => async (dispatch) => {
+  const { updatePostBookmark, setErrors, clearErrors } = actions;
   dispatch(clearErrors());
 
+  console.log('a')
   if (isGuest) {
+    console.log('b')
     let posts = await localForage.getItem("posts");
     if (!posts || !(posts instanceof Array)) {
       posts = [];
@@ -117,7 +119,7 @@ const bookmarkPost = (postId, isNowBookmarked, category, isGuest) => async (disp
       let post = posts[i];
       if (post.id === postId) {
         post.isBookmarked = isNowBookmarked;
-        dispatch(updatePost(post));
+        dispatch(updatePostBookmark(postId, isNowBookmarked));
         posts[i] = post;
         break;
       }
@@ -129,11 +131,11 @@ const bookmarkPost = (postId, isNowBookmarked, category, isGuest) => async (disp
       postId,
       isNowBookmarked
     }
+    console.log('d')
     try {
       const res = await api.post(url, data);
-      const { post } = res.data;
-      post.category = category;
-      dispatch(updatePost(post));
+      console.log(res.data);
+      dispatch(updatePostBookmark(postId, isNowBookmarked));
     } catch (err) {
       if (err.response && err.response.data && err.response.data.errors) {
         const errorMessages = err.response.data.errors;

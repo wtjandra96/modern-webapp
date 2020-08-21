@@ -51,7 +51,7 @@ const Posts = React.memo((props) => {
       if (p1.updatedAt < p2.updatedAt) return 1;
       return -1;
     })
-    setPosts(sortedPosts)
+    setPosts(sortedPosts);
   }, [postsList])
 
   useEffect(() => {

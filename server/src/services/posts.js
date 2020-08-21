@@ -190,7 +190,7 @@ class PostsService {
 
     const postRecord = await postModel.findOneAndUpdate({ _id: postId, owner: userId }, {
       isBookmarked: isNowBookmarked
-    }, { new: true });
+    }, { new: true, timestamps: false });
     if (!postRecord) {
       throw new ServiceError(404, [
         { errorMessage: "Post not found" }

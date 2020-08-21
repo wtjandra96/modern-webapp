@@ -37,6 +37,18 @@ export default (state = initialState, action) => {
           return posts;
         }, [])
       };
+    case types.UPDATE_POST_BOOKMARK:
+      return {
+        ...state,
+        postsList: state.postsList.reduce((posts, post) => {
+          if (post.id === payload.id) {
+            posts.push({...post, isBookmarked: payload.isNowBookmarked});
+          } else {
+            posts.push(post);
+          }
+          return posts;
+        }, [])
+      }
     case types.REMOVE_POST:
       return {
         ...state,

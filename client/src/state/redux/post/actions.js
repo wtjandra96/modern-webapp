@@ -46,6 +46,14 @@ const removePostsOfDeletedCategory = (categoryId) => ({
   payload: categoryId
 })
 
+const updatePostBookmark = (postId, isNowBookmarked) => ({
+  type: types.UPDATE_POST_BOOKMARK,
+  payload: {
+    id: postId,
+    isNowBookmarked
+  }
+})
+
 export {
   addNewPost,
   updatePost,
@@ -56,5 +64,6 @@ export {
   clearErrors,
   removePostsOfDeletedCategory,
   startAction,
-  stopAction
+  stopAction,
+  updatePostBookmark
 };
