@@ -62,6 +62,7 @@ const guestLogin = () => async dispatch => {
   const { setGuest, clearErrors } = actions;
   dispatch(clearErrors());
   dispatch(setGuest());
+  api.setAuthToken(null);
 }
 
 const logout = () => async dispatch => {
