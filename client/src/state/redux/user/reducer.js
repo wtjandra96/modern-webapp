@@ -36,6 +36,7 @@ export default (state = initialState, action) => {
         profile: {
           username: "Guest"
         },
+        token: null,
         isAuthenticated: true,
         isGuest: true
       }
