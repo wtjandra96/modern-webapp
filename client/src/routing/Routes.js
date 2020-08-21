@@ -1,23 +1,23 @@
-import React from 'react'
-import { Switch, Route } from "react-router-dom"
+import React from "react";
+import { Switch, Route } from "react-router-dom";
 
-import styled from "styled-components"
+import styled from "styled-components";
 
-import PrivateRoute from "./PrivateRoute"
+import PrivateRoute from "./PrivateRoute";
 
-import BottomNavigation from "../components/BottomNavigation"
-import SideNavigation from "../components/SideNavigation"
+import BottomNavigation from "../components/BottomNavigation";
+import SideNavigation from "../components/SideNavigation";
 
-import Home from "../pages/Home"
-import Category from '../pages/Category'
-import Bookmarks from '../pages/Bookmarks'
-import NotFound from '../pages/NotFound';
+import Home from "../pages/Home";
+import Category from "../pages/Category";
+import Bookmarks from "../pages/Bookmarks";
+import NotFound from "../pages/NotFound";
 
 
 const Wrapper = styled.div`
   flex-grow: 1;
   display: flex;
-`
+`;
 
 const Content = styled.div`
   flex-grow: 1;
@@ -28,7 +28,7 @@ const Content = styled.div`
   @media (min-width: 922px) {   
     border-right: 1px solid #c0c0c0; 
   }
-`
+`;
 
 const Routes = () => {
   return (
@@ -46,7 +46,7 @@ const Routes = () => {
       </Wrapper>
       <BottomNavigation />
     </>
-  )
-}
+  );
+};
 
-export default Routes
+export default Routes;

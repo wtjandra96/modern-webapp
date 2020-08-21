@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { connect } from 'react-redux';
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 import { Redirect, useParams } from "react-router-dom";
 
 import { postOperations } from "../state/redux/post";
@@ -30,17 +31,17 @@ const Category = props => {
       setRedirect(true);
     }
 
-  }, [categoryName, categoriesList])
+  }, [categoryName, categoriesList]);
 
   // get posts of this category
   useEffect(() => {
     if (category) {
       getPosts(category.id, isGuest);
     }
-  }, [getPosts, category, isGuest])
+  }, [getPosts, category, isGuest]);
 
   if (redirect) {
-    return <Redirect to="/posts" />
+    return <Redirect to="/posts" />;
   }
 
   return (
@@ -48,16 +49,29 @@ const Category = props => {
       title={categoryName}
       category={category}
     />
-  )
-}
+  );
+};
+
+const { func, bool, arrayOf, string, shape } = PropTypes;
+Category.propTypes = {
+  // dispatch
+  getPosts: func.isRequired,
+  // redux state
+  categoriesList: arrayOf(shape({
+    name: string.isRequired,
+    color: string.isRequired,
+    id: string.isRequired
+  })).isRequired,
+  isGuest: bool.isRequired
+};
 
 const mapStateToProps = state => ({
   categoriesList: state.category.categoriesList,
   isGuest: state.user.isGuest
-})
+});
 
 const mapDispatchToProps = {
   getPosts: postOperations.getPosts
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Category);

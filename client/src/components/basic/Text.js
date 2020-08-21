@@ -1,6 +1,6 @@
-import React from 'react'
-
-import styled from "styled-components"
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
 
 const Wrapper = styled.div`
 	display: flex;
@@ -23,7 +23,8 @@ const Wrapper = styled.div`
 
 const Text = props => {
 	const { children } = props;
-	const { fontSize, fontWeight, color, cursor, onClick, centerText } = props;
+	const { onClick } = props;
+	const { fontSize, fontWeight, color, cursor, centerText } = props;
 	return (
 		<Wrapper
 			fontSize={fontSize}
@@ -36,7 +37,26 @@ const Text = props => {
 		>
 			{children}
 		</Wrapper>
-	)
-}
+	);
+};
 
-export default Text
+Text.defaultProps = {
+	onClick: null,
+	fontSize: null,
+	fontWeight: null,
+	color: null,
+	cursor: null,
+	centerText: false
+};
+
+const { func, string, bool } = PropTypes;
+Text.propTypes = {
+	onClick: func,
+	fontSize: string,
+	fontWeight: string,
+	color: string,
+	cursor: string,
+	centerText: bool
+};
+
+export default Text;

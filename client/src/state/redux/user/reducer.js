@@ -6,9 +6,11 @@ import * as types from "./types";
  * },
  * isAuthenticated: bool,
  * token: string,
- * errors: [{
- *  errorKey: string
- * }]
+ * errors: {
+ *   {
+ *     [string]
+ *   }
+ * }
  */
 const initialState = {
   profile: null,
@@ -36,9 +38,10 @@ export default (state = initialState, action) => {
         profile: {
           username: "Guest"
         },
+        token: null,
         isAuthenticated: true,
         isGuest: true
-      }
+      };
     case types.CLEAR_USER:
       return {
         ...state,
@@ -51,33 +54,33 @@ export default (state = initialState, action) => {
       return {
         ...state,
         isAuthenticated: true
-      }
+      };
     case types.DEAUTHENTICATE:
       return {
         ...state,
         isAuthenticated: false,
         isGuest: false
-      }
+      };
     case types.SET_USER_ERRORS:
       return {
         ...state,
         errors: payload
-      }
+      };
     case types.CLEAR_ERRORS:
       return {
         ...state,
         errors: {}
-      }
+      };
     case types.START_USER_ACTION:
       return {
         ...state,
         currentlyProcessing: true
-      }
+      };
     case types.STOP_USER_ACTION:
       return {
         ...state,
         currentlyProcessing: false
-      }
+      };
     default:
       return state;
   }

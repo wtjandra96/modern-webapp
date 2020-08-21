@@ -1,6 +1,6 @@
-import React from 'react'
-
-import styled from "styled-components"
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
 
 const Wrapper = styled.input`
   flex-grow: 1;
@@ -8,7 +8,7 @@ const Wrapper = styled.input`
   border: 1px solid #c0c0c0;
   font-size: 16px;
   min-height: 36px;
-`
+`;
 
 const Input = props => {
   const { type, autoComplete, value, onChange, placeholder } = props;
@@ -20,15 +20,24 @@ const Input = props => {
       onChange={onChange}
       placeholder={placeholder}
     />
-  )
-}
+  );
+};
 
 Input.defaultProps = {
   type: "text",
   autoComplete: "off",
   value: "",
-  onChange: () => { },
+  onChange: null,
   placeholder: ""
-}
+};
 
-export default Input
+const { func, string } = PropTypes;
+Input.propTypes = {
+  type: string,
+  autoComplete: string,
+  value: string,
+  onChange: func,
+  placeholder: string
+};
+
+export default Input;

@@ -10,7 +10,7 @@ const userPersistConfig = {
   key: "user",
   storage: localForage,
   blacklist: ["isAuthenticated", "errors"]
-}
+};
 
 const rootReducer = combineReducers({
   ...reducers,

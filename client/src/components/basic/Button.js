@@ -1,6 +1,6 @@
-import React from 'react'
-
-import styled from "styled-components"
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
 
 const Wrapper = styled.div`
 	cursor: pointer;
@@ -11,7 +11,6 @@ const Wrapper = styled.div`
 	font-weight: 500;
 
 	border-radius: ${({ borderRadius }) => {
-		if (!borderRadius) return "4px";
 		if (borderRadius.includes("%")) {
 			return borderRadius;
 		}
@@ -42,7 +41,22 @@ const Button = props => {
 		>
 			{children}
 		</Wrapper>
-	)
-}
+	);
+};
 
-export default Button
+Button.defaultProps = {
+	onClick: null,
+	size: "medium",
+	borderRadius: "4",
+	color: "lightgray"
+};
+
+const { func, string } = PropTypes;
+Button.propTypes = {
+	onClick: func,
+	size: string,
+	borderRadius: string,
+	color: string
+};
+
+export default Button;

@@ -1,5 +1,20 @@
 import * as types from "./types";
 
+/**
+ * postsList: [{
+ *	 title: string,
+ *	 url: string,
+ *	 id: string,
+ *	 source: string,
+ *	 isBookmarked: bool,
+ * 	 updatedAt: Date
+ * }],
+ * errors: {
+ *   {
+ *     [string]
+ *   }
+ * }
+ */
 const initialState = {
   postsList: [],
   errors: {},
@@ -48,7 +63,7 @@ export default (state = initialState, action) => {
           }
           return posts;
         }, [])
-      }
+      };
     case types.REMOVE_POST:
       return {
         ...state,
@@ -59,11 +74,11 @@ export default (state = initialState, action) => {
         ...state,
         postsList: state.postsList.filter(post => {
           if (post.category.id) {
-            return post.category.id !== payload
+            return post.category.id !== payload;
           }
-          return post.category._id !== payload
+          return post.category._id !== payload;
         })
-      }
+      };
     case types.CLEAR_POSTS:
       return {
         ...state,
@@ -73,22 +88,22 @@ export default (state = initialState, action) => {
       return {
         ...state,
         errors: payload
-      }
+      };
     case types.CLEAR_ERRORS:
       return {
         ...state,
         errors: {}
-      }
+      };
     case types.START_POST_ACTION:
       return {
         ...state,
         currentlyProcessing: true
-      }
+      };
     case types.STOP_POST_ACTION:
       return {
         ...state,
         currentlyProcessing: false
-      }
+      };
     default:
       return state;
   }

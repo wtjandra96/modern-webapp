@@ -1,6 +1,7 @@
-import React from 'react';
+import React from "react";
+import PropTypes from "prop-types";
 
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const Wrapper = styled.div`
   padding: 6px 8px;
@@ -11,12 +12,12 @@ const Wrapper = styled.div`
   display: flex;
   pointer-events: fill;
   ${({ width }) => width && `width: ${width}px;`}
-  cursor: ${({ cursor }) => cursor || 'pointer'};
+  cursor: ${({ cursor }) => cursor};
   &:hover {
-    background-color: ${({ hoverBgColor }) => hoverBgColor || '#f2f2f2'};
+    background-color: ${({ hoverBgColor }) => hoverBgColor};
   }
   ${({ center }) => center && "justify-content: center;"}
-  z-index: 9999999;
+  z-index: 150;
 `;
 
 const DropdownItem = (props) => {
@@ -34,6 +35,23 @@ const DropdownItem = (props) => {
       {children}
     </Wrapper>
   );
+};
+
+DropdownItem.defaultProps = {
+  onClick: null,
+  cursor: "pointer",
+  hoverBgColor: "#f2f2f2",
+  width: null,
+  center: false
+};
+
+const { string, func, bool } = PropTypes;
+DropdownItem.propTypes = {
+  onClick: func,
+  cursor: string,
+  hoverBgColor: string,
+  width: string,
+  center: bool
 };
 
 export default DropdownItem;

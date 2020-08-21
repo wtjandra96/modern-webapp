@@ -6,7 +6,7 @@ const api = axios.create({
   headers: {
     "Content-Type": "application/json"
   }
-})
+});
 
 api.interceptors.response.use(
   res => res,
@@ -17,7 +17,7 @@ api.interceptors.response.use(
 
     return Promise.reject(err);
   }
-)
+);
 
 export const setAuthToken = token => {
   if (token) {
@@ -27,7 +27,7 @@ export const setAuthToken = token => {
     delete api.defaults.headers.common["x-auth-token"];
     localStorage.removeItem("token");
   }
-}
+};
 
 export const get = async (url, config = {}) => {
   const response = await api.get(url, { ...config, timeout: 10000 });

@@ -1,5 +1,8 @@
 import * as types from "./types";
 
+/**
+ * showingOverlay: bool
+ */
 const initialState = {
   showingOverlay: false
 };

@@ -1,10 +1,11 @@
-import React, { Fragment, useState, useEffect } from 'react'
-import { connect } from "react-redux"
+import React, { Fragment, useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
-import styled from "styled-components"
+import styled from "styled-components";
 
-import AppBar from "../components/basic/AppBar"
-import Avatar from "../components/Avatar"
+import AppBar from "../components/basic/AppBar";
+import Avatar from "../components/Avatar";
 import DividerH from "../components/basic/DividerH";
 import Space from "../components/basic/Space";
 import Text from "../components/basic/Text";
@@ -12,14 +13,14 @@ import Text from "../components/basic/Text";
 import PostForm from "../components/PostForm";
 import PostItem from "../components/PostItem";
 
-import { userOperations } from '../state/redux/user';
-import Button from '../components/basic/Button'
-import Modal from '../components/basic/Modal'
-import ModalHeader from '../components/basic/ModalHeader'
-import { faTimes, faFeatherAlt } from '@fortawesome/free-solid-svg-icons'
-import Icon from '../components/basic/Icon'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import FloatingActionButton from '../components/basic/FloatingActionButton'
+import { userOperations } from "../state/redux/user";
+import Button from "../components/basic/Button";
+import Modal from "../components//Modal";
+import ModalHeader from "../components/basic/ModalHeader";
+import { faTimes, faFeatherAlt } from "@fortawesome/free-solid-svg-icons";
+import Icon from "../components/basic/Icon";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import FloatingActionButton from "../components/basic/FloatingActionButton";
 
 const PlaceholderPostItem = styled.div`
   display: flex;
@@ -27,13 +28,13 @@ const PlaceholderPostItem = styled.div`
   justify-content: center;
   align-items: center;
   height: 130px;
-`
+`;
 
 const Filler = styled.div`
   flex-grow: 1;
-`
+`;
 
-const Posts = React.memo((props) => {
+const Posts = (props) => {
   // dispatch
   const { logout } = props;
   // redux state
@@ -50,9 +51,9 @@ const Posts = React.memo((props) => {
     let sortedPosts = postsList.sort((p1, p2) => {
       if (p1.updatedAt < p2.updatedAt) return 1;
       return -1;
-    })
+    });
     setPosts(sortedPosts);
-  }, [postsList])
+  }, [postsList]);
 
   useEffect(() => {
     if (currentlyProcessing) {
@@ -61,7 +62,7 @@ const Posts = React.memo((props) => {
     if (requesting && !currentlyProcessing) {
       setLoading(false);
     }
-  }, [requesting, currentlyProcessing])
+  }, [requesting, currentlyProcessing]);
 
   const closeForm = () => setIsCreatingPost(false);
 
@@ -104,7 +105,7 @@ const Posts = React.memo((props) => {
       {!loading && posts && posts.map(post => (
         <Fragment key={post.id}>
           <PostItem
-            categoryName={!category && post.category.name}
+            categoryName={!category ? post.category.name : null}
             post={post}
           />
           <DividerH />
@@ -122,17 +123,44 @@ const Posts = React.memo((props) => {
       </PlaceholderPostItem>
       <DividerH />
     </>
-  )
-})
+  );
+};
+
+Posts.defaultProps = {
+  category: null
+};
+
+const { func, arrayOf, bool, string, shape, instanceOf } = PropTypes;
+Posts.propTypes = {
+  // dispatch
+  logout: func.isRequired,
+  // redux state
+  postsList: arrayOf(shape({
+		title: string.isRequired,
+		url: string.isRequired,
+		id: string.isRequired,
+		source: string.isRequired,
+		isBookmarked: bool,
+		updatedAt: instanceOf(Date).isRequired
+	})).isRequired,
+  currentlyProcessing: bool.isRequired,
+  // passed props
+  title: string.isRequired,
+  category: shape({
+    name: string.isRequired,
+    color: string.isRequired,
+    id: string.isRequired
+  })
+};
 
 const mapStateToProps = state => ({
   postsList: state.post.postsList,
   errors: state.post.errors,
   currentlyProcessing: state.post.currentlyProcessing
-})
+});
 
 const mapDispatchToProps = {
   logout: userOperations.logout
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Posts);

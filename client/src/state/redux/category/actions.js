@@ -8,7 +8,7 @@ const addNewCategory = (category) => ({
 const removeCategory = categoryId => ({
   type: types.REMOVE_CATEGORY,
   payload: categoryId
-})
+});
 
 const setCategoriesList = (categories) => ({
   type: types.SET_CATEGORIES_LIST,
@@ -27,16 +27,16 @@ const updateCategoriesList = () => ({
 const setErrors = (errorMessages) => ({
   type: types.SET_CATEGORY_ERRORS,
   payload: errorMessages
-})
+});
 
 const clearErrors = () => ({
-  type: types.CLEAR_ERRORS,
-})
+  type: types.CLEAR_ERRORS
+});
 
 const updateCategory = category => ({
   type: types.UPDATE_CATEGORY,
   payload: category
-})
+});
 
 export {
   addNewCategory,

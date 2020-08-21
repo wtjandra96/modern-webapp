@@ -1,21 +1,22 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import styled from "styled-components"
+import styled from "styled-components";
 
-import DividerH from "./basic/DividerH"
+import DividerH from "./basic/DividerH";
 import Dropdown from "./basic/Dropdown";
 import DropdownItem from "./basic/DropdownItem";
-import Modal from "./basic/Modal";
+import Modal from "./Modal";
 import ModalHeader from "./basic/ModalHeader";
 import Text from "./basic/Text";
 
 import ChangePasswordForm from "./ChangePasswordForm";
-import { userOperations } from '../state/redux/user';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUser } from '@fortawesome/free-solid-svg-icons';
-import Icon from './basic/Icon';
-import Space from './basic/Space';
+import { userOperations } from "../state/redux/user";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser } from "@fortawesome/free-solid-svg-icons";
+import Icon from "./basic/Icon";
+import Space from "./basic/Space";
 
 const Wrapper = styled.div`
   display: flex;
@@ -24,7 +25,7 @@ const Wrapper = styled.div`
   width: 56px;
   height: 56px;
   margin-left: auto;
-`
+`;
 
 const ProfilePic = styled.div`
   width: 40px;
@@ -37,7 +38,7 @@ const ProfilePic = styled.div`
   justify-content: center;
   align-items: center;
   padding-top: 8px;
-`
+`;
 
 const Avatar = props => {
   // dispatch
@@ -100,16 +101,28 @@ const Avatar = props => {
         </Dropdown>
       </Wrapper>
     </>
-  )
-}
+  );
+};
+
+const { bool, shape, string, func } = PropTypes;
+
+Avatar.propTypes = {
+  // dispatch
+  logout: func.isRequired,
+  // redux state
+  isGuest: bool.isRequired,
+  profile: shape({
+    username: string.isRequired
+  }).isRequired
+};
 
 const mapStateToProps = state => ({
   isGuest: state.user.isGuest,
   profile: state.user.profile
-})
+});
 
 const mapDispatchToProps = {
   logout: userOperations.logout
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(Avatar);

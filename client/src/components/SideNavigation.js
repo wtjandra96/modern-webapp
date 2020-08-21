@@ -1,26 +1,27 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useState } from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { matchPath } from "react-router";
 
-import styled from "styled-components"
+import styled from "styled-components";
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome, faBookmark, faThLarge, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { faReact, faGithub } from "@fortawesome/free-brands-svg-icons";
 
 import DividerH from "./basic/DividerH";
 import Icon from "./basic/Icon";
 import List from "./basic/List";
-import Modal from "./basic/Modal";
-import ModalHeader from "./basic/ModalHeader"
+import Modal from "./Modal";
+import ModalHeader from "./basic/ModalHeader";
 import SideNav from "./basic/SideNav";
 import SideNavItem from "./basic/SideNavItem";
 import Space from "./basic/Space";
 import Text from "./basic/Text";
 
 import CategoryItem from "./CategoryItem";
-import CategoryForm from './CategoryForm';
+import CategoryForm from "./CategoryForm";
 
 const SideNavText = styled.div`
   display: none;
@@ -28,18 +29,18 @@ const SideNavText = styled.div`
     width: 100%;
     display: flex;
   }
-`
+`;
 
 const NoCategory = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   flex-grow: 1;
-`
+`;
 
 const Padding = styled.div`
   min-height: 56px;
-`
+`;
 
 const SideNavigation = props => {
   // redux state
@@ -51,11 +52,11 @@ const SideNavigation = props => {
 
   const isActivePath = path => matchPath(path, {
     path: location.pathname
-  })
+  });
 
   const navigate = to => {
     history.push(to);
-  }
+  };
 
   return (
     <>
@@ -87,7 +88,7 @@ const SideNavigation = props => {
                     name={category.name}
                   />
                 </Fragment>
-              )
+              );
             })}
             {(!categoriesList || categoriesList.length === 0) ?
               <NoCategory>
@@ -157,7 +158,7 @@ const SideNavigation = props => {
             </Text>
           </SideNavText>
         </SideNavItem>
-        <SideNavItem onClick={() => window.open("https://github.com/wtjandra96/modern-webapp.git", "_blank")}>
+        <SideNavItem onClick={() => window.open("https://github.com/wtjandra96/modern-webapp", "_blank")}>
           <Icon button={false} fontSize="24">
             <FontAwesomeIcon icon={faGithub} />
           </Icon>
@@ -173,11 +174,24 @@ const SideNavigation = props => {
         </SideNavItem>
       </SideNav>
     </>
-  )
-}
+  );
+};
+
+const { object, arrayOf, string, shape } = PropTypes;
+SideNavigation.propTypes = {
+  // redux state
+  categoriesList: arrayOf(shape({
+    name: string.isRequired,
+    color: string.isRequired,
+    id: string.isRequired
+  })).isRequired,
+  // react-router-dom
+  history: object.isRequired,
+  location: object.isRequired
+};
 
 const mapStateToProps = state => ({
   categoriesList: state.category.categoriesList
-})
+});
 
-export default connect(mapStateToProps)(withRouter(SideNavigation))
+export default connect(mapStateToProps)(withRouter(SideNavigation));

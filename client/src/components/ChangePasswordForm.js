@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react'
-import { connect, useDispatch } from 'react-redux'
-import styled from "styled-components"
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import { connect, useDispatch } from "react-redux";
+import styled from "styled-components";
 
 import Button from "./basic/Button";
 import Space from "./basic/Space";
@@ -14,23 +15,23 @@ const Input = styled.input`
   border-radius: 4px;
   height: 32px;
   font-size: 16px;
-`
+`;
 
 const Form = styled.div`
   display: flex;
   flex-direction: column;
   max-height: 800px;
   padding: 12px;
-`
+`;
 
 const FormControl = styled.div`
   display: flex;
   justify-content: flex-end;
-`
+`;
 
 const Filler = styled.div`
   flex-grow: 1;
-`
+`;
 
 const ChangePasswordForm = props => {
   // dispatch 
@@ -49,7 +50,7 @@ const ChangePasswordForm = props => {
 
   useEffect(() => {
     return () => dispatch(userActions.clearErrors());
-  }, [dispatch])
+  }, [dispatch]);
 
   useEffect(() => {
     if (currentlyProcessing) {
@@ -61,7 +62,7 @@ const ChangePasswordForm = props => {
         closeForm();
       }
     }
-  }, [requesting, currentlyProcessing, userErrors, closeForm])
+  }, [requesting, currentlyProcessing, userErrors, closeForm]);
 
   let oldPasswordErrors;
   let newPasswordErrors;
@@ -132,16 +133,30 @@ const ChangePasswordForm = props => {
         <Button onClick={closeForm}>Cancel</Button>
       </FormControl>
     </Form>
-  )
-}
+  );
+};
+
+const { func, string, bool, objectOf, arrayOf, shape } = PropTypes;
+ChangePasswordForm.propTypes = {
+  // dispatch
+  changePassword: func.isRequired,
+  // redux state
+  userErrors: objectOf(shape({
+    oldPassword: arrayOf(string),
+    newPassword: arrayOf(string)
+  })),
+  currentlyProcessing: bool.isRequired,
+  // passed function
+  closeForm: func.isRequired
+};
 
 const mapStateToProps = state => ({
   userErrors: state.user.errors,
   currentlyProcessing: state.user.currentlyProcessing
-})
+});
 
 const mapDispatchToProps = {
   changePassword: userOperations.changePassword
-}
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(ChangePasswordForm)
+export default connect(mapStateToProps, mapDispatchToProps)(ChangePasswordForm);

@@ -1,6 +1,7 @@
-import React from 'react';
+import React from "react";
+import PropTypes from "prop-types";
 
-import styled from 'styled-components';
+import styled from "styled-components";
 
 const Wrapper = styled.div`
   flex-grow: 1;
@@ -8,11 +9,11 @@ const Wrapper = styled.div`
   align-items: center;
   height: 56px;
   max-height: 56px;
-  position: ${({ position }) => position ? position : "sticky"};
+  position: ${({ position }) => position};
   top: 0;
 	background-color: white;
   ${({ border }) => border && "border-bottom: 1px solid #c0c0c0;"}
-`
+`;
 
 const AppBar = props => {
   const { children } = props;
@@ -27,7 +28,14 @@ const AppBar = props => {
 };
 
 AppBar.defaultProps = {
-  border: true
-}
+  border: true,
+  position: "sticky"
+};
+
+const { bool, string } = PropTypes;
+AppBar.propTypes = {
+  border: bool,
+  position: string
+};
 
 export default AppBar;

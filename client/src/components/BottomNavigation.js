@@ -1,27 +1,28 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState } from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { withRouter } from "react-router-dom";
 import { matchPath } from "react-router";
 
-import styled from "styled-components"
+import styled from "styled-components";
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome, faThLarge, faBookmark, faPlus, faChevronUp } from "@fortawesome/free-solid-svg-icons";
 
 import BottomNav from "./basic/BottomNav";
 import BottomNavItem from "./basic/BottomNavItem";
 import BottomSheet from "./basic/BottomSheet";
 import BottomSheetHeader from "./basic/BottomSheetHeader";
-import DividerH from './basic/DividerH';
+import DividerH from "./basic/DividerH";
 import DividerV from "./basic/DividerV";
 import Icon from "./basic/Icon";
 import List from "./basic/List";
-import Space from "./basic/Space"
+import Space from "./basic/Space";
 import Text from "./basic/Text";
 
 import CategoryItem from "./CategoryItem";
-import CategoryForm from './CategoryForm';
-import { faGithub } from '@fortawesome/free-brands-svg-icons';
+import CategoryForm from "./CategoryForm";
+import { faGithub } from "@fortawesome/free-brands-svg-icons";
 
 const Wrapper = styled.div`
   position: sticky;
@@ -31,22 +32,22 @@ const Wrapper = styled.div`
     display: none;
   }
   z-index: 80;
-`
+`;
 
 const BottomSheetControl = styled.div`
   display: flex;
-`
+`;
 
 const NoCategory = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   flex-grow: 1;
-`
+`;
 
 const Padding = styled.div`
   min-height: 56px;
-`
+`;
 
 const BottomNavigation = props => {
   // redux state
@@ -59,11 +60,11 @@ const BottomNavigation = props => {
 
   const isActivePath = path => matchPath(path, {
     path: location.pathname
-  })
+  });
 
   const navigate = to => {
     history.push(to);
-  }
+  };
   return (
     <Wrapper>
       {showCategories && (
@@ -75,9 +76,9 @@ const BottomNavigation = props => {
             <BottomSheetControl>
               <Icon touchRadius="10" onMouseDown={() => {
                 if (!isAddingCategory)
-                  setIsAddingCategory(true)
+                  setIsAddingCategory(true);
                 else
-                  setIsAddingCategory(false)
+                  setIsAddingCategory(false);
               }}>
                 <FontAwesomeIcon icon={isAddingCategory ? faChevronUp : faPlus} />
               </Icon>
@@ -107,7 +108,7 @@ const BottomNavigation = props => {
                     name={category.name}
                   />
                 </Fragment>
-              )
+              );
             })}
             {(!categoriesList || categoriesList.length === 0) ?
               <NoCategory>
@@ -165,11 +166,24 @@ const BottomNavigation = props => {
         </BottomNavItem>
       </BottomNav>
     </Wrapper>
-  )
-}
+  );
+};
+
+const { arrayOf, shape, string } = PropTypes;
+BottomNavigation.propTypes = {
+  // redux state
+  categoriesList: arrayOf(shape({
+    name: string.isRequired,
+    color: string.isRequired,
+    id: string.isRequired
+  })).isRequired,
+  // react-router-dom
+  history: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired
+};
 
 const mapStateToProps = state => ({
   categoriesList: state.category.categoriesList
-})
+});
 
-export default connect(mapStateToProps)(withRouter(BottomNavigation))
+export default connect(mapStateToProps)(withRouter(BottomNavigation));
