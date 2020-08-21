@@ -157,7 +157,7 @@ const SideNavigation = props => {
             </Text>
           </SideNavText>
         </SideNavItem>
-        <SideNavItem onClick={() => window.open("https://github.com/wtjandra96/modern-webapp.git", "_blank")}>
+        <SideNavItem onClick={() => window.open("https://github.com/wtjandra96/modern-webapp", "_blank")}>
           <Icon button={false} fontSize="24">
             <FontAwesomeIcon icon={faGithub} />
           </Icon>
