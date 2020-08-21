@@ -6,7 +6,7 @@ Hosted on http://modern-webapp.live
 - [Technologies Used](https://github.com/wtjandra96/modern-webapp#technologies-used)
 - [Deployment Diagram](https://github.com/wtjandra96/modern-webapp#deployment-diagram)
 - [Screenshots](https://github.com/wtjandra96/modern-webapp#screenshots)
-- [References](https://github.com/wtjandra96/modern-webapp#resources-and-references)
+- [Resources and References](https://github.com/wtjandra96/modern-webapp#resources-and-references)
 
 ## Technologies Used
 
