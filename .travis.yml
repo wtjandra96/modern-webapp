@@ -13,6 +13,7 @@ before_install:
 script:
   # Lint check
   - docker run wtjandra96/node-server-test npm run lint
+  - docker run wtjandra96/react-client-test npm run lint
 
   # Start server tests
   - docker network create testing-net
