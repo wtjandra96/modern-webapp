@@ -8,6 +8,7 @@ const PostsService = require("../../services/posts");
 const { isAuth } = require("../middlewares");
 
 const router = express.Router();
+const logger = container.get("logger");
 
 const PREFIX = "/api/posts";
 
@@ -32,7 +33,7 @@ const BOOKMARK_POST_ROUTE = "/bookmarkPost";
  *     labels: [ObjectId],
  *     title: string,
  *     url: string,
- *     originalDate: date (YYYY-MM-DD HH:mm),
+ *     updatedAt: date (YYYY-MM-DD HH:mm),
  *     imgSrc: string,
  *     source: string,
  *     isBookmarked: boolean
@@ -44,7 +45,7 @@ const BOOKMARK_POST_ROUTE = "/bookmarkPost";
  * @param   {string} title
  * @param   {string} url
  * @param   {object} postAttributes each key optional
- * { originalDate: date (YYYY-MM-DD HH:mm), imgSrc: string }
+ * { updatedAt: date (YYYY-MM-DD HH:mm), imgSrc: string }
  */
 router.post(CREATE_POST_ROUTE, isAuth, celebrate({
   body: Joi.object().keys({
@@ -58,16 +59,20 @@ router.post(CREATE_POST_ROUTE, isAuth, celebrate({
       labels: Joi.array().items(
         Joi.objectId().message("Label ID is invalid")
       ).messages({ "array.base": "Labels must be an array" }),
-      originalDate: Joi.date().messages({ "date.base": "Original date must be a date" }),
+      updatedAt: Joi.date().messages({ "date.base": "Original date must be a date" }),
       imgSrc: Joi.string().messages({ "string.base": "Image source must be of type string" })
     }).messages({ "object.base": "Post attributes must be an object" })
   })
 }, { abortEarly: false }), async (req, res, next) => {
+  logger.debug(PREFIX + CREATE_POST_ROUTE);
+  logger.info(new Date());
+  const x = new Date();
+  console.log(x.toISOString());
+
   const { userId } = req;
   const {
     categoryId, title, url, postAttributes
   } = req.body;
-
   try {
     const postsServiceInstance = container.get(PostsService);
     const payload = await postsServiceInstance.createPost(
@@ -97,7 +102,7 @@ router.post(CREATE_POST_ROUTE, isAuth, celebrate({
  *     labels: [ObjectId],
  *     title: string,
  *     url: string,
- *     originalDate: date (YYYY-MM-DD HH:mm),
+ *     updatedAt: date (YYYY-MM-DD HH:mm),
  *     imgSrc: string,
  *     source: string,
  *     isBookmarked: boolean
@@ -117,6 +122,8 @@ router.get(GET_POSTS_ROUTE, isAuth, celebrate({
     ).messages({ "array.base": "Label IDs must be an array" })
   })
 }, { abortEarly: false }), async (req, res, next) => {
+  logger.debug(PREFIX + GET_POSTS_ROUTE);
+
   const { userId } = req;
   const { categoryId, labelIds } = req.query;
 
@@ -143,7 +150,7 @@ router.get(GET_POSTS_ROUTE, isAuth, celebrate({
  *     labels: [ObjectId],
  *     title: string,
  *     url: string,
- *     originalDate: date (YYYY-MM-DD HH:mm),
+ *     updatedAt: date (YYYY-MM-DD HH:mm),
  *     imgSrc: string,
  *     source: string,
  *     isBookmarked: boolean
@@ -155,6 +162,8 @@ router.get(GET_POSTS_ROUTE, isAuth, celebrate({
  * @param   {array} labelIds optional - [ObjectId]
  */
 router.get(GET_BOOKMARKED_POSTS_ROUTE, isAuth, async (req, res, next) => {
+  logger.debug(PREFIX + GET_BOOKMARKED_POSTS_ROUTE);
+
   const { userId } = req;
 
   try {
@@ -180,7 +189,7 @@ router.get(GET_BOOKMARKED_POSTS_ROUTE, isAuth, async (req, res, next) => {
  *     labels: [ObjectId],
  *     title: string,
  *     url: string,
- *     originalDate: date (YYYY-MM-DD HH:mm),
+ *     updatedAt: date (YYYY-MM-DD HH:mm),
  *     imgSrc: string,
  *     source: string,
  *     isBookmarked: boolean
@@ -198,6 +207,8 @@ router.post(BOOKMARK_POST_ROUTE, isAuth, celebrate({
       .required().messages({ "boolean.empty": "Bookmarked value is required" })
   })
 }, { abortEarly: false }), async (req, res, next) => {
+  logger.debug(PREFIX + BOOKMARK_POST_ROUTE);
+
   const { userId } = req;
   const { postId, isNowBookmarked } = req.body;
   try {
@@ -227,7 +238,7 @@ router.post(BOOKMARK_POST_ROUTE, isAuth, celebrate({
  *     labels: [ObjectId],
  *     title: string,
  *     url: string,
- *     originalDate: date (YYYY-MM-DD HH:mm),
+ *     updatedAt: date (YYYY-MM-DD HH:mm),
  *     imgSrc: string,
  *     source: string,
  *     isBookmarked: boolean
@@ -238,7 +249,7 @@ router.post(BOOKMARK_POST_ROUTE, isAuth, celebrate({
  * @param   {string} title
  * @param   {string} url
  * @param   {object} postAttributes each key optional
- * { labels: [ObjectId], originalDate: String, imgSrc: String }
+ * { labels: [ObjectId], imgSrc: String }
  */
 router.post(EDIT_POST_ROUTE, isAuth, celebrate({
   body: Joi.object().keys({
@@ -256,6 +267,8 @@ router.post(EDIT_POST_ROUTE, isAuth, celebrate({
     }).messages({ "object.base": "Post attributes must be an object" })
   })
 }, { abortEarly: false }), async (req, res, next) => {
+  logger.debug(PREFIX + EDIT_POST_ROUTE);
+
   const { userId } = req;
   const {
     postId, title, url, postAttributes
@@ -289,6 +302,8 @@ router.delete(`${DELETE_POST_ROUTE}/:postId`, isAuth, celebrate({
       .required().messages({ "any.required": "Post ID is missing" })
   })
 }, { abortEarly: false }), async (req, res, next) => {
+  logger.debug(PREFIX + DELETE_POST_ROUTE);
+
   const { userId } = req;
   const { postId } = req.params;
 

@@ -1,9 +1,12 @@
 const ServiceError = require("../utils/errors/serviceError");
 
+let logger = null;
+
 class PostsService {
   constructor (container) {
     this.categoryModel = container.get("CategoryModel");
     this.postModel = container.get("PostModel");
+    logger = container.get("logger");
   }
 
   /**
@@ -18,7 +21,7 @@ class PostsService {
    *     labels: [ObjectId],
    *     title: string,
    *     url: string,
-   *     originalDate: date
+   *     updatedAt: date
    *     imgSrc: string
    *   }
    * }
@@ -28,9 +31,10 @@ class PostsService {
    * @param   {string} title
    * @param   {string} url
    * @param   {object} postAttributes each key optional
-   * { originalDate: String, imgSrc: String }
+   * { updatedAt: String, imgSrc: String }
    */
   async createPost (userId, categoryId, title, url, postAttributes) {
+    logger.debug("Creating Post");
     const { categoryModel, postModel } = this;
 
     const categoryRecord = await categoryModel.findOne({ _id: categoryId, owner: userId }).lean();
@@ -67,7 +71,7 @@ class PostsService {
    *     labels: [ObjectId],
    *     title: string,
    *     url: string,
-   *     originalDate: date
+   *     updatedAt: date
    *     imgSrc: string
    *   }
    * }]
@@ -77,6 +81,7 @@ class PostsService {
    * @param   {array} labelIds optional - [ObjectId]
    */
   async getPosts (userId, categoryId, labelIds) {
+    logger.debug("Getting Posts");
     const { postModel } = this;
 
     const conditions = {
@@ -116,7 +121,7 @@ class PostsService {
    *     labels: [ObjectId],
    *     title: string,
    *     url: string,
-   *     originalDate: date
+   *     updatedAt: date
    *     imgSrc: string
    *   }
    * }]
@@ -124,6 +129,7 @@ class PostsService {
    * @param   {ObjectId} userId User who owns the Posts
    */
   async getBookmarkedPosts (userId) {
+    logger.debug("Getting bookmarked Posts");
     const { postModel } = this;
 
     const conditions = {
@@ -148,9 +154,10 @@ class PostsService {
    * @param   {string} title
    * @param   {string} url
    * @param   {object} postAttributes each key optional
-   * { labels: [ObjectId], originalDate: String, imgSrc: String }
+   * { labels: [ObjectId], imgSrc: String }
    */
   async editPost (userId, postId, title, url, postAttributes) {
+    logger.debug("Updating Post");
     const { postModel } = this;
 
     const postRecord = await postModel.findOneAndUpdate({ _id: postId, owner: userId }, {
@@ -178,6 +185,7 @@ class PostsService {
    * @param   {ObjectId} isNowBookmarked Whether the Post is now bookmarked or not
    */
   async bookmarkPost (userId, postId, isNowBookmarked) {
+    logger.debug("Bookmarking Post");
     const { postModel } = this;
 
     const postRecord = await postModel.findOneAndUpdate({ _id: postId, owner: userId }, {
@@ -202,6 +210,7 @@ class PostsService {
    * @param   {ObjectId} postId The Post in question
    */
   async deletePost (userId, postId) {
+    logger.debug("Deleting Post");
     const { postModel } = this;
 
     await postModel.findOneAndDelete({ _id: postId, owner: userId });

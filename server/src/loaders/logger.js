@@ -1,4 +1,5 @@
 const winston = require("winston");
+const container = require("typedi").Container;
 const config = require("../config");
 
 const transports = [];
@@ -36,5 +37,8 @@ const logger = winston.createLogger({
   ),
   transports
 });
+
+container.set("logger", logger);
+logger.info("Logger injected into container");
 
 module.exports = logger;

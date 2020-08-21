@@ -1,4 +1,8 @@
 const container = require("typedi").Container;
+const logger = require("../logger");
+
+container.set("logger", logger);
+
 const CategoriesService = require("../../src/services/categories");
 const ServiceError = require("../../src/utils/errors/serviceError");
 const MongoError = require("../../src/utils/errors/mongoError");

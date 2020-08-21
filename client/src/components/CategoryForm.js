@@ -65,7 +65,7 @@ const CategoryForm = props => {
       ref.current.focus();
       setLoading(false);
     }
-  }, [loading, ref])
+  }, [loading, ref, isBottomSheet])
 
   let currentCategoryErrors;
   let categoryNameErrors;

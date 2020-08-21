@@ -2,12 +2,17 @@ const jwt = require("jsonwebtoken");
 const config = require("../config");
 const ServiceError = require("../utils/errors/serviceError");
 
+let logger = null;
+
 class AuthService {
   constructor (container) {
     this.userModel = container.get("UserModel");
+    logger = container.get("logger");
   }
 
   async changePassword (userId, oldPassword, newPassword) {
+    logger.debug("Changing password");
+
     const { userModel } = this;
     const userRecord = await userModel.findById(userId);
     if (!userRecord) {
@@ -46,6 +51,8 @@ class AuthService {
    * @param   {string} password
    */
   async register (username, password) {
+    logger.debug("Registering User");
+
     const { userModel } = this;
 
     await userModel.create({
@@ -74,6 +81,8 @@ class AuthService {
    * @param   {string} password
    */
   async login (username, password) {
+    logger.debug("Logging in User");
+
     const { userModel } = this;
 
     // Check if User exists

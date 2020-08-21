@@ -1,6 +1,7 @@
 const logger = {
   error: () => { },
-  info: () => { }
+  info: () => { },
+  debug: () => { }
 };
 
 module.exports = logger;

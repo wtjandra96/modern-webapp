@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const MongoError = require("../utils/errors/mongoError");
 
 const { Schema } = mongoose;
-
 const CategorySchema = new Schema(
   {
     owner: {

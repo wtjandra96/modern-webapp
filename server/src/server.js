@@ -1,7 +1,7 @@
 const express = require("express");
 const config = require("./config");
-const loaders = require("./loaders");
 const logger = require("./loaders/logger");
+const loaders = require("./loaders");
 
 const startServer = async () => {
   const app = express();

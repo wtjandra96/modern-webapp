@@ -1,6 +1,9 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
+const container = require("typedi").Container;
 const MongoError = require("../utils/errors/mongoError");
+
+const logger = container.get("logger");
 
 const UserSchema = new mongoose.Schema(
   {
@@ -29,6 +32,7 @@ UserSchema.method("toJSON", function toJSON () {
 
 UserSchema.pre("save", async function hashPassword (next) {
   const user = this;
+  logger.debug("Hashing password");
 
   // Only hash the password if it has been modified (or is new)
   if (!user.isModified("password")) return next();

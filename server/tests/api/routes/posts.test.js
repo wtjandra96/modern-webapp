@@ -1,10 +1,14 @@
 const container = require("typedi").Container;
+
 const request = require("supertest");
 const express = require("express");
 
 // Mock middlewares
 const sinon = require("sinon");
 const middlewares = require("../../../src/api/middlewares");
+const logger = require("../../logger");
+
+container.set("logger", logger);
 
 sinon.stub(middlewares, "isAuth")
   .callsFake((req, res, next) => {
@@ -73,7 +77,7 @@ describe("Testing posts route", () => {
           title: {},
           url: {},
           postAttributes: {
-            originalDate: {},
+            updatedAt: {},
             imgSrc: {}
           }
         };
@@ -107,7 +111,7 @@ describe("Testing posts route", () => {
           title: "",
           url: "",
           postAttributes: {
-            originalDate: "",
+            updatedAt: "",
             imgSrc: ""
           }
         };
@@ -309,7 +313,7 @@ describe("Testing posts route", () => {
           title: {},
           url: {},
           postAttributes: {
-            originalDate: {},
+            updatedAt: {},
             imgSrc: {}
           }
         };
@@ -343,7 +347,7 @@ describe("Testing posts route", () => {
           title: "",
           url: "",
           postAttributes: {
-            originalDate: "",
+            updatedAt: "",
             imgSrc: ""
           }
         };

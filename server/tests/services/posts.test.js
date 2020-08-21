@@ -1,4 +1,8 @@
 const container = require("typedi").Container;
+const logger = require("../logger");
+
+container.set("logger", logger);
+
 const PostsService = require("../../src/services/posts");
 const ServiceError = require("../../src/utils/errors/serviceError");
 const LabelModel = require("../../src/models/Label");
@@ -12,7 +16,6 @@ const testUser2Id = "5e868964c037680d183cd5a4";
 const testCategory2Id = "5e868964c037680d183cd5a6";
 const testLabel1Id = "5e868964c037680d183cd5a7";
 const testLabel2Id = "5e868964c037680d183cd5a8";
-const testDateString = "2020-01-01";
 const sampleTitle = "Sample Title";
 const sampleUrl = "https://www.example.com";
 const sampleImgSrc = null;
@@ -41,7 +44,6 @@ describe("Testing PostsService", () => {
 
       const postAttributes = {
         labels: [testLabel1Id, testLabel2Id],
-        originalDate: new Date(testDateString),
         imgSrc: sampleImgSrc
       };
 
@@ -56,7 +58,6 @@ describe("Testing PostsService", () => {
       expect(post.url).toStrictEqual(sampleUrl);
       expect(post.labels.length).toStrictEqual(postAttributes.labels.length);
       expect(post.imgSrc).toStrictEqual(sampleImgSrc);
-      expect(post.originalDate).toStrictEqual(postAttributes.originalDate);
     });
 
     it("Should allow creation of a post with default values for postAttributes", async () => {
@@ -73,7 +74,6 @@ describe("Testing PostsService", () => {
       expect(post.url).toStrictEqual(sampleUrl);
       expect(post.labels.length).toStrictEqual(0);
       expect(post.imgSrc).toBeNull();
-      expect(new Date() - post.originalDate).toBeLessThan(10000);
     });
 
     it("Should not allow creating a Post on a Category the User does not own", async () => {
@@ -163,7 +163,6 @@ describe("Testing PostsService", () => {
 
       const postAttributes = {
         labels: [testLabel1Id, testLabel2Id],
-        originalDate: new Date(testDateString),
         imgSrc: sampleImgSrc
       };
       try {
@@ -183,7 +182,6 @@ describe("Testing PostsService", () => {
       const newTitle = "Updated";
       const newUrl = "Random URL";
       const postAttributes = {
-        originalDate: new Date("2020-12-31"),
         imgSrc: sampleImgSrc
       };
       const payload = await postsServiceInstance.editPost(
@@ -198,7 +196,6 @@ describe("Testing PostsService", () => {
       expect(post.labels.length).toStrictEqual(testPost.labels.length);
       expect(post.title).toStrictEqual(newTitle);
       expect(post.url).toStrictEqual(newUrl);
-      expect(post.originalDate).toStrictEqual(postAttributes.originalDate);
       expect(post.imgSrc).toStrictEqual(postAttributes.imgSrc);
       expect(post.source).not.toEqual(postAttributes.source);
     });

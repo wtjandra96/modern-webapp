@@ -51,7 +51,7 @@ const createCategory = (categoryName, color, isGuest) => async (dispatch) => {
       dispatch(addNewCategory(category));
     } catch (err) {
 
-      if (err.response.data && err.response.data.errors) {
+      if (err.response && err.response.data && err.response.data.errors) {
         const errorMessages = err.response.data.errors;
         dispatch(setErrors(errorMessages));
       } else {
@@ -132,7 +132,7 @@ const editCategory = (categoryId, categoryName, color, isGuest) => async (dispat
       dispatch(updateCategory(category));
     } catch (err) {
 
-      if (err.response.data && err.response.data.errors) {
+      if (err.response && err.response.data && err.response.data.errors) {
         const errorMessages = err.response.data.errors;
         dispatch(setErrors({ categoryId: errorMessages }));
       } else {
@@ -161,7 +161,7 @@ const getCategories = (isGuest) => async (dispatch) => {
       dispatch(setCategoriesList(categories));
     } catch (err) {
 
-      if (err.response.data && err.response.data.errors) {
+      if (err.response && err.response.data && err.response.data.errors) {
         const errorMessages = err.response.data.errors;
         dispatch(setErrors(errorMessages));
       } else {
@@ -198,7 +198,7 @@ const deleteCategory = (categoryId, isGuest) => async dispatch => {
       dispatch(removeCategory(categoryId));
     } catch (err) {
 
-      if (err.response.data && err.response.data.errors) {
+      if (err.response && err.response.data && err.response.data.errors) {
         const errorMessages = err.response.data.errors;
         dispatch(setErrors(errorMessages));
       } else {

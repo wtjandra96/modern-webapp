@@ -50,7 +50,7 @@ const getPosts = (categoryId, isGuest) => async (dispatch) => {
       const { posts } = res.data;
       dispatch(setPostsList(posts));
     } catch (err) {
-      if (err.response.data && err.response.data.errors) {
+      if (err.response && err.response.data && err.response.data.errors) {
         const errorMessages = err.response.data.errors;
         dispatch(setErrors(errorMessages));
       } else {
@@ -92,7 +92,7 @@ const getBookmarkedPosts = (isGuest) => async (dispatch) => {
       const { posts } = res.data;
       dispatch(setPostsList(posts));
     } catch (err) {
-      if (err.response.data && err.response.data.errors) {
+      if (err.response && err.response.data && err.response.data.errors) {
         const errorMessages = err.response.data.errors;
         dispatch(setErrors(errorMessages));
       } else {
@@ -135,7 +135,7 @@ const bookmarkPost = (postId, isNowBookmarked, category, isGuest) => async (disp
       post.category = category;
       dispatch(updatePost(post));
     } catch (err) {
-      if (err.response.data && err.response.data.errors) {
+      if (err.response && err.response.data && err.response.data.errors) {
         const errorMessages = err.response.data.errors;
         dispatch(setErrors(errorMessages));
       } else {
@@ -204,7 +204,7 @@ const editPost = (postId, postTitle, postUrl, category, isGuest) => async (dispa
       dispatch(updatePost(post));
 
     } catch (err) {
-      if (err.response.data && err.response.data.errors) {
+      if (err.response && err.response.data && err.response.data.errors) {
         const errorMessages = err.response.data.errors;
         errors = { postId: errorMessages }
         dispatch(setErrors(errors));
@@ -251,7 +251,7 @@ const createPost = (categoryId, categoryName, postTitle, postUrl, isGuest) => as
     post.id = uuid();
     post.source = extractHostname(postUrl);
     post.isBookmarked = false;
-    post.originalDate = new Date();
+    post.updatedAt = new Date();
     dispatch(addNewPost(post));
     posts.push(post);
     localForage.setItem("posts", posts);
@@ -270,7 +270,7 @@ const createPost = (categoryId, categoryName, postTitle, postUrl, isGuest) => as
       dispatch(addNewPost(post));
 
     } catch (err) {
-      if (err.response.data && err.response.data.errors) {
+      if (err.response && err.response.data && err.response.data.errors) {
         const errorMessages = err.response.data.errors;
         dispatch(setErrors(errorMessages));
       } else {
@@ -302,7 +302,7 @@ const deletePost = (postId, isGuest) => async (dispatch) => {
       await api.del(url);
       dispatch(removePost(postId));
     } catch (err) {
-      if (err.response.data && err.response.data.errors) {
+      if (err.response && err.response.data && err.response.data.errors) {
         const errorMessages = err.response.data.errors;
         dispatch(setErrors(errorMessages));
       } else {

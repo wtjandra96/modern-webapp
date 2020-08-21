@@ -21,7 +21,7 @@ const register = (username, password, confirmPassword) => async dispatch => {
     await api.post(url, data);
   } catch (err) {
 
-    if (err.response.data && err.response.data.errors) {
+    if (err.response && err.response.data && err.response.data.errors) {
       const errorMessages = err.response.data.errors;
       dispatch(setErrors(errorMessages));
     } else {
@@ -47,7 +47,7 @@ const login = (username, password) => async dispatch => {
     dispatch(setUser(user, token));
   } catch (err) {
 
-    if (err.response.data && err.response.data.errors) {
+    if (err.response && err.response.data && err.response.data.errors) {
       const errorMessages = err.response.data.errors;
       dispatch(setErrors(errorMessages));
     } else {
@@ -89,7 +89,7 @@ const changePassword = (oldPassword, newPassword, confirmNewPassword) => async d
   try {
     await api.post(url, data);
   } catch (err) {
-    if (err.response.data && err.response.data.errors) {
+    if (err.response && err.response.data && err.response.data.errors) {
       const errorMessages = err.response.data.errors;
       dispatch(setErrors(errorMessages));
     } else {
