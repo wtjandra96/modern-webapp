@@ -178,7 +178,8 @@ const PostItem = props => {
 					button={!showDropdown}
 					onClick={e => {
 						e.stopPropagation();
-						bookmarkPost(post.id, !post.isBookmarked, post.category, isGuest);
+						console.log('clickl');
+						bookmarkPost(post.id, !post.isBookmarked, isGuest);
 					}}
 					touchRadius="8">
 					<FontAwesomeIcon icon={post.isBookmarked ? faBookmarkSolid : faBookmark} />
