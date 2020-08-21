@@ -1,10 +1,10 @@
-import React from 'react'
-import { Redirect } from "react-router-dom"
+import React from "react";
+import { Redirect } from "react-router-dom";
 
 const NotFound = () => {
   return (
     <Redirect to="/" />
-  )
-}
+  );
+};
 
-export default NotFound
+export default NotFound;

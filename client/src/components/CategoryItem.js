@@ -1,20 +1,21 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import styled from "styled-components"
+import styled from "styled-components";
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEllipsisH } from '@fortawesome/free-solid-svg-icons'
-import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons'
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEllipsisH } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faTrashAlt } from "@fortawesome/free-regular-svg-icons";
 
-import DividerH from "./basic/DividerH"
-import Icon from './basic/Icon'
-import Space from "./basic/Space"
-import Text from "./basic/Text"
-import { categoryOperations } from '../state/redux/category'
-import Dropdown from './basic/Dropdown';
-import DropdownItem from './basic/DropdownItem';
-import CategoryForm from './CategoryForm';
+import DividerH from "./basic/DividerH";
+import Icon from "./basic/Icon";
+import Space from "./basic/Space";
+import Text from "./basic/Text";
+import { categoryOperations } from "../state/redux/category";
+import Dropdown from "./basic/Dropdown";
+import DropdownItem from "./basic/DropdownItem";
+import CategoryForm from "./CategoryForm";
 
 const Wrapper = styled.div`
   display: flex;
@@ -25,7 +26,7 @@ const Wrapper = styled.div`
   &:hover {
     background-color: #FAFAFA;
   }
-`
+`;
 
 const Color = styled.div`
   width: 24px;
@@ -33,14 +34,14 @@ const Color = styled.div`
   background-color: ${({ color }) => color};
   border-radius: 4px;
   border: 1px solid hsla(0, 0%, 50%, 0.3);
-`
+`;
 
 const Filler = styled.div`
   flex-grow: 1;
-`
+`;
 
 const EllipsisContainer = styled.div`
-`
+`;
 
 const CategoryItem = props => {
   // dispatch
@@ -67,7 +68,7 @@ const CategoryItem = props => {
         />
         <DividerH />
       </>
-    )
+    );
   } else {
     content = (
       <Wrapper
@@ -127,17 +128,34 @@ const CategoryItem = props => {
         </EllipsisContainer>
         <Space width="12" />
       </Wrapper>
-    )
+    );
   }
-  return content
-}
+  return content;
+};
+
+CategoryItem.defaultProps = {
+  onClick: () => {}
+};
+
+const { func, bool, string } = PropTypes;
+CategoryItem.propTypes = {
+  // dispatch
+  deleteCategory: func.isRequired,
+  // redux state
+  isGuest: bool.isRequired,
+  // passed props
+  id: string.isRequired,
+  color: string.isRequired,
+  name: string.isRequired,
+  onClick: string
+};
 
 const mapStateToProps = state => ({
   isGuest: state.user.isGuest
-})
+});
 
 const mapDispatchToProps = {
   deleteCategory: categoryOperations.deleteCategory
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(CategoryItem);

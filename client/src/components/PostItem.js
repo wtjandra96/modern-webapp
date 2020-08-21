@@ -1,29 +1,30 @@
-import React, { useState } from 'react'
+import React, { useState } from "react";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
-import styled from "styled-components"
+import styled from "styled-components";
 
-import { formatDistanceStrict } from "date-fns"
+import { formatDistanceStrict } from "date-fns";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBookmark } from "@fortawesome/free-regular-svg-icons";
-import { faChevronDown, faBookmark as faBookmarkSolid, faTimes } from '@fortawesome/free-solid-svg-icons';
-import { faEdit, faTrashAlt } from '@fortawesome/free-regular-svg-icons'
+import { faChevronDown, faBookmark as faBookmarkSolid, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faEdit, faTrashAlt } from "@fortawesome/free-regular-svg-icons";
 
-import DividerH from './basic/DividerH';
-import Dropdown from './basic/Dropdown';
-import DropdownItem from './basic/DropdownItem';
-import Icon from './basic/Icon';
-import Space from './basic/Space';
+import DividerH from "./basic/DividerH";
+import Dropdown from "./basic/Dropdown";
+import DropdownItem from "./basic/DropdownItem";
+import Icon from "./basic/Icon";
+import Space from "./basic/Space";
 import Text from "./basic/Text";
 
 import PostForm from "./PostForm";
 
-import defaultThumbnail from "../img/default-thumbnail.png"
+import defaultThumbnail from "../img/default-thumbnail.png";
 
-import { postOperations } from '../state/redux/post';
-import Modal from './basic/Modal';
-import ModalHeader from './basic/ModalHeader';
+import { postOperations } from "../state/redux/post";
+import Modal from "./Modal";
+import ModalHeader from "./basic/ModalHeader";
 
 const Wrapper = styled.div`
 	cursor: default !important;
@@ -38,17 +39,17 @@ const Wrapper = styled.div`
 		border: 1px solid #c0c0c0;
 		padding: 11px;
 	}
-`
+`;
 
 const FlexWrapper = styled.div`
 	display: flex;
-`
+`;
 
 const ControlWrapper = styled.div`
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-`
+`;
 
 const Thumbnail = styled.div`
 	width: 64px;
@@ -57,7 +58,7 @@ const Thumbnail = styled.div`
 	overflow: hidden;
 	border-radius: 4px;
 	background-color: white;
-`
+`;
 
 const ChevronContainer = styled.div`
 	margin-left: auto;
@@ -73,7 +74,7 @@ const TextContainer = styled.div`
 
 const PostTitle = styled.div`
 	overflow-wrap: break-word;
-`
+`;
 
 const PostItem = props => {
 	// dispatch
@@ -93,7 +94,7 @@ const PostItem = props => {
 				if (showDropdown || isEdit) return;
 				let link = post.url;
 				if (!link.match(/^https?:\/\//i)) {
-					link = 'https://' + link;
+					link = "https://" + link;
 				}
 				window.open(link, "_blank");
 			}}
@@ -101,7 +102,7 @@ const PostItem = props => {
 			{isEdit && (
 				<Modal closeModal={() => setIsEdit(false)}>
 					<ModalHeader>
-						<Text fontWeight="500" fontSize="18">Editing "{post.title}"</Text>
+						<Text fontWeight="500" fontSize="18">{`Editing "${post.title}"`}</Text>
 						<Icon onClick={() => {
 							setIsEdit(false);
 						}}>
@@ -178,7 +179,7 @@ const PostItem = props => {
 					button={!showDropdown}
 					onClick={e => {
 						e.stopPropagation();
-						console.log('clickl');
+						console.log("clickl");
 						bookmarkPost(post.id, !post.isBookmarked, isGuest);
 					}}
 					touchRadius="8">
@@ -187,15 +188,41 @@ const PostItem = props => {
 			</ControlWrapper>
 		</Wrapper>
 	);
-}
+};
+
+PostItem.defaultProps = {
+	categoryName: null,
+	post: {
+		isBookmarked: false
+	}
+};
+
+const { shape, string, bool, func, instanceOf } = PropTypes;
+PostItem.propTypes = {
+	// dispatch
+	deletePost: func.isRequired,
+	bookmarkPost: func.isRequired,
+	// redux state
+	isGuest: bool.isRequired,
+	// passed props
+	categoryName: string,
+	post: shape({
+		title: string.isRequired,
+		url: string.isRequired,
+		id: string.isRequired,
+		source: string.isRequired,
+		isBookmarked: bool,
+		updatedAt: instanceOf(Date).isRequired
+	}).isRequired
+};
 
 const mapStateToProps = state => ({
 	isGuest: state.user.isGuest
-})
+});
 
 const mapDispatchToProps = {
 	deletePost: postOperations.deletePost,
 	bookmarkPost: postOperations.bookmarkPost
-}
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(PostItem)
+export default connect(mapStateToProps, mapDispatchToProps)(PostItem);

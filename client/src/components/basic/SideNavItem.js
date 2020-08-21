@@ -1,15 +1,15 @@
-import React from 'react';
-
-import styled from 'styled-components';
+import React from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
 
 const Wrapper = styled.div`
-  cursor: ${({ cursor }) => cursor || "pointer"};
+  cursor: ${({ cursor }) => cursor};
   min-height: 48px;
   min-width: 48px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${({ color }) => `${color ? color : "#424242"}`};
+  color: ${({ color }) => color};
   width: min-content;
   &:hover {
     color: #A0A0A0;
@@ -37,6 +37,21 @@ const SideNavItem = props => {
       {children}
     </Wrapper>
   );
+};
+
+SideNavItem.defaultProps = {
+  onClick: null,
+  width: null,
+  color: "#424242",
+  cursor: "pointer"
+};
+
+const { func, string } = PropTypes;
+SideNavItem.propTypes = {
+  onClick: func,
+  width: string,
+  color: string,
+  cursor: string
 };
 
 export default SideNavItem;

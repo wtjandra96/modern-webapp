@@ -10,10 +10,11 @@ const createCategory = (categoryName, color, isGuest) => async (dispatch) => {
   dispatch(clearErrors());
 
   let errors = {};
+  errors.base = {};
   if (!categoryName || categoryName.length === 0) {
-    errors.name = ["Category name is required"];
+    errors.base.name = ["Category name is required"];
   }
-  if (errors.name) {
+  if (errors.base.name) {
     dispatch(setErrors(errors));
     return;
   }
@@ -30,7 +31,8 @@ const createCategory = (categoryName, color, isGuest) => async (dispatch) => {
     for (let i = 0; i < categories.length; i++) {
       let category = categories[i];
       if (category.name === categoryName) {
-        dispatch(setErrors({ name: ["Category already exists"] }));
+        errors.base.name = ["Category already exists"];
+        dispatch(setErrors(errors));
         return;
       }
     }
@@ -53,9 +55,10 @@ const createCategory = (categoryName, color, isGuest) => async (dispatch) => {
 
       if (err.response && err.response.data && err.response.data.errors) {
         const errorMessages = err.response.data.errors;
-        dispatch(setErrors(errorMessages));
+        errors.base = errorMessages; 
+        dispatch(setErrors(errors));
       } else {
-        console.error(err);
+        dispatch(setErrors({ misc: err }));
       }
     }
   }
@@ -66,10 +69,6 @@ const editCategory = (categoryId, categoryName, color, isGuest) => async (dispat
   dispatch(clearErrors());
 
   let errors = {};
-  if (!categoryId) {
-    dispatch(setErrors(errors.name = ["Invalid request"]));
-    return;
-  }
   errors[categoryId] = {};
   if (!categoryName || categoryName.length === 0) {
     errors[categoryId].name = ["Category name is required"];
@@ -136,7 +135,7 @@ const editCategory = (categoryId, categoryName, color, isGuest) => async (dispat
         const errorMessages = err.response.data.errors;
         dispatch(setErrors({ categoryId: errorMessages }));
       } else {
-        console.error(err);
+        dispatch(setErrors({ misc: err }));
       }
     }
   }
@@ -163,9 +162,9 @@ const getCategories = (isGuest) => async (dispatch) => {
 
       if (err.response && err.response.data && err.response.data.errors) {
         const errorMessages = err.response.data.errors;
-        dispatch(setErrors(errorMessages));
+        dispatch(setErrors({ base: errorMessages }));
       } else {
-        console.error(err);
+        dispatch(setErrors({ misc: err }));
       }
     }
   }
@@ -173,7 +172,6 @@ const getCategories = (isGuest) => async (dispatch) => {
 
 const deleteCategory = (categoryId, isGuest) => async dispatch => {
   const { removeCategory, setErrors } = actions;
-
 
   if (isGuest) {
     dispatch(removeCategory(categoryId));
@@ -200,17 +198,15 @@ const deleteCategory = (categoryId, isGuest) => async dispatch => {
 
       if (err.response && err.response.data && err.response.data.errors) {
         const errorMessages = err.response.data.errors;
-        dispatch(setErrors(errorMessages));
+        dispatch(setErrors({ base: errorMessages }));
       } else {
-        console.error(err);
+        dispatch(setErrors({ misc: err }));
       }
     }
   }
 
   dispatch(postActions.removePostsOfDeletedCategory(categoryId));
-
-  // need to remove all posts related to the category
-}
+};
 
 export {
   createCategory,

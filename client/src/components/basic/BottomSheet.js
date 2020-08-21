@@ -1,6 +1,7 @@
-import React from 'react'
+import React from "react";
+import PropTypes from "prop-types";
 
-import styled from "styled-components"
+import styled from "styled-components";
 
 const Wrapper = styled.div`
   height: 45vh;
@@ -24,7 +25,7 @@ const Overlay = styled.div`
   left: 0;
   background-color: hsla(0, 0%, 0%, 0.4);
   z-index: 97;
-`
+`;
 
 const BottomSheet = props => {
   const { children } = props;
@@ -36,7 +37,16 @@ const BottomSheet = props => {
         {children}
       </Wrapper>
     </>
-  )
-}
+  );
+};
 
-export default BottomSheet
+BottomSheet.defaultProps = {
+  closeSheet: null
+};
+
+const { func } = PropTypes;
+BottomSheet.propTypes = {
+  closeSheet: func
+};
+
+export default BottomSheet;

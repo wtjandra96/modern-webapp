@@ -1,18 +1,19 @@
-import React, { useState, useEffect } from 'react'
-import { connect } from "react-redux"
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
 
-import styled from "styled-components"
+import styled from "styled-components";
 
-import Space from './basic/Space'
-import Button from './basic/Button'
+import Space from "./basic/Space";
+import Button from "./basic/Button";
 
 import ColorPicker from "./ColorPicker";
 
-import { categoryOperations } from '../state/redux/category'
-import Text from './basic/Text'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes } from '@fortawesome/free-solid-svg-icons'
-import Icon from './basic/Icon'
+import { categoryOperations } from "../state/redux/category";
+import Text from "./basic/Text";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import Icon from "./basic/Icon";
 
 const Wrapper = styled.div`
   padding: 12px;
@@ -22,13 +23,13 @@ const Wrapper = styled.div`
   &:focus {
     outline: 0;
   }
-`
+`;
 
 const FormControl = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-`
+`;
 
 const Input = styled.input`
   flex-grow: 1;
@@ -36,13 +37,13 @@ const Input = styled.input`
   border: 1px solid #c0c0c0;
   font-size: 16px;
   min-height: 36px;
-`
+`;
 
 const FormHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-`
+`;
 
 const CategoryForm = props => {
   // dispatch
@@ -65,7 +66,7 @@ const CategoryForm = props => {
       ref.current.focus();
       setLoading(false);
     }
-  }, [loading, ref, isBottomSheet])
+  }, [loading, ref, isBottomSheet]);
 
   let currentCategoryErrors;
   let categoryNameErrors;
@@ -73,11 +74,11 @@ const CategoryForm = props => {
   if (categoryErrors) {
     if (isEdit && id) {
       currentCategoryErrors = categoryErrors[id];
-      if (currentCategoryErrors) {
-        categoryNameErrors = currentCategoryErrors.name;
-      }
     } else {
-      categoryNameErrors = categoryErrors.name;
+      currentCategoryErrors = categoryErrors.base;
+    }
+    if (currentCategoryErrors) {
+      categoryNameErrors = currentCategoryErrors.name;
     }
   }
 
@@ -88,13 +89,13 @@ const CategoryForm = props => {
     if (isEdit || isBottomSheet) {
       timeoutId = setTimeout(() => closeForm && closeForm());
     }
-  }
+  };
 
   const onFocus = () => {
     if (isEdit || isBottomSheet) {
       clearTimeout(timeoutId);
     }
-  }
+  };
 
   return (
     <Wrapper tabIndex="0" role="form" onBlur={onBlur} onFocus={onFocus}>
@@ -143,17 +144,48 @@ const CategoryForm = props => {
         </Button>
       </FormControl>
     </Wrapper>
-  )
-}
+  );
+};
+
+CategoryForm.defaultProps = {
+  closeForm: null,
+  categoryErrors: {},
+  isBottomSheet: false,
+  isEdit: false
+};
+
+const { string, bool, objectOf, shape, func, arrayOf } = PropTypes;
+CategoryForm.propTypes = {
+  // dispatch
+  createCategory: func.isRequired,
+  editCategory: func.isRequired,
+  // redux state
+  isGuest: bool.isRequired,
+  categoryErrors: objectOf(
+    objectOf(
+      shape({
+        name: arrayOf(string)
+      })
+    )
+  ),
+  // passed function
+  closeForm: func,
+  // passed props
+  id: string.isRequired,
+  categoryColor: string.isRequired,
+  categoryName: string.isRequired,
+  isEdit: bool,
+  isBottomSheet: bool
+};
 
 const mapStateToProps = state => ({
   isGuest: state.user.isGuest,
   categoryErrors: state.category.errors
-})
+});
 
 const mapDispatchToProps = {
   createCategory: categoryOperations.createCategory,
   editCategory: categoryOperations.editCategory
-}
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(CategoryForm)
+export default connect(mapStateToProps, mapDispatchToProps)(CategoryForm);

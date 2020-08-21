@@ -1,49 +1,50 @@
-import React, { useState, useEffect } from 'react'
-import { connect, useDispatch } from 'react-redux';
-import { Redirect } from "react-router-dom"
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import { connect, useDispatch } from "react-redux";
+import { Redirect } from "react-router-dom";
 
 import styled from "styled-components";
 
 import Button from "../components/basic/Button";
 import DividerH from "../components/basic/DividerH";
-import Icon from '../components/basic/Icon';
-import Input from '../components/basic/Input';
+import Icon from "../components/basic/Icon";
+import Input from "../components/basic/Input";
 import Space from "../components/basic/Space";
 import Text from "../components/basic/Text";
 
-import { userOperations, userActions } from "../state/redux/user"
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faGithubSquare } from '@fortawesome/free-brands-svg-icons';
+import { userOperations, userActions } from "../state/redux/user";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faGithubSquare } from "@fortawesome/free-brands-svg-icons";
 
 const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   flex-grow: 1;
-`
+`;
 
 const AuthBox = styled.form`
   min-width: 300px;
   display: flex;
   flex-direction: column;
   padding: 0 12px;
-`
+`;
 
 const Control = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-`
+`;
 
 const AuthBoxHeader = styled.div`
   display: flex;
   justify-content: center;
-`
+`;
 
 const AuthSwitch = styled.div`
   display: flex;
   justify-content: center;
-`
+`;
 
 const Landing = props => {
   // dispatch
@@ -61,7 +62,7 @@ const Landing = props => {
 
   useEffect(() => {
     return () => dispatch(userActions.clearErrors());
-  }, [dispatch])
+  }, [dispatch]);
 
   useEffect(() => {
     if (currentlyProcessing) {
@@ -77,7 +78,7 @@ const Landing = props => {
         }
       }
     }
-  }, [requesting, currentlyProcessing, userErrors, isRegister])
+  }, [requesting, currentlyProcessing, userErrors, isRegister]);
 
   let passwordErrors;
   let usernameErrors;
@@ -87,14 +88,14 @@ const Landing = props => {
   }
 
   if (isAuthenticated) {
-    return <Redirect to="/posts" />
+    return <Redirect to="/posts" />;
   }
 
   return (
     <Wrapper>
       <AuthBox>
         <AuthBoxHeader>
-          <Text fontSize="24" fontWeight="500">Welcome</Text>
+          <Text fontSize="24" fontWeight="500">Welcome!</Text>
         </AuthBoxHeader>
         <Space height="12" />
         <DividerH />
@@ -164,7 +165,7 @@ const Landing = props => {
             if (isRegister) {
               register(username, password, confirmPassword);
             } else {
-              login(username, password)
+              login(username, password);
             }
           }}>
             {isRegister ? "Sign Up" : "Login"}
@@ -199,7 +200,7 @@ const Landing = props => {
           fontSize="18"
           centerText={true}
           onClick={() => {
-            window.open("https://github.com/wtjandra96/modern-webapp", "_blank")
+            window.open("https://github.com/wtjandra96/modern-webapp", "_blank");
           }}
           color="#424242"
         >
@@ -209,19 +210,37 @@ const Landing = props => {
         </Text>
       </AuthBox>
     </Wrapper>
-  )
-}
+  );
+};
+
+const { func, bool, shape, objectOf, arrayOf, string } = PropTypes;
+Landing.propTypes = {
+  // dispatch
+  login: func.isRequired,
+  register: func.isRequired,
+  guestLogin: func.isRequired,
+  // redux state
+  isAuthenticated: bool.isRequired,
+  userErrors: objectOf(
+    shape({
+      username: arrayOf(string),
+      password: arrayOf(string)
+    })
+  ),
+  currentlyProcessing: bool.isRequired
+
+};
 
 const mapStateToProps = state => ({
   isAuthenticated: state.user.isAuthenticated,
   userErrors: state.user.errors,
   currentlyProcessing: state.user.currentlyProcessing
-})
+});
 
 const mapDispatchToProps = {
   guestLogin: userOperations.guestLogin,
   login: userOperations.login,
   register: userOperations.register
-}
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(Landing)
+export default connect(mapStateToProps, mapDispatchToProps)(Landing);

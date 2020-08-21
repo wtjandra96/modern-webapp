@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect } from "react";
+import PropTypes from "prop-types";
 import { useDispatch } from "react-redux";
 
-import styled from "styled-components"
+import styled from "styled-components";
 
-import { modalActions } from "../../state/redux/modal";
+import { modalActions } from "../state/redux/modal";
 
 const ModalContainer = styled.div`
   width: 100vw;
@@ -17,7 +18,7 @@ const ModalContainer = styled.div`
   top: 0;
   left: 0;
   padding: 0 12px;
-`
+`;
 
 const Wrapper = styled.div`
   flex-grow: 1;
@@ -40,7 +41,7 @@ const Overlay = styled.div`
   left: 0;
   background-color: hsla(0, 0%, 0%, 0.4);
   z-index: 97;
-`
+`;
 
 const Modal = props => {
   const { children } = props;
@@ -49,11 +50,11 @@ const Modal = props => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(modalActions.openModal())
+    dispatch(modalActions.openModal());
     return () => {
       dispatch(modalActions.closeModal());
-    }
-  }, [dispatch])
+    };
+  }, [dispatch]);
 
   return (
     <>
@@ -64,7 +65,16 @@ const Modal = props => {
         </Wrapper>
       </ModalContainer>
     </>
-  )
-}
+  );
+};
 
-export default Modal
+Modal.defaultProps = {
+  closeModal: null
+};
+
+const { func } = PropTypes;
+Modal.propTypes = {
+  closeModal: func
+};
+
+export default Modal;

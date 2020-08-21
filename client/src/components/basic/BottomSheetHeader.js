@@ -1,6 +1,6 @@
-import React from 'react'
+import React from "react";
 
-import styled from "styled-components"
+import styled from "styled-components";
 
 const Wrapper = styled.div`
   display: flex;
@@ -9,14 +9,14 @@ const Wrapper = styled.div`
   flex-shrink: 0;
   height: 48px;
   padding: 0 12px;
-`
+`;
 
 const BottomSheetHeader = ({ children }) => {
   return (
     <Wrapper>
       {children}
     </Wrapper>
-  )
-}
+  );
+};
 
-export default BottomSheetHeader
+export default BottomSheetHeader;

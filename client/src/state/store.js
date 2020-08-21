@@ -9,8 +9,8 @@ import * as reducers from "./redux"; // import all reducers from redux/index.js
 const userPersistConfig = {
   key: "user",
   storage: localForage,
-  blacklist: ["isAuthenticated", "errors", "isGuest"]
-}
+  blacklist: ["isAuthenticated", "errors"]
+};
 
 const rootReducer = combineReducers({
   ...reducers,

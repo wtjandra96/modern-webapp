@@ -9,7 +9,7 @@ const register = (username, password, confirmPassword) => async dispatch => {
   dispatch(clearErrors());
   
   if (password !== confirmPassword) {
-    dispatch(setErrors({ password: ["Passwords do not match"] }))
+    dispatch(setErrors({ password: ["Passwords do not match"] }));
     dispatch(stopAction());
     return;
   }
@@ -25,7 +25,7 @@ const register = (username, password, confirmPassword) => async dispatch => {
       const errorMessages = err.response.data.errors;
       dispatch(setErrors(errorMessages));
     } else {
-      console.error(err);
+      dispatch(setErrors({ misc: err }));
     }
   } finally {
     dispatch(stopAction());
@@ -36,6 +36,8 @@ const login = (username, password) => async dispatch => {
   const { setUser, setErrors, clearErrors, startAction, stopAction } = actions;
   dispatch(startAction());
   dispatch(clearErrors());
+  dispatch(clearPosts());
+  dispatch(clearCategoriesList());
 
   const url = "/auth/login";
   const data = { username, password };
@@ -51,7 +53,7 @@ const login = (username, password) => async dispatch => {
       const errorMessages = err.response.data.errors;
       dispatch(setErrors(errorMessages));
     } else {
-      console.error(err);
+      dispatch(setErrors({ misc: err }));
     }
   } finally {
     dispatch(stopAction());
@@ -61,9 +63,11 @@ const login = (username, password) => async dispatch => {
 const guestLogin = () => async dispatch => {
   const { setGuest, clearErrors } = actions;
   dispatch(clearErrors());
+  dispatch(clearPosts());
+  dispatch(clearCategoriesList());
   dispatch(setGuest());
   api.setAuthToken(null);
-}
+};
 
 const logout = () => async dispatch => {
   const { clearUser } = actions;
@@ -79,7 +83,7 @@ const changePassword = (oldPassword, newPassword, confirmNewPassword) => async d
   dispatch(clearErrors());
   
   if (newPassword !== confirmNewPassword) {
-    dispatch(setErrors({ newPassword: ["New passwords do not match"] }))
+    dispatch(setErrors({ newPassword: ["New passwords do not match"] }));
     dispatch(stopAction());
     return;
   }
@@ -94,23 +98,23 @@ const changePassword = (oldPassword, newPassword, confirmNewPassword) => async d
       const errorMessages = err.response.data.errors;
       dispatch(setErrors(errorMessages));
     } else {
-      console.error(err);
+      dispatch(setErrors({ misc: err }));
     }
   } finally {
     dispatch(stopAction());
   }
-}
+};
 
 const softLogout = () => async dispatch => {
   const { deauthenticate } = actions;
   dispatch(deauthenticate());
-}
+};
 
 const loadUser = token => async dispatch => {
   const { authenticate } = actions;
   api.setAuthToken(token);
   dispatch(authenticate());
-}
+};
 
 export {
   register,

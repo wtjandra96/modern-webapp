@@ -5,7 +5,12 @@ import * as types from "./types";
  *   id: ObjectId,
  *   owner: ObjectId,
  *   name: string
- * }]
+ * }],
+ * errors: {
+ *   {
+ *     [string]
+ *   }
+ * }
  */
 const initialState = {
   categoriesList: [],
@@ -36,7 +41,7 @@ export default (state = initialState, action) => {
           }
           return categories;
         }, [])
-      }
+      };
     case types.SET_CATEGORIES_LIST:
     case types.UPDATE_CATEGORIES_LIST:
       return {
@@ -52,17 +57,17 @@ export default (state = initialState, action) => {
       return {
         ...state,
         categoriesList: state.categoriesList.filter(category => category.id !== payload)
-      }
+      };
     case types.SET_CATEGORY_ERRORS:
       return {
         ...state,
         errors: payload
-      }
+      };
     case types.CLEAR_ERRORS:
       return {
         ...state,
         errors: {}
-      }
+      };
     default:
       return {
         ...state

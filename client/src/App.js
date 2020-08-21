@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import { connect } from "react-redux";
 
-import styled from "styled-components"
+import styled from "styled-components";
 
 import Landing from "./pages/Landing";
 import Routes from "./routing/Routes";
-import { userOperations } from './state/redux/user';
-import { categoryOperations } from './state/redux/category';
+import { userOperations } from "./state/redux/user";
+import { categoryOperations } from "./state/redux/category";
 
 const Container = styled.div`
   display: flex;
@@ -15,7 +16,7 @@ const Container = styled.div`
   min-height: 100vh;
   max-width: 860px;
   margin: 0 auto;
-`
+`;
 
 const App = props => {
   // dispatch
@@ -23,9 +24,9 @@ const App = props => {
   // redux state
   const { isAuthenticated, token, showingOverlay, isGuest } = props;
   if (showingOverlay) {
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = "hidden";
   } else {
-    document.body.style.overflow = 'auto';
+    document.body.style.overflow = "auto";
   }
 
   const [loading, setLoading] = useState(true);
@@ -42,9 +43,9 @@ const App = props => {
       setLoading(false);
     }
     setLoading(false);
-  }, [isAuthenticated, token, loadUser, getCategories, isGuest, guestLogin])
+  }, [isAuthenticated, token, loadUser, getCategories, isGuest, guestLogin]);
 
-  if (loading) return <div></div>
+  if (loading) return <div></div>;
 
   return (
     <Container showingOverlay={showingOverlay}>
@@ -56,19 +57,36 @@ const App = props => {
       </Router>
     </Container>
   );
-}
+};
+
+App.defaultProps = {
+  token: null
+};
+
+const { func, bool, string } = PropTypes;
+App.propTypes = {
+  // dispatch
+  loadUser: func.isRequired,
+  getCategories: func.isRequired,
+  guestLogin: func.isRequired,
+  // redux state
+  isAuthenticated: bool.isRequired,
+  token: string,
+  showingOverlay: bool.isRequired,
+  isGuest: bool.isRequired
+};
 
 const mapStateToProps = state => ({
   isAuthenticated: state.user.isAuthenticated,
   isGuest: state.user.isGuest,
   token: state.user.token,
   showingOverlay: state.modal.showingOverlay
-})
+});
 
 const mapDispatchToProps = {
   loadUser: userOperations.loadUser,
   guestLogin: userOperations.guestLogin,
-  getCategories: categoryOperations.getCategories,
-}
+  getCategories: categoryOperations.getCategories
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(App);

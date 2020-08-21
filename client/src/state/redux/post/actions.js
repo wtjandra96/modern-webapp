@@ -2,11 +2,11 @@ import * as types from "./types";
 
 const startAction = () => ({
   type: types.START_POST_ACTION
-})
+});
 
 const stopAction = () => ({
   type: types.STOP_POST_ACTION
-})
+});
 
 const addNewPost = (post) => ({
   type: types.ADD_NEW_POST,
@@ -35,16 +35,16 @@ const clearPosts = () => ({
 const setErrors = (errorMessages) => ({
   type: types.SET_POST_ERRORS,
   payload: errorMessages
-})
+});
 
 const clearErrors = () => ({
   type: types.CLEAR_ERRORS
-})
+});
 
 const removePostsOfDeletedCategory = (categoryId) => ({
   type: types.REMOVE_POSTS_OF_DELETED_CATEGORY,
   payload: categoryId
-})
+});
 
 const updatePostBookmark = (postId, isNowBookmarked) => ({
   type: types.UPDATE_POST_BOOKMARK,
@@ -52,7 +52,7 @@ const updatePostBookmark = (postId, isNowBookmarked) => ({
     id: postId,
     isNowBookmarked
   }
-})
+});
 
 export {
   addNewPost,

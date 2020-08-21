@@ -1,19 +1,20 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
 import { connect, useDispatch } from "react-redux";
 
-import styled from "styled-components"
+import styled from "styled-components";
 
 import Button from "./basic/Button";
-import DividerH from './basic/DividerH';
-import Space from './basic/Space';
+import DividerH from "./basic/DividerH";
+import Space from "./basic/Space";
 import Text from "./basic/Text";
 
-import { postOperations, postActions } from '../state/redux/post';
+import { postOperations, postActions } from "../state/redux/post";
 
 const Wrapper = styled.div`
   padding: 12px;
   background-color: white;
-`
+`;
 
 const FormWrapper = styled.div`
 	display: flex;
@@ -24,7 +25,7 @@ const ControlWrapper = styled.div`
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-`
+`;
 
 const Input = styled.input`
 	padding: 8px;
@@ -40,7 +41,7 @@ const TextArea = styled.textarea`
 	border: 1px solid #c0c0c0;
 	border-radius: 4px;
 	min-height: 56px;
-`
+`;
 
 const PostForm = props => {
   // dispatch
@@ -72,7 +73,7 @@ const PostForm = props => {
 
   useEffect(() => {
     return () => dispatch(postActions.clearErrors());
-  }, [dispatch])
+  }, [dispatch]);
 
   let currentPostErrors;
   let postTitleErrors;
@@ -81,13 +82,13 @@ const PostForm = props => {
   if (postErrors) {
     if (isEdit && post) {
       currentPostErrors = postErrors[post.id];
-      if (currentPostErrors) {
-        postTitleErrors = currentPostErrors.title;
-        postUrlErrors = currentPostErrors.url;
-      }
-    } else {
-      postTitleErrors = postErrors.title;
-      postUrlErrors = postErrors.url;
+    }
+    else {
+      currentPostErrors = postErrors.base;
+    }
+    if (currentPostErrors) {
+      postTitleErrors = currentPostErrors.title;
+      postUrlErrors = currentPostErrors.url;
     }
   }
 
@@ -128,7 +129,7 @@ const PostForm = props => {
           if (isEdit) {
             editPost(post.id, title, url, post.category, isGuest);
           } else {
-            createPost(categoryId, categoryName, title, url, isGuest)
+            createPost(categoryId, categoryName, title, url, isGuest);
           }
         }}>
           <Text fontWeight="500">
@@ -137,18 +138,58 @@ const PostForm = props => {
         </Button>
       </ControlWrapper>
     </Wrapper>
-  )
-}
+  );
+};
+
+PostForm.defaultProps = {
+  categoryId: null,
+  categoryName: null,
+	post: {
+		isBookmarked: false
+	}
+};
+
+const { func, bool, objectOf, arrayOf, shape, string, instanceOf } = PropTypes;
+PostForm.propTypes = {
+  // dispatch
+  createPost: func.isRequired,
+  editPost: func.isRequired,
+  // redux state
+  isGuest: bool.isRequired,
+  postErrors: objectOf(
+    objectOf(
+      shape({
+        title: arrayOf(string),
+        url: arrayOf(string)
+      })
+    )
+  ),
+  currentlyProcessing: bool.isRequired,
+  // passed function
+  closeForm: func.isRequired,
+  // passed props
+  categoryId: string,
+  categoryName: string,
+  isEdit: bool.isRequired,
+	post: shape({
+		title: string.isRequired,
+		url: string.isRequired,
+		id: string.isRequired,
+		source: string.isRequired,
+		isBookmarked: bool,
+		updatedAt: instanceOf(Date).isRequired
+	}).isRequired
+};
 
 const mapStateToProps = state => ({
   isGuest: state.user.isGuest,
   postErrors: state.post.errors,
   currentlyProcessing: state.post.currentlyProcessing
-})
+});
 
 const mapDispatchToProps = {
   createPost: postOperations.createPost,
   editPost: postOperations.editPost
-}
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(PostForm);

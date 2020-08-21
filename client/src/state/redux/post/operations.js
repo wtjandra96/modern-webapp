@@ -1,7 +1,7 @@
 import * as api from "../../../utils/api";
 import * as actions from "./actions";
 
-import localForage from 'localforage';
+import localForage from "localforage";
 import uuid from "react-uuid";
 
 const extractHostname = url => {
@@ -19,7 +19,7 @@ const extractHostname = url => {
   hostname = hostname.split("?")[0];
 
   return hostname;
-}
+};
 
 const getPosts = (categoryId, isGuest) => async (dispatch) => {
   const { setPostsList, clearPosts, setErrors, clearErrors } = actions;
@@ -94,9 +94,9 @@ const getBookmarkedPosts = (isGuest) => async (dispatch) => {
     } catch (err) {
       if (err.response && err.response.data && err.response.data.errors) {
         const errorMessages = err.response.data.errors;
-        dispatch(setErrors(errorMessages));
+        dispatch(setErrors({ base: errorMessages }));
       } else {
-        console.error(err);
+        dispatch(setErrors({ misc: err }));
       }
     } finally {
       dispatch(stopAction());
@@ -108,9 +108,7 @@ const bookmarkPost = (postId, isNowBookmarked, isGuest) => async (dispatch) => {
   const { updatePostBookmark, setErrors, clearErrors } = actions;
   dispatch(clearErrors());
 
-  console.log('a')
   if (isGuest) {
-    console.log('b')
     let posts = await localForage.getItem("posts");
     if (!posts || !(posts instanceof Array)) {
       posts = [];
@@ -130,22 +128,20 @@ const bookmarkPost = (postId, isNowBookmarked, isGuest) => async (dispatch) => {
     const data = {
       postId,
       isNowBookmarked
-    }
-    console.log('d')
+    };
     try {
-      const res = await api.post(url, data);
-      console.log(res.data);
+      await api.post(url, data);
       dispatch(updatePostBookmark(postId, isNowBookmarked));
     } catch (err) {
       if (err.response && err.response.data && err.response.data.errors) {
         const errorMessages = err.response.data.errors;
-        dispatch(setErrors(errorMessages));
+        dispatch(setErrors({ base: errorMessages }));
       } else {
-        console.error(err);
+        dispatch(setErrors({ misc: err }));
       }
     }
   }
-}
+};
 
 const editPost = (postId, postTitle, postUrl, category, isGuest) => async (dispatch) => {
   const { updatePost, setErrors, clearErrors, startAction, stopAction } = actions;
@@ -208,10 +204,10 @@ const editPost = (postId, postTitle, postUrl, category, isGuest) => async (dispa
     } catch (err) {
       if (err.response && err.response.data && err.response.data.errors) {
         const errorMessages = err.response.data.errors;
-        errors = { postId: errorMessages }
+        errors = { postId: errorMessages };
         dispatch(setErrors(errors));
       } else {
-        console.error(err);
+        dispatch(setErrors({ misc: err }));
       }
     } finally {
       dispatch(stopAction());
@@ -225,14 +221,15 @@ const createPost = (categoryId, categoryName, postTitle, postUrl, isGuest) => as
   dispatch(startAction());
 
   let errors = {};
+  errors.base = {};
   if (!postTitle || postTitle.length === 0) {
-    errors.title = ["Post title is required"];
+    errors.base.title = ["Post title is required"];
   }
 
   if (!postUrl || postUrl.length === 0) {
-    errors.url = ["Post url is required"];
+    errors.base.url = ["Post url is required"];
   }
-  if (errors.title || errors.url) {
+  if (errors.base.title || errors.base.url) {
     dispatch(setErrors(errors));
     dispatch(stopAction());
     return;
@@ -274,9 +271,9 @@ const createPost = (categoryId, categoryName, postTitle, postUrl, isGuest) => as
     } catch (err) {
       if (err.response && err.response.data && err.response.data.errors) {
         const errorMessages = err.response.data.errors;
-        dispatch(setErrors(errorMessages));
+        dispatch(setErrors({ base: errorMessages }));
       } else {
-        console.error(err);
+        dispatch(setErrors({ misc: err }));
       }
     } finally {
       dispatch(stopAction());
@@ -306,9 +303,9 @@ const deletePost = (postId, isGuest) => async (dispatch) => {
     } catch (err) {
       if (err.response && err.response.data && err.response.data.errors) {
         const errorMessages = err.response.data.errors;
-        dispatch(setErrors(errorMessages));
+        dispatch(setErrors({ base: errorMessages }));
       } else {
-        console.error(err);
+        dispatch(setErrors({ misc: err }));
       }
     }
   }

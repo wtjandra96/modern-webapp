@@ -1,6 +1,6 @@
-import React from 'react'
+import React from "react";
 
-import styled from "styled-components"
+import styled from "styled-components";
 
 const Wrapper = styled.div`
   flex-grow: 1;
@@ -8,14 +8,14 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
   overflow: hidden;
-`
+`;
 
 const BottomNavItem = ({ children }) => {
   return (
     <Wrapper>
       {children}
     </Wrapper>
-  )
-}
+  );
+};
 
-export default BottomNavItem
+export default BottomNavItem;

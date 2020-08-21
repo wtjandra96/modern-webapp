@@ -1,3 +1,3 @@
-test('should pass', () => {
+test("should pass", () => {
 
 });

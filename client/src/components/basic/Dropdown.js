@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
-
-import styled from 'styled-components';
+import React, { useEffect } from "react";
+import PropTypes from "prop-types";
+import styled from "styled-components";
 
 // Outer is to handle onBlur
 const Outer = styled.div`
@@ -11,7 +11,7 @@ const Outer = styled.div`
   left: 0;
   z-index: 98;
   cursor: default;
-`
+`;
 
 const RelativeWrapper = styled.div`
   position: relative;
@@ -48,10 +48,10 @@ const Dropdown = (props) => {
     if (ref.current) {
       ref.current.focus();
     }
-  }, [ref])
+  }, [ref]);
   return (
     <>
-      {show && <Outer onClick={e => { e.stopPropagation(); e.preventDefault() }} />}
+      {show && <Outer onClick={e => { e.stopPropagation(); e.preventDefault(); }} />}
       <RelativeWrapper tabIndex="0" onBlur={onBlur} ref={ref}>
         {show && (
           <>
@@ -66,6 +66,25 @@ const Dropdown = (props) => {
       </RelativeWrapper>
     </>
   );
+};
+
+Dropdown.defaultProps = {
+  onBlur: null,
+  show: false,
+  topOffset: null,
+  bottomOffset: null,
+  rightOffset: null,
+  leftOffset: null
+};
+
+const { bool, func, string } = PropTypes;
+Dropdown.propTypes = {
+  onBlur: func,
+  show: bool,
+  topOffset: string,
+  bottomOffset: string,
+  rightOffset: string,
+  leftOffset: string
 };
 
 export default Dropdown;
