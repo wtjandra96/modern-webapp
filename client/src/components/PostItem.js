@@ -86,7 +86,6 @@ const PostItem = props => {
 	const [showDropdown, setShowDropdown] = useState(false);
 	const [isEdit, setIsEdit] = useState(false);
 
-
 	return (
 		<Wrapper
 			showDropdown={showDropdown}
@@ -173,7 +172,7 @@ const PostItem = props => {
 			<Space height="18" />
 			<ControlWrapper>
 				<Text fontSize="12" color="gray">
-					{formatDistanceStrict(new Date(), new Date(post.originalDate))}{categoryName && " • " + categoryName}
+					{formatDistanceStrict(new Date(), new Date(post.updatedAt))}{categoryName && " • " + categoryName}
 				</Text>
 				<Icon
 					button={!showDropdown}

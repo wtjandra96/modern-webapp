@@ -251,7 +251,7 @@ const createPost = (categoryId, categoryName, postTitle, postUrl, isGuest) => as
     post.id = uuid();
     post.source = extractHostname(postUrl);
     post.isBookmarked = false;
-    post.originalDate = new Date();
+    post.updatedAt = new Date();
     dispatch(addNewPost(post));
     posts.push(post);
     localForage.setItem("posts", posts);

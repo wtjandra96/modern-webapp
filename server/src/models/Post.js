@@ -103,10 +103,6 @@ const PostSchema = new Schema(
       type: String,
       required: true
     },
-    originalDate: {
-      type: Date,
-      default: new Date()
-    },
     source: {
       type: String,
       default: null

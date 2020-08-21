@@ -7,6 +7,7 @@ const express = require("express");
 const sinon = require("sinon");
 const middlewares = require("../../../src/api/middlewares");
 const logger = require("../../logger");
+
 container.set("logger", logger);
 
 sinon.stub(middlewares, "isAuth")
@@ -76,7 +77,7 @@ describe("Testing posts route", () => {
           title: {},
           url: {},
           postAttributes: {
-            originalDate: {},
+            updatedAt: {},
             imgSrc: {}
           }
         };
@@ -110,7 +111,7 @@ describe("Testing posts route", () => {
           title: "",
           url: "",
           postAttributes: {
-            originalDate: "",
+            updatedAt: "",
             imgSrc: ""
           }
         };
@@ -312,7 +313,7 @@ describe("Testing posts route", () => {
           title: {},
           url: {},
           postAttributes: {
-            originalDate: {},
+            updatedAt: {},
             imgSrc: {}
           }
         };
@@ -346,7 +347,7 @@ describe("Testing posts route", () => {
           title: "",
           url: "",
           postAttributes: {
-            originalDate: "",
+            updatedAt: "",
             imgSrc: ""
           }
         };

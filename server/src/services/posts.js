@@ -21,7 +21,7 @@ class PostsService {
    *     labels: [ObjectId],
    *     title: string,
    *     url: string,
-   *     originalDate: date
+   *     updatedAt: date
    *     imgSrc: string
    *   }
    * }
@@ -31,7 +31,7 @@ class PostsService {
    * @param   {string} title
    * @param   {string} url
    * @param   {object} postAttributes each key optional
-   * { originalDate: String, imgSrc: String }
+   * { updatedAt: String, imgSrc: String }
    */
   async createPost (userId, categoryId, title, url, postAttributes) {
     logger.debug("Creating Post");
@@ -71,7 +71,7 @@ class PostsService {
    *     labels: [ObjectId],
    *     title: string,
    *     url: string,
-   *     originalDate: date
+   *     updatedAt: date
    *     imgSrc: string
    *   }
    * }]
@@ -121,7 +121,7 @@ class PostsService {
    *     labels: [ObjectId],
    *     title: string,
    *     url: string,
-   *     originalDate: date
+   *     updatedAt: date
    *     imgSrc: string
    *   }
    * }]
@@ -154,7 +154,7 @@ class PostsService {
    * @param   {string} title
    * @param   {string} url
    * @param   {object} postAttributes each key optional
-   * { labels: [ObjectId], originalDate: String, imgSrc: String }
+   * { labels: [ObjectId], imgSrc: String }
    */
   async editPost (userId, postId, title, url, postAttributes) {
     logger.debug("Updating Post");
