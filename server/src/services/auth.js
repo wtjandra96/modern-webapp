@@ -33,9 +33,8 @@ class AuthService {
     }
 
     // Update password
-    await userModel.findOneAndUpdate({
-      _id: userId
-    }, { $set: { password: newPassword } });
+    userRecord.password = newPassword;
+    await userRecord.save();
 
     const payload = {
       message: "Password updated!"
