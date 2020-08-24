@@ -17,7 +17,7 @@ import { userOperations } from "../state/redux/user";
 import Button from "../components/basic/Button";
 import Modal from "../components//Modal";
 import ModalHeader from "../components/basic/ModalHeader";
-import { faTimes, faFeatherAlt } from "@fortawesome/free-solid-svg-icons";
+import { faTimes, faFeatherAlt, faThLarge } from "@fortawesome/free-solid-svg-icons";
 import Icon from "../components/basic/Icon";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import FloatingActionButton from "../components/basic/FloatingActionButton";
@@ -119,6 +119,14 @@ const Posts = (props) => {
           <Text fontWeight="500" fontSize="18">
             {title === "Bookmarks" ?
               "Bookmarked items will show up here!" :
+              title === "Home" ?
+              <>
+                Click on
+                <Space width="6" />
+                  <FontAwesomeIcon icon={faThLarge} />
+                <Space width="6" />
+                Categories to get started!
+              </> :
               "There seems to be nothing here :("
             }
           </Text>
