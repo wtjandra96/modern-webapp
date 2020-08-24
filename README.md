@@ -17,7 +17,7 @@ Hosted on http://modern-webapp.live
 
 ## Deployment Diagram
 
-![image](https://user-images.githubusercontent.com/24629570/90763185-16e2ec00-e29b-11ea-91a1-aadea99cc3d6.png)
+![image](https://user-images.githubusercontent.com/24629570/91004098-18a4fc00-e588-11ea-90fb-3493b6860dc4.png)
 
 ## Screenshots
 
