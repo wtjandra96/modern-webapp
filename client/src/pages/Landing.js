@@ -38,7 +38,8 @@ const Control = styled.div`
 
 const AuthBoxHeader = styled.div`
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const AuthSwitch = styled.div`
@@ -95,9 +96,33 @@ const Landing = props => {
     <Wrapper>
       <AuthBox>
         <AuthBoxHeader>
-          <Text fontSize="24" fontWeight="500">Welcome!</Text>
+          <Text fontSize="24" fontWeight="500">MoDERN</Text>
+          <Text fontSize="11">
+            <Text fontWeight="bold">Mo</Text>
+            <Text fontWeight="300">ngoDB</Text>
+            <Space width="2" />
+            •
+            <Space width="2" />
+            <Text fontWeight="bold">D</Text>
+            <Text fontWeight="300">ocker</Text>
+            <Space width="2" />
+            •
+            <Space width="2" />
+            <Text fontWeight="bold">E</Text>
+            <Text fontWeight="300">xpress.js</Text>
+            <Space width="2" />
+            •
+            <Space width="2" />
+            <Text fontWeight="bold">R</Text>
+            <Text fontWeight="300">eact.js/Redux</Text>
+            <Space width="2" />
+            •
+            <Space width="2" />
+            <Text fontWeight="bold">N</Text>
+            <Text fontWeight="300">ode.js</Text>
+          </Text>
         </AuthBoxHeader>
-        <Space height="12" />
+        <Space height="8" />
         <DividerH />
         <Space height="24" />
         <Input
