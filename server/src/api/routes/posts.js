@@ -65,9 +65,6 @@ router.post(CREATE_POST_ROUTE, isAuth, celebrate({
   })
 }, { abortEarly: false }), async (req, res, next) => {
   logger.debug(PREFIX + CREATE_POST_ROUTE);
-  logger.info(new Date());
-  const x = new Date();
-  console.log(x.toISOString());
 
   const { userId } = req;
   const {

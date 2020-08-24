@@ -151,7 +151,10 @@ CategoryForm.defaultProps = {
   closeForm: null,
   categoryErrors: {},
   isBottomSheet: false,
-  isEdit: false
+  isEdit: false,
+  categoryColor: null,
+  categoryName: null,
+  id: null
 };
 
 const { string, bool, objectOf, shape, func, arrayOf } = PropTypes;
@@ -171,9 +174,9 @@ CategoryForm.propTypes = {
   // passed function
   closeForm: func,
   // passed props
-  id: string.isRequired,
-  categoryColor: string.isRequired,
-  categoryName: string.isRequired,
+  id: string,
+  categoryColor: string,
+  categoryName: string,
   isEdit: bool,
   isBottomSheet: bool
 };

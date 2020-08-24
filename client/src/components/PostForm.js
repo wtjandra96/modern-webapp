@@ -149,7 +149,7 @@ PostForm.defaultProps = {
 	}
 };
 
-const { func, bool, objectOf, arrayOf, shape, string, instanceOf } = PropTypes;
+const { func, bool, objectOf, arrayOf, shape, string } = PropTypes;
 PostForm.propTypes = {
   // dispatch
   createPost: func.isRequired,
@@ -177,7 +177,7 @@ PostForm.propTypes = {
 		id: string.isRequired,
 		source: string.isRequired,
 		isBookmarked: bool,
-		updatedAt: instanceOf(Date).isRequired
+		updatedAt: string.isRequired
 	}).isRequired
 };
 

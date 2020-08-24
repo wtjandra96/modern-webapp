@@ -32,6 +32,7 @@ const Wrapper = styled.div`
     display: none;
   }
   z-index: 80;
+  ${({ showingOverlay }) => showingOverlay && "display: none;"}
 `;
 
 const BottomSheetControl = styled.div`
@@ -51,7 +52,7 @@ const Padding = styled.div`
 
 const BottomNavigation = props => {
   // redux state
-  const { categoriesList } = props;
+  const { categoriesList, showingOverlay } = props;
   // react-router-dom
   const { history, location } = props;
 
@@ -65,8 +66,15 @@ const BottomNavigation = props => {
   const navigate = to => {
     history.push(to);
   };
+
+  if (showCategories) {
+    document.body.style.overflow = "hidden";
+  } else {
+    document.body.style.overflow = "auto";
+  }
+
   return (
-    <Wrapper>
+    <Wrapper showingOverlay={showingOverlay}>
       {showCategories && (
         <BottomSheet closeSheet={() => {
           setShowCategories(false);
@@ -169,7 +177,7 @@ const BottomNavigation = props => {
   );
 };
 
-const { arrayOf, shape, string } = PropTypes;
+const { arrayOf, shape, string, bool } = PropTypes;
 BottomNavigation.propTypes = {
   // redux state
   categoriesList: arrayOf(shape({
@@ -177,13 +185,15 @@ BottomNavigation.propTypes = {
     color: string.isRequired,
     id: string.isRequired
   })).isRequired,
+  showingOverlay: bool.isRequired,
   // react-router-dom
   history: PropTypes.object.isRequired,
   location: PropTypes.object.isRequired
 };
 
 const mapStateToProps = state => ({
-  categoriesList: state.category.categoriesList
+  categoriesList: state.category.categoriesList,
+  showingOverlay: state.modal.showingOverlay
 });
 
 export default connect(mapStateToProps)(withRouter(BottomNavigation));

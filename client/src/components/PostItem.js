@@ -27,7 +27,7 @@ import Modal from "./Modal";
 import ModalHeader from "./basic/ModalHeader";
 
 const Wrapper = styled.div`
-	cursor: default !important;
+	cursor: default;
 	${({ showDropdown }) => !showDropdown && "cursor: pointer;"}
 	${({ showDropdown }) => showDropdown && "pointer-events: none;"}
 	padding: 12px; 
@@ -197,7 +197,7 @@ PostItem.defaultProps = {
 	}
 };
 
-const { shape, string, bool, func, instanceOf } = PropTypes;
+const { shape, string, bool, func } = PropTypes;
 PostItem.propTypes = {
 	// dispatch
 	deletePost: func.isRequired,
@@ -212,7 +212,7 @@ PostItem.propTypes = {
 		id: string.isRequired,
 		source: string.isRequired,
 		isBookmarked: bool,
-		updatedAt: instanceOf(Date).isRequired
+		updatedAt: string.isRequired
 	}).isRequired
 };
 
