@@ -38,7 +38,7 @@ const Posts = (props) => {
   // dispatch
   const { logout } = props;
   // redux state
-  const { postsList, currentlyProcessing } = props;
+  const { postsList, currentlyProcessing, showingOverlay } = props;
   // passed props
   const { title, category } = props;
 
@@ -69,7 +69,10 @@ const Posts = (props) => {
   return (
     <>
       {category && 
-        <FloatingActionButton show={!isCreatingPost} onClick={() => setIsCreatingPost(true)}>
+        <FloatingActionButton 
+          show={!isCreatingPost && !showingOverlay} 
+          onClick={() => setIsCreatingPost(true)}
+        >
           <FontAwesomeIcon icon={faFeatherAlt} />
         </FloatingActionButton>
       }
@@ -130,7 +133,7 @@ Posts.defaultProps = {
   category: null
 };
 
-const { func, arrayOf, bool, string, shape, instanceOf } = PropTypes;
+const { func, arrayOf, bool, string, shape } = PropTypes;
 Posts.propTypes = {
   // dispatch
   logout: func.isRequired,
@@ -141,9 +144,10 @@ Posts.propTypes = {
 		id: string.isRequired,
 		source: string.isRequired,
 		isBookmarked: bool,
-		updatedAt: instanceOf(Date).isRequired
+		updatedAt: string.isRequired
 	})).isRequired,
   currentlyProcessing: bool.isRequired,
+  showingOverlay: bool.isRequired,
   // passed props
   title: string.isRequired,
   category: shape({
@@ -156,7 +160,8 @@ Posts.propTypes = {
 const mapStateToProps = state => ({
   postsList: state.post.postsList,
   errors: state.post.errors,
-  currentlyProcessing: state.post.currentlyProcessing
+  currentlyProcessing: state.post.currentlyProcessing,
+  showingOverlay: state.modal.showingOverlay
 });
 
 const mapDispatchToProps = {
