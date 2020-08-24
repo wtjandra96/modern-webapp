@@ -134,6 +134,7 @@ const CategoryItem = props => {
 };
 
 CategoryItem.defaultProps = {
+  id: null,
   onClick: () => {}
 };
 
@@ -144,10 +145,10 @@ CategoryItem.propTypes = {
   // redux state
   isGuest: bool.isRequired,
   // passed props
-  id: string.isRequired,
+  id: string,
   color: string.isRequired,
   name: string.isRequired,
-  onClick: string
+  onClick: func
 };
 
 const mapStateToProps = state => ({
