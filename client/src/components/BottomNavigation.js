@@ -67,7 +67,7 @@ const BottomNavigation = props => {
     history.push(to);
   };
 
-  if (showCategories) {
+  if (showCategories || showingOverlay) {
     document.body.style.overflow = "hidden";
   } else {
     document.body.style.overflow = "auto";
