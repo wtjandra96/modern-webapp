@@ -93,7 +93,7 @@ const ChangePasswordForm = props => {
         </>
       }
       <Space height="24" />
-      <Text>Confirm Password</Text>
+      <Text>New Password</Text>
       <Space height="6" />
       <Input
         type="password"
