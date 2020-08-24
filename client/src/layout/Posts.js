@@ -133,7 +133,11 @@ Posts.defaultProps = {
   category: null
 };
 
+<<<<<<< HEAD
 const { func, arrayOf, bool, string, shape } = PropTypes;
+=======
+const { func, arrayOf, bool, string, shape, instanceOf } = PropTypes;
+>>>>>>> master
 Posts.propTypes = {
   // dispatch
   logout: func.isRequired,
@@ -144,10 +148,16 @@ Posts.propTypes = {
 		id: string.isRequired,
 		source: string.isRequired,
 		isBookmarked: bool,
+<<<<<<< HEAD
 		updatedAt: string.isRequired
 	})).isRequired,
   currentlyProcessing: bool.isRequired,
   showingOverlay: bool.isRequired,
+=======
+		updatedAt: instanceOf(Date).isRequired
+	})).isRequired,
+  currentlyProcessing: bool.isRequired,
+>>>>>>> master
   // passed props
   title: string.isRequired,
   category: shape({
@@ -160,8 +170,12 @@ Posts.propTypes = {
 const mapStateToProps = state => ({
   postsList: state.post.postsList,
   errors: state.post.errors,
+<<<<<<< HEAD
   currentlyProcessing: state.post.currentlyProcessing,
   showingOverlay: state.modal.showingOverlay
+=======
+  currentlyProcessing: state.post.currentlyProcessing
+>>>>>>> master
 });
 
 const mapDispatchToProps = {
